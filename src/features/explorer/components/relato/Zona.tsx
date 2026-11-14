@@ -41,29 +41,30 @@ export default function Zona({ z, nota }: { z: IdZona; nota?: NotaHistoria }) {
   const con = modelo.conexionesDe(z, v)
 
   if (section === 'pacifico_sur') return <>
-    <BotonVolver />
+    <BotonVolver texto="Volver a las zonas" />
     <h2>{p.nombre}</h2>
     <div className="region">{p.region}</div>
     <p>This zone belongs to the loaded data domain, not to the South Pacific regional boxes. Its values are not shown as South Pacific values.</p>
   </>
 
   return <>
-    <BotonVolver />
+    <BotonVolver texto="Volver a las zonas" />
     {nota && <div className="nota-historia"><b>{nota.titulo}</b><p>{nota.texto}</p></div>}
     <h2>{p.nombre}</h2>
     <div className="region">{p.region}</div>
     <div className="cifras">
-      <div className="cifra"><b className="num">{x == null ? 'no data' : modelo.valorTxt(v, x)}</b><span>{etiquetaMes(modelo.mes(i))}{a ? `, ${a.frase}` : invierno ? ': Antarctic winter; the satellite cannot see sea color' : ''}</span></div>
-      <div className="cifra"><b className="num">{tendencia}</b><span>decade trend (1998–{modelo.mes(modelo.ultimoObservado).anio})</span></div>
+      <div className="cifra"><b className="num">{x == null ? 'Sin datos' : modelo.valorTxt(v, x)}</b><span>{etiquetaMes(modelo.mes(i))}{a ? `, ${a.frase}` : invierno ? ': sin datos de color del mar durante el invierno antártico' : ''}</span></div>
+      <div className="cifra"><b className="num">{tendencia}</b><span>Cambio estimado por década (1998–{modelo.mes(modelo.ultimoObservado).anio})</span></div>
     </div>
+    <p className="nota"><strong>¿Qué indica?</strong> {v.que} El valor corresponde al mes elegido y a la cobertura indicada por la fuente.</p>
     <div className="grafico" aria-label={`Serie mensual de ${v.nombre} en ${p.nombre}`}>
       <SerieMensual modelo={modelo} serie={serie} color={v.escala === 'rampa' ? '#3fc28c' : '#63cde8'} mesActual={i} alElegirMes={acciones.fijarMes} decimales={v.dec} />
     </div>
     <p className="nota">{v.fuente} Period: {v.periodo}. Coverage: {v.cobertura}. Tap the chart to jump to that month.</p>
     {modelo.claveMonitor(z) && <div className="acciones-relato" style={{ marginTop: 10 }}><button className="btn" type="button" onClick={() => { useExplorerStore.getState().setMonitorZone(z); document.getElementById('monitor')?.scrollIntoView({ behavior: 'smooth' }) }}>View {p.nombre} in the monitor</button></div>}
-    <h3>Change variable</h3>
+    <h3>Consultar otro parámetro</h3>
     <ChipsVariables zona={z} />
-    <h3>Jump in time</h3>
+    <h3>Comparar otros momentos</h3>
     <div className="chips">
       <button className="chip" type="button" onClick={() => acciones.fijarMes(modelo.mesExtremo(z, v, null, 1))}>Highest month</button>
       <button className="chip" type="button" onClick={() => acciones.fijarMes(modelo.mesExtremo(z, v, null, -1))}>Lowest month</button>
