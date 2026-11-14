@@ -4,10 +4,12 @@
 .portada { --hud: "Rajdhani", "Arial Narrow", system-ui, sans-serif; --celeste: #8fe3f2; }
 .portada h1, .portada h2 { font-family: var(--hud); font-weight: 600; line-height: 1.05; text-transform: uppercase; }
 
-.portada #escena { position: fixed; inset: 0; display: block; }
-.portada .portada-largo { height: 900vh; }
-.portada .portada-seccion { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(560px, 86vw); text-align: center;
-  opacity: 0; pointer-events: none; text-shadow: 0 2px 12px rgba(0, 0, 0, .6); }
+.portada .portada-recorrido { position: relative; height: 900vh; }
+.portada .portada-ventana { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; }
+.portada #escena { position: absolute; inset: 0; display: block; }
+.portada #secciones { position: absolute; inset: 0; pointer-events: none; }
+.portada .portada-seccion { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(560px, 86vw); text-align: center;
+  opacity: 0; pointer-events: none; text-shadow: none; }
 .portada .portada-seccion.activa { pointer-events: auto; }
 .portada .portada-seccion h1 { font-size: clamp(48px, 9vw, 112px); font-weight: 700; letter-spacing: .02em; margin: 0 0 14px; text-shadow: none; }
 .portada .portada-seccion h1 span { display: block; }
@@ -20,18 +22,18 @@
   font: 700 15px var(--hud); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; text-decoration: none; text-shadow: none; transition: background-color .15s;
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); }
 .portada .portada-boton:hover { background: rgba(99, 205, 232, .22); }
-.portada .portada-boton:focus-visible { outline: 2px solid #63cde8; outline-offset: 3px; }
-.portada .medidor { position: fixed; top: 15vh; bottom: 15vh; left: 18px; width: 14px; display: flex; justify-content: center; pointer-events: none; }
+.portada .portada-boton:focus-visible { outline: 2px solid #63cde8; outline-offset: -5px; }
+.portada .medidor { position: absolute; top: 15vh; bottom: 15vh; left: 18px; width: 14px; display: flex; justify-content: center; pointer-events: none; }
 .portada .medidor .riel { width: 2px; height: 100%; background: rgba(143, 227, 242, .3); position: relative; }
 .portada .medidor .marca { position: absolute; left: -5px; width: 12px; height: 12px; background: var(--celeste); transform: rotate(45deg); }
-.portada .portada-hud { position: fixed; left: 40px; bottom: 24px; display: grid; gap: 2px; min-width: 190px; padding: 10px 18px 10px 14px; background: rgba(7, 30, 51, .6);
+.portada .portada-hud { position: absolute; left: 40px; bottom: 24px; display: grid; gap: 2px; min-width: 190px; padding: 10px 18px 10px 14px; background: rgba(7, 30, 51, .6);
   border-left: 2px solid var(--celeste); font-family: var(--hud); text-transform: uppercase; pointer-events: none;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%); }
 .portada .hud-region { font-size: 12px; letter-spacing: .16em; color: var(--celeste); }
 .portada .hud-fila { display: flex; justify-content: space-between; gap: 18px; font-size: 15px; letter-spacing: .06em; }
 .portada .hud-fila i { font-style: normal; opacity: .65; }
 .portada .hud-fila b { font-weight: 600; text-align: right; }
-.portada .portada-pista { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); font: 600 13px var(--hud); letter-spacing: .2em; text-transform: uppercase; opacity: .8; }
+.portada .portada-pista { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); font: 600 13px var(--hud); letter-spacing: .2em; text-transform: uppercase; opacity: .8; }
 .portada .portada-velo { position: fixed; inset: 0; z-index: 50; background: var(--oscuro); opacity: 0; pointer-events: none; }
 
 @media (max-width: 640px) { .portada .medidor { display: none; } .portada .portada-hud { left: 12px; bottom: 12px; min-width: 150px; padding: 8px 12px; } .portada .portada-pista { bottom: 74px; } }

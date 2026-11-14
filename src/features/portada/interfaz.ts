@@ -3,11 +3,13 @@ import { SECCIONES, nombreCapa } from "./contenido";
 
 export interface Interfaz {
   actualizar(progreso: number, y: number, enTransicion: boolean): void;
+  detener(): void;
 }
 
 // Crea los textos de cada tramo a partir de contenido.ts y mueve los medidores de profundidad
 export function crearSecciones(alEntrar: () => void): Interfaz {
   const contenedor = porId("secciones");
+  contenedor.replaceChildren();
   const etiqueta = porId("mEtiqueta"), valor = porId("mValor"), marca = porId("marca"), capa = porId("mCapa"), pista = porId("pista");
 
   const nodos = SECCIONES.map((s) => {
@@ -36,6 +38,7 @@ export function crearSecciones(alEntrar: () => void): Interfaz {
   });
 
   return {
+    detener() { for (const { nodo } of nodos) nodo.remove(); },
     actualizar(progreso, y, enTransicion) {
   etiqueta.textContent = y > 30 ? "ORBIT" : y > 0 ? "ALTITUDE" : "DEPTH";
       valor.textContent = y > 30 ? "700 km" : y > 0 ? `${Math.round(y * 20)} m` : `${Math.round(-y * 5)} m`;
@@ -46,6 +49,10 @@ export function crearSecciones(alEntrar: () => void): Interfaz {
         const borde = de === 0 ? a - progreso : Math.min(progreso - de, a - progreso);
         nodo.style.opacity = String(dentro ? Math.min(1, borde / 0.025) : 0);
         nodo.classList.toggle("activa", dentro);
+        if (nodo.inert === dentro) {
+          nodo.inert = !dentro;
+          nodo.setAttribute("aria-hidden", String(!dentro));
+        }
       }
       pista.style.opacity = progreso < 0.03 && !enTransicion ? "0.8" : "0";
     },

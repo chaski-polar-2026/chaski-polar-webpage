@@ -20,15 +20,17 @@ export interface EstadoScroll {
 
 export function seguirScroll(): EstadoScroll & { detener(): void } {
   const estado = { progreso: 0, detener: () => {} };
+  const recorrido = document.getElementById("portada-recorrido")!;
   const leer = () => {
-    const max = document.documentElement.scrollHeight - innerHeight;
-    estado.progreso = max > 0 ? Math.min(1, scrollY / max) : 0;
+    const max = recorrido.offsetHeight - innerHeight;
+    estado.progreso = max > 0 ? Math.max(0, Math.min(1, (scrollY - recorrido.offsetTop) / max)) : 0;
   };
+  const restauracion = history.scrollRestoration;
   history.scrollRestoration = "manual";
-  scrollTo(0, 0);
+  if (!location.hash) scrollTo(0, 0);
   addEventListener("scroll", leer, { passive: true });
   addEventListener("resize", leer);
   leer();
-  estado.detener = () => { removeEventListener("scroll", leer); removeEventListener("resize", leer); };
+  estado.detener = () => { removeEventListener("scroll", leer); removeEventListener("resize", leer); history.scrollRestoration = restauracion; };
   return estado;
 }
