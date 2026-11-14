@@ -51,3 +51,27 @@
 .tendencias .tend-sens-graficos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .estado-no_robusto { color: var(--nino); }
 @media (max-width: 640px) { .tend-controles { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 16px; } .tend-controles label:nth-child(-n+3) { grid-column: 1 / -1; } .tend-estadisticas, .tendencias .tend-sens-graficos { grid-template-columns: minmax(0, 1fr); } .tend-modos a { margin-left: 0; } }
+
+/* Superficies opacas del panel; las reglas no se aplican al mapa de tendencias. */
+#trends .tend-controles, #trends .tend-asistente, #trends .tend-grafico,
+#trends .tend-sens-graficos figure, #trends .tend-veredicto { background: #0c2c4a; box-shadow: none; backdrop-filter: none; border-radius: 6px; }
+#trends .btn { border-radius: 6px; box-shadow: none; backdrop-filter: none; }
+#trends .tend-ejemplo { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+#trends .tend-ejemplo > .btn:first-child { flex: 1; }
+#trends .tend-ejemplo .tend-alternativa { font-size: .85rem; justify-content: center; align-items: center; }
+#trends .tend-campo { display: flex; flex-direction: column; gap: 4px; min-width: 0; font-size: .85rem; color: var(--niebla); }
+#trends .tend-campo p { margin: 0; color: var(--hielo); overflow-wrap: anywhere; }
+#trends .tend-variable { margin: 22px 0 8px; font-size: 1.1rem; }
+#trends .tend-variable span { color: var(--niebla); font-weight: 400; }
+#trends .tend-tipo { display: inline-block; margin: 0 0 12px; padding: 8px 12px; border: 1px solid var(--linea); border-radius: 6px; color: var(--hielo); font-size: .85rem; }
+#trends .tend-fuentes { border-top: 1px solid var(--linea); margin-top: 18px; padding-top: 12px; }
+#trends .tend-fuentes summary { min-height: 44px; padding: 10px 0; cursor: pointer; }
+#trends .tend-fuentes dt { margin-top: 12px; color: var(--hielo); }
+#trends .tend-fuentes dd { margin: 4px 0 16px; color: var(--niebla); overflow-wrap: anywhere; }
+#trends .tend-error { padding: 14px; border: 1px solid var(--linea); border-radius: 6px; }
+#trends .tend-comparar input { flex-shrink: 0; }
+#trends .tend-veredicto, #trends .tend-estadisticas, #trends .tend-sens-graficos > * { min-width: 0; }
+@media (max-width: 640px) {
+  #trends .tend-controles > :nth-child(-n+3) { grid-column: 1 / -1; }
+  #trends .tend-veredicto span { overflow-wrap: anywhere; }
+}
