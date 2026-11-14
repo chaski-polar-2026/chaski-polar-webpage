@@ -72,7 +72,7 @@ export function TimelinePanel() {
             }} />
           <Bar dataKey="value" isAnimationActive={false}>{serie.map((d) => <Cell key={d.month} fill={d.color} />)}</Bar>
         </BarChart></ResponsiveContainer></div>
-        <input className="timeline-range" type="range" min={i0} max={ultimo} step={1} value={month} aria-label="Mes" onChange={(e) => { setPlaying(false); setMonth(Number(e.target.value)) }} />
+        <input className="timeline-range" type="range" min={i0} max={ultimo} step={1} value={month} aria-label="Month" onChange={(e) => { setPlaying(false); setMonth(Number(e.target.value)) }} />
       </div>
     </div>}
     {opciones.length > 0 && <Leyenda />}

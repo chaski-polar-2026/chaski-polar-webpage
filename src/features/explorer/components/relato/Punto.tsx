@@ -28,10 +28,10 @@ export default function Punto({ lat, lng }: { lat: number; lng: number }) {
       </div>
       {dp.serie && <>
         <div className="grafico" aria-label="Monthly chlorophyll at this point"><SerieMensual modelo={modelo} serie={dp.serie} color="#3fc28c" mesActual={i} alElegirMes={acciones.fijarMes} logaritmica /></div>
-        <p className="nota">Chlorophyll from the map's half-degree cell (ESA OC-CCI v6), on a logarithmic scale. Tap the chart to jump to that month.</p>
+        <p className="nota">ESA OC-CCI v6 · 0.5° cell · Logarithmic scale.</p>
       </>}
     </>}
-    {dp?.tierra && <p>This point falls on land or where the satellite never sees the sea, such as permanent ice.</p>}
+    {dp?.tierra && <p>Land or no satellite sea coverage.</p>}
     <p>
       {dp ? `This is not one of the ${modelo.ids.length} study zones.` : 'No satellite map or study zone is available here.'}
       {cerca[0] && <> The nearest zone is <strong>{modelo.zona(cerca[0].z).nombre}</strong>, about {km(cerca[0].d)} km.</>}

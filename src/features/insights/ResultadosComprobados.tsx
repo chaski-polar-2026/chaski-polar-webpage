@@ -28,7 +28,7 @@ export default function ResultadosComprobados() {
           <span className={`estado estado-${h.estado}`}>{ESTADOS[h.estado] ?? h.estado}</span>
           <h4>{h.titulo}</h4>
           {h.resumen && <p>{h.resumen}</p>}
-          {['sin_tendencias', 'calentamiento_antartico'].includes(h.id) && <a href="/explorer?trend=antarctic#trends">Test Antarctic warming, then compare the longer record</a>}
+          {['sin_tendencias', 'calentamiento_antartico'].includes(h.id) && <a href="/research?trend=antarctic#trends">Test Antarctic warming, then compare the longer record</a>}
           {filas && <>
             <p>For each degree the sea warms, chlorophyll falls between {nf(0).format(Math.min(...centrales.map((f) => -f.calido)))}% and {nf(0).format(Math.max(...centrales.map((f) => -f.calido)))}% in {centrales.map((f) => f.zona).join(', ')}. Cooling responses are near zero in Chimbote and Pisco, but about −14% per degree in Callao and Ilo. This asymmetry is descriptive, not predictive.</p>
             <div className="resultado-grafico" role="img" aria-label="Chlorophyll change per warmer and colder degree in each zone">

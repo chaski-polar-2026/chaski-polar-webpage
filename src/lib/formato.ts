@@ -14,7 +14,7 @@ const formatos = new Map<number, Intl.NumberFormat>();
 export function nf(decimales = 0): Intl.NumberFormat {
   let f = formatos.get(decimales);
   if (!f) {
-    f = new Intl.NumberFormat("es", { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
+    f = new Intl.NumberFormat("en", { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
     formatos.set(decimales, f);
   }
   return f;
@@ -44,7 +44,7 @@ export const mesLargo = (x: Mes): string => `${MESES_LARGOS[x.mes]} ${x.anio}`;
 export const claveMes = (x: Mes): string => `${x.anio}-${String(x.mes + 1).padStart(2, "0")}`;
 
 export const fmtCoord = (lat: number, lng: number): string =>
-  `${nf(1).format(Math.abs(lat))}° ${lat < 0 ? "S" : "N"}, ${nf(1).format(Math.abs(lng))}° ${lng < 0 ? "O" : "E"}`;
+  `${nf(1).format(Math.abs(lat))}° ${lat < 0 ? "S" : "N"}, ${nf(1).format(Math.abs(lng))}° ${lng < 0 ? "W" : "E"}`;
 
 /** Correlación con signo tipográfico y dos decimales */
 export const fmtR = (r: number | null): string => (r == null ? "—" : (r < 0 ? "−" : "") + nf(2).format(Math.abs(r)));

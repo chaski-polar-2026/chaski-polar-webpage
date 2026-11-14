@@ -8,7 +8,6 @@ import { useAcciones } from '../../hooks/useAcciones'
 import { esPeru } from '../../lib/modelo'
 import type { NombreEscenario } from '../../lib/tipos'
 import { variablePorId } from '../../lib/variables'
-import { useExplorerStore } from '../../store'
 import { BotonVolver } from './comun'
 
 const ESCENARIOS: { id: NombreEscenario; nombre: string }[] = [
@@ -107,9 +106,9 @@ export default function Nino2026() {
     <p className="nota">Average chlorophyll (ESA OC-CCI) from May to {mesLargo(modelo.mes(modelo.ultimoSeries))}, compared with the same month in a normal year (1998–2025). This is partial: the event is ongoing.</p>
 
     <div className="acciones-relato">
-      <button className="btn" type="button" onClick={() => { useExplorerStore.getState().setMonitorZone(null); document.getElementById('monitor')?.scrollIntoView({ behavior: 'smooth' }) }}>View the monitor</button>
+      <a className="btn" href="/research#physical-chain">Physical conditions</a>
       <a className="btn" href="#eventos-nino">Compare with other El Niño events</a>
-      <a className="btn" href="#cruceros">View the surveys</a>
+      <a className="btn" href="/research#cruceros">View the surveys</a>
     </div>
   </>
 }
