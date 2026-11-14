@@ -189,7 +189,7 @@ export default function Escritorio({ turno, datos, siguiente, final, alSeguir, a
           {final && <button type="button" className="juego-caja principal" onClick={alFinal}>Ver el final →</button>}
           {!siguiente && !final && <button type="button" className="juego-caja principal" onClick={alMenu}>Volver al menú</button>}
           <button type="button" className="juego-caja" onClick={alRepetir}>Repetir {turno.anio}</button>
-          <a className="juego-caja" href={`/explorer#mes=${turno.anio}-01&dato=clorofila&vista=satellite`}>Ver este año en el explorador</a>
+          <a className="juego-caja" href={`/explorer#mes=${turno.anio}-01&dato=chlorophyll&vista=satellite`}>Ver este año en el explorador</a>
         </div>
       </div>
     </div>

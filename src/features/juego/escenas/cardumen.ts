@@ -14,6 +14,7 @@ import { dibujarFito } from "../personajes/antartida";
 import { dibujarAnchi, dibujarAnchoveta, dibujarGuanay, dibujarLetrero, dibujarLobo } from "../personajes/costa";
 import { sonar } from "../motor/sonido";
 import { sprite } from "../personajes/sprites";
+import { crearFondoCardumenVoxel, crearPersonajeVoxel } from "../motor/voxel";
 
 const LARGO_ZONA = 30;
 const X_MIN = -16, X_MAX = 9;
@@ -78,7 +79,7 @@ export interface OpcionesCardumen {
 }
 
 interface Parche { p: Personaje; zona: ZonaMar; activo: boolean; espera: number; fase: number }
-interface Seguidor { p: Personaje; ox: number; oy: number; oz: number; fase: number }
+interface Seguidor { p: Personaje; voxel: THREE.InstancedMesh; ox: number; oy: number; oz: number; fase: number }
 
 interface Mundo { capaOxigeno: THREE.Mesh; animar(t: number): void }
 
@@ -86,29 +87,12 @@ function crearMundo(escena: THREE.Scene): Mundo {
   escena.background = AGUA_FRIA.clone();
   escena.fog = new THREE.Fog(AGUA_FRIA.getHex(), 12, 46);
   escena.add(new THREE.HemisphereLight(0xe6f6ff, 0x1d3a4a, 1.15));
+  crearFondoCardumenVoxel(escena, Z_MIN - 30, Z_MAX + 30);
   const sol = new THREE.DirectionalLight(0xffffff, 1.4);
   sol.position.set(-6, 20, 6);
   escena.add(sol);
 
   const largo = -Z_MIN + 60;
-  // fondo de arena con ondulaciones que sube hacia la costa; manchas más oscuras de limo
-  const fondo = new THREE.Mesh(new THREE.PlaneGeometry(80, largo, 40, 120).rotateX(-Math.PI / 2), toon(0xffffff, { vertexColors: true }));
-  const pf = fondo.geometry.getAttribute("position"), colores = new Float32Array(pf.count * 3);
-  const arena = new THREE.Color(0xd2bb8e), limo = new THREE.Color(0x9c8f6f), cf = new THREE.Color();
-  for (let i = 0; i < pf.count; i++) {
-    const x = pf.getX(i), z = pf.getZ(i);
-    pf.setY(i, Math.sin(x * 0.9 + Math.sin(z * 0.15) * 2) * 0.12 + Math.random() * 0.25 + Math.max(0, x - 6) * 0.9);
-    cf.copy(arena).lerp(limo, (Math.sin(x * 0.21) * Math.cos(z * 0.13) + 1) * 0.35);
-    colores.set([cf.r, cf.g, cf.b], i * 3);
-  }
-  fondo.geometry.setAttribute("color", new THREE.BufferAttribute(colores, 3));
-  fondo.geometry.computeVertexNormals();
-  fondo.position.set(0, -14, Z_MIN / 2);
-  escena.add(fondo);
-
-  const tierra = new THREE.Mesh(new THREE.BoxGeometry(20, 6, largo), toon(0xd9b98a)); // costa desértica
-  tierra.position.set(22, 2, Z_MIN / 2);
-  escena.add(tierra);
   // rocas, estrellas de mar y erizos: cada tipo es un solo dibujo repetido (instancias), con su contorno
   const repetir = (geo: THREE.BufferGeometry, n: number, colores: number[], colocar: (i: number, pos: THREE.Vector3, esc: THREE.Vector3, rot: THREE.Euler) => void) => {
     const malla = new THREE.InstancedMesh(geo, toon(0xffffff), n);
@@ -217,6 +201,8 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
     const inicial = o.peces;
 
     const anchi = crearPersonaje(escena, sprite("anchi", dibujarAnchi), { ancho: 2.6, alto: 2.6 });
+    const anchiVoxel = crearPersonajeVoxel(escena, sprite("anchi", dibujarAnchi), 0.08, 1);
+    anchi.sprite.visible = false;
     anchi.posicion.set(-3, -3, centroZona(ZONA_INICIAL));
     const seguidor = crearSeguidor(camara, renderer.domElement, anchi.posicion, { distancia: 15, libre: true });
 
@@ -224,8 +210,10 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
     const dibujoPez = sprite("anchoveta", dibujarAnchoveta);
     const peces: Seguidor[] = Array.from({ length: DIBUJOS_MAX }, () => {
       const p = crearPersonaje(escena, dibujoPez, { ancho: azar(1.15, 1.45), alto: azar(1.15, 1.45) });
+      p.sprite.visible = false;
+      const voxel = crearPersonajeVoxel(escena, dibujoPez, 0.035, 1);
       p.posicion.copy(anchi.posicion);
-      return { p, ox: azar(-1, 1), oy: azar(-1, 1), oz: azar(-1, 1), fase: azar(0, 6) };
+      return { p, voxel, ox: azar(-1, 1), oy: azar(-1, 1), oz: azar(-1, 1), fase: azar(0, 6) };
     });
 
     // comida: manchas de fitoplancton en todas las zonas, según la clorofila de cada una ese mes
@@ -320,6 +308,7 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
         seguidor.seguir(anchi.posicion, vel.y);
         tmp.set(vel.x, 0, vel.z);
         anchi.animar(t, tmp, seguidor.derecha, VELOCIDAD);
+        anchiVoxel.position.copy(anchi.posicion);
         // al subir o bajar, Anchi apunta la cabeza hacia donde va (según mire a la derecha o a la izquierda)
         const haciaDer = tmp.dot(seguidor.derecha) >= 0 ? 1 : -1;
         const cabeceo = THREE.MathUtils.clamp(vel.y * 0.07, -0.45, 0.45) * haciaDer;
@@ -343,10 +332,12 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
         const visibles = Math.min(DIBUJOS_MAX, Math.ceil(c.peces / PECES_POR_DIBUJO));
         const radio = c.compacto ? 1.3 : 3.2;
         peces.forEach((f, k) => {
-          f.p.sprite.visible = k < visibles;
+          f.p.sprite.visible = false;
+          f.voxel.visible = k < visibles;
           if (k >= visibles) return;
           tmp.set(anchi.posicion.x + f.ox * radio + Math.sin(t * 1.3 + f.fase) * 0.3, anchi.posicion.y + f.oy * radio * 0.5, anchi.posicion.z + f.oz * radio);
           f.p.posicion.lerp(tmp, Math.min(1, dt * (2.5 + (k % 5) * 0.4)));
+          f.voxel.position.copy(f.p.posicion);
           f.p.animar(t, vel, seguidor.derecha, VELOCIDAD);
           f.p.sprite.material.rotation = cabeceo;
         });

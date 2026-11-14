@@ -5,14 +5,47 @@
 .juego .cuaderno-cabecera p, .juego .cuaderno-cabecera a { color: #b2cacb; }
 .juego .cuaderno-paleta { display: flex; flex-wrap: wrap; margin-top: 20px; gap: 3px; }
 .juego .cuaderno-paleta span { width: 18px; height: 18px; border: 1px solid #345361; }
-.juego .cuaderno-sprites figure { display: flex; align-items: stretch; padding: 16px; border: 1px solid #345361; background: #0b2435; }
-.juego .cuaderno-sprites .cuaderno-muestra { display: grid; place-items: center; height: 120px; background: repeating-linear-gradient(0deg, transparent 0 23px, #153347 23px 24px), repeating-linear-gradient(90deg, transparent 0 23px, #153347 23px 24px); }
+.juego .cuaderno-sprites figure { display: flex; align-items: stretch; padding: 12px; border: 1px solid #345361; background: #0b2435; }
+.juego .cuaderno-sprites .cuaderno-muestra { display: grid; place-items: center; height: 96px; background: repeating-linear-gradient(0deg, transparent 0 23px, #153347 23px 24px), repeating-linear-gradient(90deg, transparent 0 23px, #153347 23px 24px); }
 .juego .cuaderno-sprites figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-top: 14px; }
 .juego .cuaderno-sprites figcaption b { font: 500 21px var(--serif); color: #edf1e7; }
 .juego .cuaderno-sprites figcaption span { font: 10px monospace; color: #b2cacb; }
 .juego .cuaderno-sprites .cuaderno-cuadros { display: flex; flex-wrap: wrap; gap: 12px; min-height: 36px; align-items: center; margin-top: 10px; border-top: 1px solid #345361; padding-top: 10px; }
 .juego .cuaderno-cuadros a { display: inline-flex; padding: 3px; border: 1px solid transparent; }
 .juego .cuaderno-cuadros a:hover { border-color: #dfbc79; }
+.juego .cuaderno-seccion { grid-column: 1 / -1; border-top: 1px solid #345361; padding-top: 22px; }
+.juego .cuaderno-seccion-cabecera { max-width: 720px; margin-bottom: 18px; }
+.juego .cuaderno-kicker { color: #3fc28c; font: 11px monospace; letter-spacing: .1em; text-transform: uppercase; }
+.juego .cuaderno-seccion h2 { color: #edf1e7; font: 500 28px var(--serif); margin: 8px 0; }
+.juego .cuaderno-seccion p { color: #b2cacb; line-height: 1.55; margin: 0; }
+.juego .cuaderno-fichas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; }
+.juego .cuaderno-ficha { border: 1px solid #345361; background: #0b2435; }
+.juego .cuaderno-ficha summary { display: flex; align-items: center; gap: 9px; padding: 12px; color: #edf1e7; cursor: pointer; list-style: none; }
+.juego .cuaderno-ficha summary::-webkit-details-marker { display: none; }
+.juego .cuaderno-ficha summary:focus-visible, .juego .cuaderno-ficha a:focus-visible, .juego .cuaderno-enlaces a:focus-visible { outline: 2px solid #3fc28c; outline-offset: 3px; }
+.juego .cuaderno-icono { display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid #3fc28c; color: #3fc28c; font: 11px monospace; }
+.juego .cuaderno-flecha { margin-left: auto; color: #3fc28c; font-size: 20px; }
+.juego .cuaderno-ficha[open] .cuaderno-flecha { transform: rotate(45deg); }
+.juego .cuaderno-ficha-cuerpo { padding: 0 12px 12px 43px; }
+.juego .cuaderno-ficha-cuerpo p { font-size: 13px; }
+.juego .cuaderno-ficha-cuerpo small, .juego .cuaderno-referencia { display: block; color: #8eafb8; font-size: 11px; line-height: 1.5; margin-top: 9px; }
+.juego .cuaderno-consultada { display: inline-block; color: #3fc28c; font: 10px monospace; margin-top: 9px; }
+.juego .cuaderno-coleccion { color: #8eafb8 !important; font: 11px monospace; margin-top: 12px !important; }
+.juego .cuaderno-atlas { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid #345361; }
+.juego .cuaderno-zona { min-height: 76px; padding: 12px; border-right: 1px solid #345361; background: #0b2435; box-sizing: border-box; }
+.juego .cuaderno-zona:last-child { border-right: 0; }
+.juego .cuaderno-zona span { display: block; color: #3fc28c; font: 10px monospace; margin-bottom: 10px; }
+.juego .cuaderno-zona b { color: #edf1e7; font: 500 18px var(--serif); }
+.juego .cuaderno-cadenas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.juego .cuaderno-cadenas article { border: 1px solid #345361; background: #0b2435; padding: 14px; }
+.juego .cuaderno-cadenas h3 { color: #edf1e7; font: 500 21px var(--serif); margin: 0 0 10px; }
+.juego .cuaderno-cadenas p { color: #edf1e7; font-size: 13px; }
+.juego .cuaderno-cadenas p b { color: #3fc28c; font-weight: 400; }
+.juego .cuaderno-cadenas small { display: block; color: #8eafb8; margin-top: 10px; }
+.juego .cuaderno-enlaces nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.juego .cuaderno-enlaces a { text-decoration: none; }
+.juego .cuaderno-sprite-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.juego .cuaderno-sprite-grid figure { margin: 0; }
 .juego .juego-menu.menu-carta { background: #071b29; padding: 76px 36px 60px; overflow-y: auto; display: block; touch-action: pan-y; }
 .juego .menu-carta-interior { max-width: 1080px; margin: auto; }
 .juego .menu-carta-marca { display: flex; justify-content: space-between; gap: 16px; border-bottom: 1px solid #345361; padding-bottom: 16px; color: #b2cacb; font: 12px var(--sans); letter-spacing: .12em; }
@@ -26,6 +59,12 @@
 .juego .menu-carta-acciones button.juego-caja.principal { background: #afcfba; color: #0a242e; border-color: #afcfba; }
 .juego .menu-carta-acciones button.juego-caja.principal:hover { background: #c8dfce; border-color: #c8dfce; }
 .juego .menu-carta-acciones button span { margin-left: 18px; }
+.juego .menu-carta-ritmo { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 18px 0 0; padding: 9px 12px 10px; border: 1px solid #345361; color: #b2cacb; }
+.juego .menu-carta-ritmo legend { padding: 0 5px; color: #3fc28c; font: 10px monospace; letter-spacing: .08em; text-transform: uppercase; }
+.juego .menu-carta-ritmo label { display: inline-flex; align-items: center; gap: 6px; color: #edf1e7; cursor: pointer; font-size: 12px; }
+.juego .menu-carta-ritmo input { accent-color: #3fc28c; margin: 0; }
+.juego .menu-carta-ritmo span { display: inline-flex; gap: 4px; align-items: baseline; }
+.juego .menu-carta-ritmo small { color: #8eafb8; font-size: 10px; }
 .juego .menu-carta-datos { margin: 18px 0 0; color: #8eafb8; font-size: 11px; line-height: 1.6; }
 .juego .menu-carta-mapa { margin: 0; border: 1px solid #345361; padding: 10px; background: #0b2435; }
 .juego .menu-carta-mapa canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; }
@@ -41,6 +80,10 @@
 .juego .menu-carta-pie button, .juego .menu-carta-pie a { color: #b2cacb; background: none; border: 0; border-radius: 0; box-shadow: none; font: inherit; padding: 5px 0; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
 .juego .menu-carta-pie button:hover, .juego .menu-carta-pie a:hover { color: #edf1e7; }
 @media (max-width: 760px) {
+  .juego .cuaderno-atlas { grid-template-columns: 1fr; }
+  .juego .cuaderno-zona { min-height: 0; border-right: 0; border-bottom: 1px solid #345361; }
+  .juego .cuaderno-zona:last-child { border-bottom: 0; }
+  .juego .cuaderno-cadenas { grid-template-columns: 1fr; }
   .juego .juego-menu.menu-carta { padding: 72px 20px 70px; }
   .juego .menu-carta-principal { gap: 24px; grid-template-columns: 1fr; padding: 28px 0; }
   .juego .menu-carta-mapa { max-width: 440px; width: 100%; box-sizing: border-box; }
