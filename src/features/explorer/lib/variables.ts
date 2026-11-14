@@ -67,7 +67,7 @@ export const VARIABLES: readonly Variable[] = [
     fuente: "Kd490 from ESA OC-CCI v6." },
   { id: "viento", clave: "wind", nombre: "Wind over the sea", corto: "wind", unidad: "m/s", dec: 1, modo: "dif", rango: 1.5, escala: "diverge", periodo: "1998–2026 Peru; 1993–2018 Antarctica", cobertura: "Peru and Antarctica", secciones: ["humboldt"],
     que: "Off Peru, wind pushes surface water offshore and brings cold, nutrient-rich deep water up: upwelling.",
-    fuente: "10 m wind over the sea: ERA5 (ECMWF/Copernicus) in Peruvian zones, 1998–2026, sea points only; CCMP v2 in Antarctica, through 2018." },
+    fuente: "10 m wind over the sea: ERA5 (ECMWF/Copernicus) in Peruvian zones, 1998–2026, sea points only; CCMP v2 in Antarctica, through 2018. Caution: the Peruvian wind series drops and recovers around 2017–2019 in every zone, which looks like a change of source rather than a change in the wind. Do not compare years across that break." },
   { id: "salinidad_psu", clave: "salinity", nombre: "Salinity", corto: "salinity", unidad: "PSU", dec: 2, modo: "dif", rango: 0.35, escala: "diverge", periodo: "2010–2026", cobertura: "Peru and Antarctica", secciones: ["austral", "humboldt"],
     que: "How salty the water is. It changes with rainfall, rivers, melting ice and the arrival of other water masses.",
     fuente: "Surface salinity from the SMOS satellite (since 2010)." },
