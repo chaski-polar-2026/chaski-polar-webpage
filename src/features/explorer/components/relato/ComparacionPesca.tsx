@@ -13,7 +13,6 @@ const MESES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', '
 const OPCIONES = [
   { id: 'temperatura_superficial_C', nombre: 'Sea surface temperature', ayuda: 'Shows warmer or cooler surface water, not conditions at fishing depth.' },
   { id: 'clorofila_mg_m3', nombre: 'Chlorophyll', ayuda: 'Phytoplankton pigment, at the base of the food web. More chlorophyll does not guarantee more fish.' },
-  { id: 'viento', nombre: 'Wind', ayuda: 'Speed calculated from monthly wind components, not gusts, waves or today’s sailing conditions.' },
   { id: 'salinidad_psu', nombre: 'Salinity', ayuda: 'How salty surface water is. Helps describe differences between water masses.' },
   { id: 'nivel_mar_anomalia_m', nombre: 'Sea level', ayuda: 'Anomaly relative to the product reference, not tide height or water depth for a boat.' },
 ] as const
