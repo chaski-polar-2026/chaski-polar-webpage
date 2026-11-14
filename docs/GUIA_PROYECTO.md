@@ -42,7 +42,7 @@ Se elige uno y el selector solo muestra sus parámetros.
 - Botones con esquinas de 6 px, sin sombras ni líneas gruesas. El elemento activo se marca con fondo claro y texto azul oscuro; los demás, sin borde, en gris azulado.
 - Dos familias de letra en toda la página: Atkinson Hyperlegible (texto) y Newsreader (títulos). La portada usa además Rajdhani, solo para su estilo técnico.
 - Textos en inglés en toda la página (la traducción aún está incompleta en algunos puntos).
-- El logo actual es provisional: se reemplaza cambiando el archivo `public/assets/logotipo_chaski_polar.png`.
+- Recursos del logo: `public/assets/logo/`; original, archivo y guía de generación en `src/assets/logo/`. El encabezado usa el logo completo en escritorio y solo el ícono en móvil.
 
 ## 5. El juego Cardumen
 

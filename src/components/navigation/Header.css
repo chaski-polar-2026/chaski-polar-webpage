@@ -1,0 +1,20 @@
+.app-header.chaski-header {
+  --brand-accent: #3ed2c6;
+  background: #071e33;
+  border-bottom: 1px solid rgb(62 210 198 / .24);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.app-header.chaski-header .app-brand-logo { display: block; flex-shrink: 0; }
+.app-header.chaski-header .app-brand img {
+  display: block;
+  width: 144px;
+  height: 40px;
+  object-fit: contain;
+}
+.app-header.chaski-header .app-brand { border-radius: 6px; }
+.app-header.chaski-header :focus-visible { outline-color: var(--brand-accent); }
+.app-header.chaski-header .app-nav { flex-shrink: 0; }
+@media (max-width: 639px) {
+  .app-header.chaski-header .app-brand img { width: 36px; height: 32px; }
+}
