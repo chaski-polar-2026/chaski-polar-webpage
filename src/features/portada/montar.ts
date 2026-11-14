@@ -41,6 +41,11 @@ export function montarPortada(alEntrar: () => void): () => void {
   const transicion = crearTransicion(espacio.globo, alEntrar);
   const interfaz = crearSecciones(() => transicion.iniciar());
 
+  const reducir = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const puntero = { x: 0, y: 0, objX: 0, objY: 0 };
+  const alMoverPuntero = (e: PointerEvent) => { puntero.objX = (e.clientX / innerWidth - 0.5) * 2; puntero.objY = (e.clientY / innerHeight - 0.5) * 2; };
+  if (!reducir) addEventListener("pointermove", alMoverPuntero, { passive: true });
+  const secciones = porId("secciones");
   let tiempo = 0, ultimoCuadro = performance.now();
   let cuadros = 0, inicioMedida = 2; // los primeros segundos se ignoran: cargan texturas y se compilan los shaders
   const dibujar = () => {
@@ -49,8 +54,12 @@ export function montarPortada(alEntrar: () => void): () => void {
     tiempo += transcurrido;
     const dt = Math.min(0.05, transcurrido), t = tiempo;
     const y = alturaEn(scroll.progreso);
-    camara.position.set(Math.sin(t * 0.2) * 0.6, y, 6);
-    camara.lookAt(0, y - 1.5, -20);
+    puntero.x += (puntero.objX - puntero.x) * Math.min(1, dt * 3);
+    puntero.y += (puntero.objY - puntero.y) * Math.min(1, dt * 3);
+    secciones.style.setProperty("--px", puntero.x.toFixed(3));
+    secciones.style.setProperty("--py", puntero.y.toFixed(3));
+    camara.position.set(Math.sin(t * 0.2) * 0.6 + puntero.x * 0.7, y - puntero.y * 0.25, 6);
+    camara.lookAt(puntero.x * 1.5, y - 1.5 - puntero.y * 0.6, -20);
     transicion.actualizar(dt, camara);
     ambiente.actualizar(y, camara);
     for (const capa of capas) capa.actualizar(t, y);
@@ -99,6 +108,7 @@ export function montarPortada(alEntrar: () => void): () => void {
     ventana.inert = false;
     interfaz.detener();
     removeEventListener("resize", alRedimensionar);
+    removeEventListener("pointermove", alMoverPuntero);
     scroll.detener();
     escena.traverse((o) => {
       if (o instanceof THREE.Mesh || o instanceof THREE.Points) {
