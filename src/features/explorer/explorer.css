@@ -391,3 +391,81 @@ table.eventos-nino { width: 100%; border-collapse: separate; border-spacing: 4px
 .datos-detalle { margin: 12px 0; color: var(--niebla); font-size: .85rem; }
 .datos-detalle > summary { min-height: 44px; padding: 10px 0; color: var(--frio); cursor: pointer; }
 .datos-detalle > summary:focus-visible { outline: 2px solid var(--frio); outline-offset: 2px; }
+
+/* Bandeja móvil: mapa fijo, lectura independiente y controles al alcance del pulgar. */
+.relato-tirador { display: none; }
+@media (max-width: 900px) {
+  html.explorer-page, .explorer-page body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  .explorer-page .escenario {
+    --bandeja-cerrada: calc(76px + env(safe-area-inset-bottom, 0px));
+    position: fixed; inset: 63px 0 0; display: block; height: auto; min-height: 0;
+    padding: 0; overflow: hidden; background: var(--abismo);
+  }
+  .explorer-page .lienzo-globo { position: absolute; inset: 0 0 var(--bandeja-cerrada); height: auto; min-height: 0; isolation: isolate; }
+  .explorer-page #globo { inset: 105px 0 176px; }
+  .explorer-page .globe-toolbar { top: 8px; left: 10px; right: 10px; max-width: none; gap: 6px; }
+  .explorer-page .globe-toolbar .vista-nota, .explorer-page .pista-globo, .explorer-page .view-toggle small { display: none; }
+  .explorer-page .view-toggle { width: fit-content; padding: 2px; border-radius: 6px; }
+  .explorer-page .view-toggle button { min-height: 40px; padding: 6px 12px; }
+  .explorer-page .regiones { margin: 0; max-width: 100%; gap: 6px; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .explorer-page .regiones::-webkit-scrollbar { display: none; }
+  .explorer-page .region { border: 1px solid var(--linea); }
+  .explorer-page .estilos-mapa { position: absolute; top: 104px; right: 0; padding: 3px; background: var(--abismo); border-radius: 6px; }
+  .explorer-page .estilos-mapa button { min-height: 36px; }
+  .explorer-page .timeline-panel { bottom: 8px; left: 10px; right: 10px; gap: 6px; padding: 10px 12px; border-radius: 8px; background: #0c2c4a; }
+  .explorer-page .timeline-topline { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+  .explorer-page .timeline-variable { display: block; min-width: 0; }
+  .explorer-page .timeline-variable > span { display: none; }
+  .explorer-page .timeline-variable select { width: 100%; min-width: 0; max-width: 100%; min-height: 44px; font-size: 16px; padding-inline: 6px; }
+  .explorer-page .timeline-date { min-width: 0; font-size: 1rem; white-space: nowrap; }
+  .explorer-page .timeline-unavailable { grid-column: 1 / -1; margin: 0; font-size: .8rem; }
+  .explorer-page .play-button { width: 44px; height: 44px; border-radius: 6px; }
+  .explorer-page .timeline-track { padding-top: 22px; padding-bottom: 18px; }
+  .explorer-page .timeline-chart { height: 26px; }
+  .explorer-page .timeline-range { top: 36px; height: 32px; margin: 0; }
+  .explorer-page .timeline-events { display: flex; justify-content: space-between; gap: 2px; }
+  .explorer-page .timeline-events button { position: static; transform: none !important; min-height: 24px; }
+  .explorer-page .ley-marcas { display: none; }
+  .explorer-page .timeline-legend { font-size: .65rem; gap: 6px; }
+  .explorer-page .relato {
+    position: absolute; z-index: 10; inset: auto 0 0; height: var(--bandeja-cerrada); min-height: 0;
+    display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--linea); border-bottom: 0;
+    border-radius: 18px 18px 0 0; background: #0c2c4a;
+    transition: height .28s cubic-bezier(.2, .8, .2, 1);
+  }
+  .explorer-page .relato-abierto { height: 78%; }
+  .relato-tirador {
+    position: relative; display: flex; align-items: center; gap: 12px; flex: 0 0 76px; width: 100%;
+    padding: 17px 18px 10px; border: 0; border-radius: 0; background: #0c2c4a;
+    color: var(--hielo); text-align: left; font: inherit; cursor: pointer; touch-action: none;
+  }
+  .relato-agarre { position: absolute; top: 7px; left: calc(50% - 18px); width: 36px; height: 3px; border-radius: 2px; background: var(--niebla); opacity: .65; }
+  .relato-titulo { display: grid; min-width: 0; gap: 3px; flex: 1; }
+  .relato-titulo small { font-size: .6rem; letter-spacing: .16em; color: var(--frio); }
+  .relato-titulo strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 1.15rem var(--serif); }
+  .relato-accion { display: flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--frio); }
+  .relato-abierto .relato-accion svg { transform: rotate(180deg); }
+  .relato-tirador:focus-visible { outline: 2px solid var(--frio); outline-offset: -4px; }
+  .explorer-page .relato-scroll { min-height: 0; flex: 1; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--frio) transparent; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+  .explorer-page .relato:not(.relato-abierto) .relato-scroll { visibility: hidden; }
+  .explorer-page .relato-orientacion { padding: 8px 18px; font-size: .72rem; }
+  .explorer-page .relato-tabs { position: sticky; z-index: 2; top: 0; margin: 0; padding: 6px 14px; border: 0; border-bottom: 1px solid var(--linea); border-radius: 0; background: #0c2c4a; }
+  .explorer-page .relato-contenido, .explorer-page .comparacion-pesca { padding: 18px 18px 24px; }
+  .explorer-page .relato select { font-size: 16px; }
+  .explorer-page .relato h2 { font-size: 1.6rem; }
+}
+@media (max-width: 639px) {
+  .explorer-page .app-header.chaski-header { gap: 6px; padding-inline: 8px; height: 56px; }
+  .explorer-page .app-header.chaski-header .app-nav { min-width: 0; flex-shrink: 1; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  .explorer-page .app-header.chaski-header .app-nav > a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 7px; font-size: .75rem; white-space: nowrap; }
+  .explorer-page .escenario { top: 56px; }
+}
+@media (max-width: 900px) and (max-height: 520px) {
+  .explorer-page .globe-toolbar { right: auto; width: 43%; }
+  .explorer-page .timeline-panel { left: auto; width: 49%; }
+  .explorer-page #globo { inset: 0; }
+  .explorer-page .relato-abierto { height: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .explorer-page .relato { transition: none; }
+}

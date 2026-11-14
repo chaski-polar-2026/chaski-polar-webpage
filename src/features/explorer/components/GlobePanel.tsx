@@ -9,7 +9,7 @@ import { useExplorer } from '../ExplorerContext'
 import { useAcciones, VISTA_INICIAL } from '../hooks/useAcciones'
 import { useAtlas } from '../hooks/useAtlas'
 import { useEnlace } from '../hooks/useEnlace'
-import { esAngosto, menosMovimiento, punteroFino } from '../lib/entorno'
+import { menosMovimiento, punteroFino } from '../lib/entorno'
 import { zonaActiva, type IdCorriente, type Pov } from '../lib/estado'
 import { RECUADRO } from '../lib/mapa'
 import { BASE_MACHU_PICCHU } from '../lib/modelo'
@@ -19,7 +19,7 @@ import { variablePorId } from '../lib/variables'
 import { useExplorerStore } from '../store'
 import { GlobeViewToggle } from './GlobeViewToggle'
 import RegionesPanel from './RegionesPanel'
-import Relato from './relato/Relato'
+import RelatoPanel from './relato/RelatoPanel'
 import { TimelinePanel } from './TimelinePanel'
 
 type Lado = 'der' | 'izq' | 'der-arriba' | 'der-abajo'
@@ -261,13 +261,10 @@ export default function GlobePanel() {
   else if (!v.mapa) nota = `${v.corto.charAt(0).toUpperCase() + v.corto.slice(1)}: data is available by zone only, without a map.`
   else nota = `${view === 'satellite' ? 'Earth imagery with the satellite map' : 'Monthly satellite map'}. ${punteroFino ? 'Hover' : 'Tap the sea'} to read it.`
 
-  const textoVer = esAngosto() && panel.tipo !== 'general'
-    ? panel.tipo === 'zona' ? `View ${modelo.zona(panel.z).nombre} data` : panel.tipo === 'recorrido' ? `Read step ${panel.paso + 1}` : 'View the explanation'
-    : null
-
   // Escape vuelve a la vista general; en el recorrido, las flechas avanzan o retroceden
   useEffect(() => {
     const alTeclear = (e: KeyboardEvent) => {
+      if (e.defaultPrevented) return
       const escribiendo = e.target instanceof Element && e.target.closest('input, select, textarea')
       const p = useExplorerStore.getState().panel
       if (e.key === 'Escape' && p.tipo !== 'general') acciones.general()
@@ -351,14 +348,10 @@ export default function GlobePanel() {
         </div>}
         <p className={`pista-globo${pistaOculta ? ' oculta' : ''}`}>Drag to rotate. Tap a zone, current or the sea.</p>
       </div>
-      {textoVer && <button className="btn ver-relato" type="button" onClick={() => document.getElementById('relato')?.scrollIntoView({ behavior: menosMovimiento ? 'auto' : 'smooth' })}>{textoVer}</button>}
       {lectura && <div className="lectura" aria-hidden="true" style={{ transform: `translate(${Math.max(8, lectura.x)}px, ${lectura.y}px)` }}><b>{lectura.titulo}</b>{lectura.detalle.map((d) => <small key={d}>{d}</small>)}</div>}
       <TimelinePanel />
     </div>
-    <aside className="relato" id="relato" aria-label="What the globe shows">
-      <div className="relato-orientacion"><span>Explore the selected view below</span><a href="/research">Research <span aria-hidden="true">→</span></a></div>
-      <div aria-live="polite"><Relato /></div>
-    </aside>
+    <RelatoPanel />
     <div className={`velo-entrada${veloAbierto ? ' abierto' : ''}`} aria-hidden="true" />
   </section>
 }

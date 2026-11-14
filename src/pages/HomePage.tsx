@@ -16,9 +16,10 @@ export default function HomePage() {
   const researchAnchors = ['#hallazgos', '#eventos-nino', '#physical-chain', '#cruceros', '#trends', '#trend-map', '#prediction', '#fuentes', '#method', '#trend-glossary']
   useEffect(() => {
     document.title = 'Chaski Polar · Explorer'
+    document.documentElement.classList.add('explorer-page')
     const previous = document.documentElement.lang
     document.documentElement.lang = 'en'
-    return () => { document.documentElement.lang = previous }
+    return () => { document.documentElement.lang = previous; document.documentElement.classList.remove('explorer-page') }
   }, [])
   if (researchAnchors.includes(hash)) return <Navigate to={`/research${search}${hash}`} replace />
   return <DataProvider><Explorador /></DataProvider>
