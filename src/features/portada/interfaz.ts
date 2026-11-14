@@ -27,7 +27,10 @@ export function crearSecciones(alEntrar: () => void): Interfaz {
       for (const { nodo, de, a, panel } of nodos) {
         const dentro = progreso >= de && progreso <= a;
         const borde = de === 0 ? a - progreso : Math.min(progreso - de, a - progreso);
-        nodo.style.opacity = String(dentro ? panel ? 1 : Math.min(1, borde / 0.01) : 0);
+        // la entrada y la salida avanzan con el scroll: los paneles aparecen y se van con un desvanecido y un leve desplazamiento
+        const visible = dentro ? Math.min(1, borde / (panel ? 0.03 : 0.025)) : 0;
+        nodo.style.opacity = String(visible);
+        nodo.style.setProperty("--entra", (1 - visible).toFixed(3));
         nodo.classList.toggle("activa", dentro);
         if (nodo.inert === dentro) {
           nodo.inert = !dentro;
