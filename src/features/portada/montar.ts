@@ -16,7 +16,9 @@ const PIXEL_MINIMO = 0.75;
 
 export function montarPortada(alEntrar: () => void): () => void {
   const C = elegirCalidad();
-  const renderer = new THREE.WebGLRenderer({ canvas: porId<HTMLCanvasElement>("escena"), antialias: C.alta, powerPreference: "high-performance" });
+  const canvas = porId<HTMLCanvasElement>("escena");
+  const ventana = canvas.parentElement!;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: C.alta, powerPreference: "high-performance" });
   let pixel = C.pixel;
   renderer.setPixelRatio(pixel);
   renderer.setSize(innerWidth, innerHeight);
@@ -39,10 +41,13 @@ export function montarPortada(alEntrar: () => void): () => void {
   const transicion = crearTransicion(espacio.globo, alEntrar);
   const interfaz = crearSecciones(() => transicion.iniciar());
 
-  const reloj = new THREE.Clock();
+  let tiempo = 0, ultimoCuadro = performance.now();
   let cuadros = 0, inicioMedida = 2; // los primeros segundos se ignoran: cargan texturas y se compilan los shaders
-  renderer.setAnimationLoop(() => {
-    const dt = Math.min(0.05, reloj.getDelta()), t = reloj.elapsedTime;
+  const dibujar = () => {
+    const ahora = performance.now(), transcurrido = (ahora - ultimoCuadro) / 1000;
+    ultimoCuadro = ahora;
+    tiempo += transcurrido;
+    const dt = Math.min(0.05, transcurrido), t = tiempo;
     const y = alturaEn(scroll.progreso);
     camara.position.set(Math.sin(t * 0.2) * 0.6, y, 6);
     camara.lookAt(0, y - 1.5, -20);
@@ -65,10 +70,34 @@ export function montarPortada(alEntrar: () => void): () => void {
       cuadros = 0;
       inicioMedida = t;
     }
+  };
+
+  const rect = canvas.getBoundingClientRect();
+  let visible = rect.bottom > 0 && rect.top < innerHeight;
+  let animando = false;
+  const actualizarBucle = () => {
+    ventana.inert = !visible;
+    const dibujarAhora = visible && !document.hidden;
+    if (dibujarAhora === animando) return;
+    animando = dibujarAhora;
+    // El tiempo de lectura fuera del lienzo no adelanta las animaciones ni la medición de calidad.
+    if (animando) ultimoCuadro = performance.now();
+    renderer.setAnimationLoop(animando ? dibujar : null);
+  };
+  const observador = new IntersectionObserver(([entrada]) => {
+    visible = Boolean(entrada?.isIntersecting);
+    actualizarBucle();
   });
+  observador.observe(canvas);
+  document.addEventListener("visibilitychange", actualizarBucle);
+  actualizarBucle();
 
   return () => {
+    observador.disconnect();
+    document.removeEventListener("visibilitychange", actualizarBucle);
     renderer.setAnimationLoop(null);
+    ventana.inert = false;
+    interfaz.detener();
     removeEventListener("resize", alRedimensionar);
     scroll.detener();
     escena.traverse((o) => {
