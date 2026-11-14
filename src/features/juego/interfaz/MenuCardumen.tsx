@@ -64,7 +64,7 @@ export default function MenuCardumen({ historia, cardumen, escena }: {
         <button type="button" onClick={() => escena('lumi')}>Lumi</button>
         <button type="button" onClick={() => escena('kiri')}>Kiri</button>
         <button type="button" onClick={() => escena('nara')}>Nara</button>
-        <a href="/juego?sprites=1">Cuaderno de personajes ↗</a>
+        <a href="/juego?sprites=1">Cuaderno del Pacífico ↗</a>
       </nav></footer>
     </div>
   </div>
