@@ -68,6 +68,7 @@ export default function JuegoPage() {
   const [compacto, setCompacto] = useState(false)
   const compactoRef = useRef(false)
   const [resultados, setResultados] = useState<ResultadoAnio[]>([])
+  const [rapidez, setRapidez] = useState(RAPIDEZ)
   const [verFinal, setVerFinal] = useState(false)
   const [pausado, setPausado] = useState(false)
   const [teclas, setTeclas] = useState<Set<string>>(new Set())
@@ -216,7 +217,7 @@ export default function JuegoPage() {
           const r: ResultadoAnio = { anio, inicial: datos.inicial, sobrevivientes: datos.sobrevivientes, estrategia: datos.estrategia, alimentoPromedio: datos.alimentoPromedio, ninoPromedio: datos.ninoPromedio }
           setResultados((rs) => [...rs.filter((x) => x.anio !== anio), r])
         },
-      }, { anio, peces: pantalla.peces, pausa: hayDialogo, compacto: () => compactoRef.current, rapidez: RAPIDEZ,
+      }, { anio, peces: pantalla.peces, pausa: hayDialogo, compacto: () => compactoRef.current, rapidez,
         estrategia: ESTRATEGIAS[pantalla.estrategia], mesFin: mesesConDatos(mar, anio) }))
     } else {
       motor.usar(() => ({ actualizar: () => {}, destruir: () => {} }))
@@ -254,7 +255,7 @@ export default function JuegoPage() {
     </nav>
 
     {pantalla.tipo === 'menu' && mar && <MenuCardumen historia={() => prologo('lumi', true)} cardumen={empezarCampana}
-      escena={(id) => prologo(id, false)} />}
+      escena={(id) => prologo(id, false)} rapidez={rapidez} alCambiarRapidez={setRapidez} />}
 
     {pantalla.tipo === 'prologo' && pantalla.escena === 'lumi' && <HudLumi e={estadoLumi} />}
     {pantalla.tipo === 'prologo' && pantalla.escena === 'kiri' && <HudKiri comidos={comidos} />}

@@ -3,6 +3,12 @@ import { protagonistas } from '../personajes/galeria'
 import { anchovetaPixel, fitoPixel, naraPixel } from '../personajes/pixelart'
 import './presentacion.css'
 
+export const RITMOS = [
+  { valor: 1, nombre: 'Tranquilo', detalle: 'ritmo original' },
+  { valor: 15 / 7, nombre: 'Educativo', detalle: 'recomendado' },
+  { valor: 20, nombre: 'Rápido', detalle: 'recorrido corto' },
+] as const
+
 /** Carta ilustrada original: la cuadrícula y los dibujos comparten el mismo píxel. */
 function CartaMarina() {
   const ref = useRef<HTMLCanvasElement>(null)
@@ -35,8 +41,9 @@ function CartaMarina() {
   return <canvas ref={ref} width={384} height={256} role="img" aria-label="Carta ilustrada del Pacífico: una ballena migra desde el hielo antártico hacia un cardumen frente al Perú" />
 }
 
-export default function MenuCardumen({ historia, cardumen, escena }: {
+export default function MenuCardumen({ historia, cardumen, escena, rapidez, alCambiarRapidez }: {
   historia: () => void; cardumen: () => void; escena: (id: 'lumi' | 'kiri' | 'nara') => void
+  rapidez: number; alCambiarRapidez: (valor: number) => void
 }) {
   return <div className="juego-menu menu-carta">
     <div className="menu-carta-interior">
@@ -50,6 +57,13 @@ export default function MenuCardumen({ historia, cardumen, escena }: {
             <button type="button" className="juego-caja principal" onClick={historia}>Comenzar el viaje <span aria-hidden="true">→</span></button>
             <button type="button" className="juego-caja" onClick={cardumen}>Ir al cardumen</button>
           </div>
+          <fieldset className="menu-carta-ritmo">
+            <legend>Ritmo de la expedición</legend>
+            {RITMOS.map((ritmo) => <label key={ritmo.valor}>
+              <input type="radio" name="ritmo-cardumen" value={ritmo.valor} checked={rapidez === ritmo.valor} onChange={() => alCambiarRapidez(ritmo.valor)} />
+              <span><b>{ritmo.nombre}</b><small>{ritmo.detalle}</small></span>
+            </label>)}
+          </fieldset>
           <p className="menu-carta-datos">Seis años del mar peruano · Condiciones basadas en datos satelitales</p>
         </section>
         <figure className="menu-carta-mapa"><CartaMarina /><figcaption>Dos mares. Una historia de vida.</figcaption></figure>

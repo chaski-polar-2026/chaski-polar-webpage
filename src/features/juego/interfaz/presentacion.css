@@ -59,6 +59,12 @@
 .juego .menu-carta-acciones button.juego-caja.principal { background: #afcfba; color: #0a242e; border-color: #afcfba; }
 .juego .menu-carta-acciones button.juego-caja.principal:hover { background: #c8dfce; border-color: #c8dfce; }
 .juego .menu-carta-acciones button span { margin-left: 18px; }
+.juego .menu-carta-ritmo { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 18px 0 0; padding: 9px 12px 10px; border: 1px solid #345361; color: #b2cacb; }
+.juego .menu-carta-ritmo legend { padding: 0 5px; color: #3fc28c; font: 10px monospace; letter-spacing: .08em; text-transform: uppercase; }
+.juego .menu-carta-ritmo label { display: inline-flex; align-items: center; gap: 6px; color: #edf1e7; cursor: pointer; font-size: 12px; }
+.juego .menu-carta-ritmo input { accent-color: #3fc28c; margin: 0; }
+.juego .menu-carta-ritmo span { display: inline-flex; gap: 4px; align-items: baseline; }
+.juego .menu-carta-ritmo small { color: #8eafb8; font-size: 10px; }
 .juego .menu-carta-datos { margin: 18px 0 0; color: #8eafb8; font-size: 11px; line-height: 1.6; }
 .juego .menu-carta-mapa { margin: 0; border: 1px solid #345361; padding: 10px; background: #0b2435; }
 .juego .menu-carta-mapa canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; }
