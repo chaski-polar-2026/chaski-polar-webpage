@@ -64,7 +64,7 @@ export const VARIABLES: readonly Variable[] = [
     fuente: "Sea surface temperature from NOAA Coral Reef Watch v3.1." },
   { id: "turbidez_kd490_m-1", clave: "turbidity", nombre: "Water turbidity (Kd490)", corto: "turbidity", unidad: "m⁻¹", dec: 3, modo: "log", rango: 0.8, escala: "diverge", periodo: "1998–2026", cobertura: "Peru and Antarctica", secciones: [],
     que: "Measures how quickly light fades with depth. More turbid water means more particles or plankton.",
-    fuente: "Kd490 de ESA OC-CCI v6." },
+    fuente: "Kd490 from ESA OC-CCI v6." },
   { id: "viento", clave: "wind", nombre: "Wind over the sea", corto: "wind", unidad: "m/s", dec: 1, modo: "dif", rango: 1.5, escala: "diverge", periodo: "1998–2026 Peru; 1993–2018 Antarctica", cobertura: "Peru and Antarctica", secciones: ["humboldt"],
     que: "Off Peru, wind pushes surface water offshore and brings cold, nutrient-rich deep water up: upwelling.",
     fuente: "10 m wind over the sea: ERA5 (ECMWF/Copernicus) in Peruvian zones, 1998–2026, sea points only; CCMP v2 in Antarctica, through 2018." },

@@ -36,7 +36,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       .then(([runtime, predictions, cruises]) => {
         if (active) setState({ ...runtime, predictions, cruises, loading: false, error: null })
       })
-      .catch((error: unknown) => { if (active) setState((current) => ({ ...current, loading: false, error: error instanceof Error ? error : new Error('No se pudieron cargar los datos') })) })
+      .catch((error: unknown) => { if (active) setState((current) => ({ ...current, loading: false, error: error instanceof Error ? error : new Error('Unable to load data') })) })
 
     return () => { active = false }
   }, [version])

@@ -22,7 +22,7 @@ export default function RegionesPanel({ alElegir }: { alElegir?: () => void }) {
   return <nav className="regiones" aria-label="Study areas">
     <p className="regiones-titulo">Study areas</p>
     {APARTADOS.map((a) => <button key={a.id} type="button" className="region" aria-pressed={section === a.id} onClick={() => elegir(a)}>
-      <b>{a.nombre}</b><small>{a.detalle}</small>
+      <b>{a.nombre}</b>
     </button>)}
   </nav>
 }

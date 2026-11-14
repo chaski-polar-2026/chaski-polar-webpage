@@ -384,3 +384,10 @@ table.eventos-nino { width: 100%; border-collapse: separate; border-spacing: 4px
 .comparacion-fila:first-child > :last-child { color: var(--fito); }
 .comparacion-valores { margin: 8px 0; }
 .comparacion-valores b { font: 400 clamp(1.25rem, 2vw, 1.7rem) var(--serif); color: var(--hielo); }
+
+/* Explicaciones bajo demanda: los valores y controles quedan primero. */
+.view-toggle button, .regiones .region { min-height: 44px; align-content: center; }
+.comparacion-ayuda-parametro { margin-top: 0; }
+.datos-detalle { margin: 12px 0; color: var(--niebla); font-size: .85rem; }
+.datos-detalle > summary { min-height: 44px; padding: 10px 0; color: var(--frio); cursor: pointer; }
+.datos-detalle > summary:focus-visible { outline: 2px solid var(--frio); outline-offset: 2px; }

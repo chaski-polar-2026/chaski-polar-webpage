@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { claveMes } from '../../../lib/formato'
 import { useExplorer } from '../ExplorerContext'
 import { MAP_STYLES } from '../lib/estado'
+import { esPeru } from '../lib/modelo'
 import { VARIABLES } from '../lib/variables'
 import { useExplorerStore, type GlobeView } from '../store'
 import { useAcciones } from './useAcciones'
@@ -28,8 +29,8 @@ export function useEnlace() {
     const estilo = MAP_STYLES.find((x) => x === p.get('estilo'))
     if (estilo) st.setMapStyle(estilo)
     const zona = p.get('zona'), paso = Number(p.get('paso'))
-    if (p.get('tema') === 'nino2026') acciones.nino2026()
-    else if (modelo.esZona(zona)) acciones.irAZona(zona)
+    if (p.get('tema') === 'nino2026') { st.setSection('humboldt'); acciones.nino2026() }
+    else if (modelo.esZona(zona)) { st.setSection(esPeru(zona) ? 'humboldt' : 'austral'); acciones.irAZona(zona) }
     else if (Number.isInteger(paso) && paso > 0) acciones.paso(paso - 1)
   }, [modelo, acciones])
 

@@ -13,11 +13,10 @@ export default function Header() {
 
   // la opción activa sigue al scroll: el globo es «Explore»; desde «What the data shows» hacia abajo, «Findings»
   useEffect(() => {
-    if (pathname !== '/explorer') return
+    if (pathname !== '/research') return
     const calcular = () => {
-      const h = document.getElementById('hallazgos')
       const t = document.getElementById('trends')
-      setSeccion(t && t.getBoundingClientRect().top <= window.innerHeight * .45 ? 'trends' : h && h.getBoundingClientRect().top <= window.innerHeight * 0.45 ? 'findings' : 'explore')
+      setSeccion(t && t.getBoundingClientRect().top <= window.innerHeight * .45 ? 'trends' : 'findings')
     }
     calcular()
     addEventListener('scroll', calcular, { passive: true })
@@ -32,11 +31,10 @@ export default function Header() {
     scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
   }
   const irAHallazgos = (e: React.MouseEvent) => {
-    const h = document.getElementById('hallazgos')
-    if (!h) return
+    if (pathname !== '/research') return
     e.preventDefault()
     setSeccion('findings')
-    h.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+    scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
   }
 
   return <>
@@ -55,9 +53,9 @@ export default function Header() {
       </div>
       <nav className="app-nav pointer-events-auto ml-auto flex gap-1 max-sm:[&>a]:px-2" aria-label="Sections">
         <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/">Home</Link>
-        <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/explorer" onClick={irAExplorar} aria-current={seccion === 'explore' ? 'page' : undefined}>Explore</Link>
-        <a className="rounded-pill px-3 py-1.5 no-underline transition-colors" href={pathname === '/explorer' ? '#hallazgos' : '/explorer#hallazgos'} onClick={irAHallazgos} aria-current={pathname === '/explorer' && seccion === 'findings' ? 'location' : undefined}>Findings</a>
-        <a className="rounded-pill px-3 py-1.5 no-underline transition-colors" href={pathname === '/explorer' ? '#trends' : '/explorer#trends'} aria-current={pathname === '/explorer' && seccion === 'trends' ? 'location' : undefined}>Trends</a>
+        <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/explorer" onClick={irAExplorar} aria-current={pathname === '/explorer' ? 'page' : undefined}>Explore</Link>
+        <a className="rounded-pill px-3 py-1.5 no-underline transition-colors" href="/research" onClick={irAHallazgos} aria-current={pathname === '/research' && seccion === 'findings' ? 'location' : undefined}>Research</a>
+        <a className="rounded-pill px-3 py-1.5 no-underline transition-colors" href={pathname === '/research' ? '#trends' : '/research#trends'} aria-current={pathname === '/research' && seccion === 'trends' ? 'location' : undefined}>Trends</a>
         <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/juego">Game</Link>
       </nav>
     </header>

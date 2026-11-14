@@ -106,7 +106,7 @@ export const DESAFIO = {
     },
   ],
   boton: "Open the trend detector",
-  enlace: "/explorer#trends",
+  enlace: "/research#trends",
 } as const;
 
 export const HALLAZGOS_PORTADA = {

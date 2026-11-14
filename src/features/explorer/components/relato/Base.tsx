@@ -28,7 +28,7 @@ export default function Base() {
     <BotonVolver />
     <h2>Base Machu Picchu</h2>
     <div className="region">Mackellar Inlet, King George Island, Antarctica</div>
-    <p>It is Peru's scientific base in Antarctica. It operates during the austral summer, when Peruvian expeditions arrive to study the sea, ice and Antarctic life.</p>
+    <p>Peru’s Antarctic research base · Austral summer operations.</p>
     <div className="cifras">
       <div className="cifra"><b className="num">{prom < 0 ? '−' : ''}{nf(1).format(Math.abs(prom))} °C</b><span>average air temperature, {filas[0]?.anio ?? '—'}–{filas.at(-1)?.anio ?? '—'}</span></div>
       <div className="cifra"><b className="num">{signo(pend)}{nf(2).format(Math.abs(pend * 10))} °C</b><span>trend per decade</span></div>

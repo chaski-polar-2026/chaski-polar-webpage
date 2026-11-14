@@ -1,9 +1,9 @@
 import { media } from '../../lib/estadistica'
 import { nf, signo } from '../../lib/formato'
 import { useExplorer } from '../explorer/ExplorerContext'
-import { useAcciones } from '../explorer/hooks/useAcciones'
+import { useNavigate } from 'react-router-dom'
+import { claveMes } from '../../lib/formato'
 import type { ClaveZonaMonitor, IdZona } from '../explorer/lib/tipos'
-import { useExplorerStore } from '../explorer/store'
 
 const ZONAS_PERU: ClaveZonaMonitor[] = ['paita', 'chimbote', 'callao', 'pisco', 'ilo']
 
@@ -26,7 +26,7 @@ function colorCambio(p: number): string {
 /** Each El Niño, zone by zone: how chlorophyll changed relative to normal */
 export default function EventosNinoSection() {
   const { modelo } = useExplorer()
-  const acciones = useAcciones()
+  const navigate = useNavigate()
   const eventos = modelo.metadataMonitor.eventos_nino ?? []
   const zonas = modelo.metadataMonitor.zonas ?? {}
   if (!eventos.length) return null
@@ -42,10 +42,8 @@ export default function EventosNinoSection() {
     if (!z) return
     const anio = Number(nombre.match(/\d{4}/)?.[0])
     const pico = picos.find((p) => p.anio === anio || p.anio === anio + 1)
-    useExplorerStore.getState().setVariable('clorofila_mg_m3')
-    if (pico) acciones.fijarMes(pico.i)
-    acciones.irAZona(z)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    const hash = new URLSearchParams({ zona: z, dato: 'chlorophyll', vista: 'illustrated', ...(pico ? { mes: claveMes(modelo.mes(pico.i)) } : {}) })
+    navigate(`/explorer#${hash}`)
   }
 
   return <section className="seccion" id="eventos-nino" aria-labelledby="t-eventos">
@@ -58,13 +56,13 @@ export default function EventosNinoSection() {
         <thead><tr><th scope="col">El Niño</th>{ZONAS_PERU.map((c) => <th scope="col" key={c}>{zonas[c]?.nombre ?? c}</th>)}</tr></thead>
         <tbody>
           {eventos.map((e) => <tr key={e.nombre}>
-            <th scope="row">{e.nombre.replace("(en curso)", "(ongoing)")}{periodo(e.nombre) && <small>{periodo(e.nombre)}</small>}{e.nombre.includes('2026') && <button type="button" className="enlace" onClick={() => { acciones.nino2026(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>View on the globe</button>}</th>
+            <th scope="row">{e.nombre.replace("(en curso)", "(ongoing)").replace("costero", "coastal")}{periodo(e.nombre) && <small>{periodo(e.nombre)}</small>}{e.nombre.includes('2026') && <button type="button" className="enlace" onClick={() => { navigate('/explorer#tema=nino2026&vista=satellite') }}>View on the globe</button>}</th>
             {e.cambio_clorofila_pct
               ? ZONAS_PERU.map((c) => {
                 const p = e.cambio_clorofila_pct?.[c]
                 return <td key={c}>{p == null ? '—' : <button type="button" style={{ background: colorCambio(p) }} onClick={() => ir(e.nombre, c)} title={`View ${zonas[c]?.nombre ?? c} on the globe`}>{signo(p)}{nf(0).format(Math.abs(p))} %</button>}</td>
               })
-              : <td colSpan={ZONAS_PERU.length} className="evento-nota">{e.nombre.includes('2026') ? 'The event is ongoing; the full event comparison is not available.' : e.nota ?? 'No data yet.'} <button type="button" className="enlace" onClick={() => { acciones.nino2026(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>View El Niño 2026 on the globe</button></td>}
+              : <td colSpan={ZONAS_PERU.length} className="evento-nota">{e.nombre.includes('2026') ? 'The event is ongoing; the full event comparison is not available.' : e.nota ?? 'No data yet.'} <button type="button" className="enlace" onClick={() => { navigate('/explorer#tema=nino2026&vista=satellite') }}>View El Niño 2026 on the globe</button></td>}
           </tr>)}
           <tr className="fila-promedio">
             <th scope="row">Event average<small>excluding 2026, which is ongoing</small></th>

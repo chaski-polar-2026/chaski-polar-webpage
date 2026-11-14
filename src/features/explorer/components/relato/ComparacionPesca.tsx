@@ -9,18 +9,18 @@ import type { IdZona } from '../../lib/tipos'
 import { variablePorId } from '../../lib/variables'
 import { useExplorerStore } from '../../store'
 
-const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+const MESES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const OPCIONES = [
-  { id: 'temperatura_superficial_C', nombre: 'Temperatura superficial', ayuda: 'Permite reconocer agua más cálida o fría en la superficie. No describe la temperatura a la profundidad de pesca.' },
-  { id: 'clorofila_mg_m3', nombre: 'Clorofila', ayuda: 'Pigmento del fitoplancton, base de la red alimentaria. Más clorofila no equivale a más peces ni garantiza una captura.' },
-  { id: 'viento', nombre: 'Viento', ayuda: 'Rapidez calculada con las componentes mensuales del viento. No muestra ráfagas, oleaje ni condiciones para navegar hoy.' },
-  { id: 'salinidad_psu', nombre: 'Salinidad', ayuda: 'Indica qué tan salada está el agua superficial. Ayuda a describir diferencias entre masas de agua.' },
-  { id: 'nivel_mar_anomalia_m', nombre: 'Nivel del mar', ayuda: 'Anomalía: diferencia frente a la referencia del producto. No es la altura de la marea ni la profundidad disponible para el bote.' },
+  { id: 'temperatura_superficial_C', nombre: 'Sea surface temperature', ayuda: 'Shows warmer or cooler surface water, not conditions at fishing depth.' },
+  { id: 'clorofila_mg_m3', nombre: 'Chlorophyll', ayuda: 'Phytoplankton pigment, at the base of the food web. More chlorophyll does not guarantee more fish.' },
+  { id: 'viento', nombre: 'Wind', ayuda: 'Speed calculated from monthly wind components, not gusts, waves or today’s sailing conditions.' },
+  { id: 'salinidad_psu', nombre: 'Salinity', ayuda: 'How salty surface water is. Helps describe differences between water masses.' },
+  { id: 'nivel_mar_anomalia_m', nombre: 'Sea level', ayuda: 'Anomaly relative to the product reference, not tide height or water depth for a boat.' },
 ] as const
 const MODOS = [
-  { id: 'anios', nombre: 'Entre años', pregunta: '¿Qué cambió de un año a otro?', ayuda: 'La misma zona y el mismo mes en dos años. Así reduces la diferencia debida a las estaciones.' },
-  { id: 'meses', nombre: 'Entre meses', pregunta: '¿Cómo suele cambiar durante el año?', ayuda: 'Compara dos meses usando promedios históricos de los mismos años. Sirve para explorar el ciclo estacional.' },
-  { id: 'zonas', nombre: 'Entre zonas', pregunta: '¿Cómo se diferenciaban dos zonas?', ayuda: 'El mismo parámetro y la misma fecha en dos zonas. Describe el ambiente, no cuál es mejor para pescar.' },
+  { id: 'anios', nombre: 'Across years', pregunta: 'What changed between years?', ayuda: 'Same zone and month, different years.' },
+  { id: 'meses', nombre: 'Across months', pregunta: 'How does the year usually vary?', ayuda: 'Historical averages for two months.' },
+  { id: 'zonas', nombre: 'Across zones', pregunta: 'How did two zones differ?', ayuda: 'Same date, different zones.' },
 ] as const
 type Modo = typeof MODOS[number]['id']
 type Seleccion = { zona: IdZona; anio: number; mes: number }
@@ -80,13 +80,13 @@ export default function ComparacionPesca() {
   const diferencia = resultado.a == null || resultado.b == null ? null : resultado.b - resultado.a
   const fmt = (x: number | null, id = parametro) => {
     const v = variablePorId(id)
-    return x == null ? 'Sin datos' : `${nf(v.dec).format(x)} ${v.unidad}`
+    return x == null ? 'No data' : `${nf(v.dec).format(x)} ${v.unidad}`
   }
   const cambio = (x: number | null, y: number | null, id = parametro) => {
-    if (x == null || y == null) return 'Falta un dato para comparar.'
+    if (x == null || y == null) return 'A value is missing.'
     const d = y - x, dec = variablePorId(id).dec
-    if (Math.abs(d) < 0.5 * 10 ** -dec) return 'Sin diferencia a la precisión mostrada.'
-    return `B tiene ${fmt(Math.abs(d), id)} ${d > 0 ? 'más' : 'menos'} que A.`
+    if (Math.abs(d) < 0.5 * 10 ** -dec) return 'No difference at the displayed precision.'
+    return `B is ${fmt(Math.abs(d), id)} ${d > 0 ? 'higher' : 'lower'} than A.`
   }
   const etiqueta = (s: Seleccion) => modo === 'meses' ? MESES[s.mes] : `${MESES[s.mes]} ${s.anio}`
   const referencia = (s: Seleccion) => {
@@ -94,7 +94,7 @@ export default function ComparacionPesca() {
     return { registros, promedio: media(registros.map((r) => r.valor)) }
   }
   const refA = referencia(a), refB = referencia(b)
-  const periodo = (ys: number[]) => ys.length ? `${ys[0]}–${ys[ys.length - 1]} · ${ys.length} años con datos` : 'Sin años con datos'
+  const periodo = (ys: number[]) => ys.length ? `${ys[0]}–${ys[ys.length - 1]} · ${ys.length} years with data` : 'No years with data'
   const tendencia = pendiente(refA.registros.map((r) => r.anio), refA.registros.map((r) => r.valor))
   const iguales = modo === 'anios' ? anioA === anioB : modo === 'meses' ? mes === otroMes : zona === otraZona
   const disponible = anios.filter((anio) => valor({ ...a, anio }) != null && (modo !== 'zonas' || valor({ ...b, anio }) != null))
@@ -110,45 +110,43 @@ export default function ComparacionPesca() {
   }
   const opcionesMes = MESES.map((m, i) => <option key={m} value={i}>{m}</option>)
   const opcionesAnio = anios.map((y) => <option key={y} value={y}>{y}</option>)
-  const opcionesZona = zonas.map((z) => <option key={z} value={z}>{modelo.zonas[z].nombre}</option>)
+  const opcionesZona = zonas.map((z) => <option key={z} value={z}>{modelo.zona(z).nombre}</option>)
 
   return <div className="comparacion-pesca">
-    <div className="comparacion-intro"><span>CUADERNO DEL MAR · HISTÓRICO</span><h2>Entiende qué cambia</h2><p>Empieza por una pregunta sobre tu zona.</p></div>
-    <div className="comparacion-modos" role="group" aria-label="Qué quieres comparar">
+    <div className="comparacion-modos" role="group" aria-label="Comparison mode">
       {MODOS.map((m) => <button key={m.id} type="button" aria-pressed={modo === m.id} onClick={() => setModo(m.id)}>{m.nombre}</button>)}
     </div>
-    <h3 className="comparacion-pregunta">{recorrido.pregunta}</h3>
     <p className="comparacion-ayuda">{recorrido.ayuda}</p>
     <div className="comparacion-controles">
       <div className="comparacion-zonas comparacion-ancho">
-        <label>{modo === 'zonas' ? 'Zona A' : 'Tu zona'}<select value={zona} onChange={(e) => setZona(e.target.value as IdZona)}>{opcionesZona}</select></label>
-        {modo === 'zonas' && <label>Zona B<select value={otraZona} onChange={(e) => setOtraZona(e.target.value as IdZona)}>{opcionesZona}</select></label>}
+        <label>{modo === 'zonas' ? 'Zone A' : 'Your zone'}<select value={zona} onChange={(e) => setZona(e.target.value as IdZona)}>{opcionesZona}</select></label>
+        {modo === 'zonas' && <label>Zone B<select value={otraZona} onChange={(e) => setOtraZona(e.target.value as IdZona)}>{opcionesZona}</select></label>}
       </div>
-      <label className="comparacion-ancho">Qué quieres observar<select value={parametro} aria-describedby="comparacion-parametro-ayuda" onChange={(e) => setParametro(e.target.value)}>{OPCIONES.map((o) => <option key={o.id} value={o.id}>{o.nombre}</option>)}</select></label>
-      <label className={modo === 'anios' ? 'comparacion-ancho' : ''}>{modo === 'meses' ? 'Mes A' : 'Mes'}<select value={mes} onChange={(e) => setMes(Number(e.target.value))}>{opcionesMes}</select></label>
-      {modo === 'meses' ? <label>Mes B<select value={otroMes} onChange={(e) => setOtroMes(Number(e.target.value))}>{opcionesMes}</select></label> : <>
-        {modo === 'anios' && <label>Año A<select value={anioA} onChange={(e) => setAnioA(Number(e.target.value))}>{opcionesAnio}</select></label>}
-        <label>{modo === 'anios' ? 'Año B' : 'Año'}<select value={anioB} onChange={(e) => setAnioB(Number(e.target.value))}>{opcionesAnio}</select></label>
+      <label className="comparacion-ancho">Parameter<select value={parametro} aria-describedby="comparacion-parametro-ayuda" onChange={(e) => setParametro(e.target.value)}>{OPCIONES.map((o) => <option key={o.id} value={o.id}>{o.nombre}</option>)}</select></label>
+      <label className={modo === 'anios' ? 'comparacion-ancho' : ''}>{modo === 'meses' ? 'Month A' : 'Month'}<select value={mes} onChange={(e) => setMes(Number(e.target.value))}>{opcionesMes}</select></label>
+      {modo === 'meses' ? <label>Month B<select value={otroMes} onChange={(e) => setOtroMes(Number(e.target.value))}>{opcionesMes}</select></label> : <>
+        {modo === 'anios' && <label>Year A<select value={anioA} onChange={(e) => setAnioA(Number(e.target.value))}>{opcionesAnio}</select></label>}
+        <label>{modo === 'anios' ? 'Year B' : 'Year'}<select value={anioB} onChange={(e) => setAnioB(Number(e.target.value))}>{opcionesAnio}</select></label>
       </>}
     </div>
-    <p id="comparacion-parametro-ayuda" className="comparacion-ayuda">{opcion.ayuda}</p>
+    <details className="comparacion-fuente comparacion-ayuda-parametro"><summary>About this parameter</summary><p id="comparacion-parametro-ayuda">{opcion.ayuda}</p></details>
     <div className="comparacion-atajos">
-      {panel.tipo === 'zona' && esPeru(panel.z) && panel.z !== zona && <button type="button" onClick={() => setZona(panel.z)}>Usar zona del globo: {modelo.zonas[panel.z].nombre}</button>}
+      {panel.tipo === 'zona' && esPeru(panel.z) && panel.z !== zona && <button type="button" onClick={() => setZona(panel.z)}>Use globe zone: {modelo.zona(panel.z).nombre}</button>}
       <button type="button" onClick={() => {
         if (modo === 'anios') { setAnioA(anioB); setAnioB(anioA) }
         else if (modo === 'meses') { setMes(otroMes); setOtroMes(mes) }
         else { setZona(otraZona); setOtraZona(zona) }
-      }}>Intercambiar A y B</button>
+      }}>Swap A and B</button>
       {modo !== 'meses' && <button type="button" disabled={disponible.length < (modo === 'anios' ? 2 : 1)} onClick={() => {
         setAnioB(disponible[disponible.length - 1]!)
         if (modo === 'anios') setAnioA(disponible[disponible.length - 2]!)
-      }}>{modo === 'anios' ? 'Últimos dos años con datos' : 'Último año con datos comunes'}</button>}
+      }}>{modo === 'anios' ? 'Latest two years with data' : 'Latest year with shared data'}</button>}
     </div>
-    <section aria-label="Resultado de la comparación" aria-live="polite" aria-atomic="true">
-      {iguales && <p className="comparacion-aviso">Elegiste {modo === 'anios' ? 'el mismo año' : modo === 'meses' ? 'el mismo mes' : 'la misma zona'}. Cambia A o B para comparar.</p>}
+    <section aria-label="Comparison results" aria-live="polite" aria-atomic="true">
+      {iguales && <p className="comparacion-aviso">You selected {modo === 'anios' ? 'the same year' : modo === 'meses' ? 'the same month' : 'the same zone'}. Change A or B to compare.</p>}
       {modo !== 'zonas' && <figure className="comparacion-serie">
         <figcaption>{opcion.nombre} <span>· {variable.unidad}</span></figcaption>
-        <p>{modo === 'anios' ? `${MESES[mes]} de cada año entre ${inicio} y ${fin}` : `Promedios históricos de ${MESES[inicio]?.toLowerCase()} a ${MESES[fin]?.toLowerCase()}`}</p>
+        <p>{modo === 'anios' ? `${MESES[mes]} each year, ${inicio}–${fin}` : `Historical averages: ${MESES[inicio]}–${MESES[fin]}`}</p>
         {serieComparacion.some((d) => d.valor != null) ? <div className="comparacion-grafico">
           <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <LineChart data={serieComparacion} margin={{ top: 25, right: 20, bottom: 4, left: 0 }} accessibilityLayer>
@@ -157,65 +155,64 @@ export default function ComparacionPesca() {
               <YAxis width={48} domain={['auto', 'auto']} tickFormatter={(x: number) => nf(variable.dec).format(x)} tick={{ fill: 'var(--niebla)', fontSize: 11 }} tickLine={false} axisLine={false} />
               <Tooltip isAnimationActive={false} content={({ active, payload }) => {
                 const d = payload?.[0]?.payload as typeof serieComparacion[number] | undefined
-                return active && d ? <div className="tip"><b>{d.etiqueta}</b><div>{fmt(d.valor)}</div>{d.n != null && <small>{d.n} años con datos</small>}</div> : null
+                return active && d ? <div className="tip"><b>{d.etiqueta}</b><div>{fmt(d.valor)}</div>{d.n != null && <small>{d.n} years with data</small>}</div> : null
               }} />
               <Line type="linear" dataKey="valor" stroke="var(--frio)" strokeWidth={2} dot={{ r: 2, fill: 'var(--frio)' }} activeDot={{ r: 4 }} connectNulls={false} isAnimationActive={false} />
               {resultado.a != null && <ReferenceDot x={modo === 'meses' ? mes : anioA} y={resultado.a} r={5} fill="var(--frio)" stroke="var(--abismo)" label={{ value: iguales ? 'A/B' : 'A', position: 'top', fill: 'var(--frio)' }} />}
               {!iguales && resultado.b != null && <ReferenceDot x={modo === 'meses' ? otroMes : anioB} y={resultado.b} r={5} fill="var(--fito)" stroke="var(--abismo)" label={{ value: 'B', position: 'top', fill: 'var(--fito)' }} />}
             </LineChart>
           </ResponsiveContainer>
-        </div> : <p className="comparacion-aviso">No hay datos en este intervalo. Prueba otras fechas o un parámetro diferente.</p>}
-        <p className="comparacion-serie-nota">{modo === 'anios' ? 'Se muestra el mismo mes en los años intermedios.' : 'Los meses siguen el orden enero–diciembre, sin pasar al año siguiente. Cada promedio usa los datos disponibles de los años comunes a A y B.'} Los huecos no se rellenan.</p>
-        <details className="comparacion-fuente"><summary>Ver valores del gráfico</summary><table className="comparacion-tabla">
-          <thead><tr><th scope="col">{modo === 'meses' ? 'Mes' : 'Año'}</th><th scope="col">{variable.unidad}</th>{modo === 'meses' && <th scope="col">Años con datos</th>}</tr></thead>
+        </div> : <p className="comparacion-aviso">No data in this interval. Try other dates or a different parameter.</p>}
+        <p className="comparacion-serie-nota">{modo === 'anios' ? 'Same month each year.' : 'January–December order; available records from years shared by A/B.'} Missing values remain gaps.</p>
+        <details className="comparacion-fuente"><summary>View chart values</summary><table className="comparacion-tabla">
+          <thead><tr><th scope="col">{modo === 'meses' ? 'Month' : 'Year'}</th><th scope="col">{variable.unidad}</th>{modo === 'meses' && <th scope="col">Years with data</th>}</tr></thead>
           <tbody>{serieComparacion.map((d) => <tr key={d.punto}><th scope="row">{d.etiqueta}</th><td>{fmt(d.valor)}</td>{modo === 'meses' && <td>{d.n}</td>}</tr>)}</tbody>
         </table></details>
       </figure>}
       {modo === 'zonas' ? <div className="comparacion-resultados">
         {[{ s: a, x: resultado.a, ref: refA, letra: 'A' }, { s: b, x: resultado.b, ref: refB, letra: 'B' }].map(({ s, x, ref, letra }) => <div key={letra}>
-          <span><strong>{letra}</strong> · {etiqueta(s)}</span><small>{modelo.zonas[s.zona].nombre}</small><b>{fmt(x)}</b>
-          <small>Promedio histórico de {MESES[s.mes]?.toLowerCase()}: {fmt(ref.promedio)}<br />{periodo(ref.registros.map((r) => r.anio))}</small>
+          <span><strong>{letra}</strong> · {etiqueta(s)}</span><small>{modelo.zona(s.zona).nombre}</small><b>{fmt(x)}</b>
+          <small>Historical average for {MESES[s.mes]}: {fmt(ref.promedio)}<br />{periodo(ref.registros.map((r) => r.anio))}</small>
         </div>)}
       </div> : <div className="comparacion-detalles">
         <div className="comparacion-fila"><strong>A · {etiqueta(a)}</strong><strong>B · {etiqueta(b)}</strong></div>
-        <div className="comparacion-fila"><span>{modelo.zonas[a.zona].nombre}</span><span>{modelo.zonas[b.zona].nombre}</span></div>
+        <div className="comparacion-fila"><span>{modelo.zona(a.zona).nombre}</span><span>{modelo.zona(b.zona).nombre}</span></div>
         <div className="comparacion-fila comparacion-valores"><b>{fmt(resultado.a)}</b><b>{fmt(resultado.b)}</b></div>
-        {modo === 'meses' ? <div className="comparacion-fila"><small>Promedio histórico</small><small>Promedio histórico</small></div> : <>
-          <div className="comparacion-fila"><small>Promedio histórico de {MESES[a.mes]?.toLowerCase()}: {fmt(refA.promedio)}</small><small>Promedio histórico de {MESES[b.mes]?.toLowerCase()}: {fmt(refB.promedio)}</small></div>
+        {modo === 'meses' ? <div className="comparacion-fila"><small>Historical average</small><small>Historical average</small></div> : <>
+          <div className="comparacion-fila"><small>Historical average for {MESES[a.mes]}: {fmt(refA.promedio)}</small><small>Historical average for {MESES[b.mes]}: {fmt(refB.promedio)}</small></div>
           <div className="comparacion-fila"><small>{periodo(refA.registros.map((r) => r.anio))}</small><small>{periodo(refB.registros.map((r) => r.anio))}</small></div>
         </>}
       </div>}
-      <div className="comparacion-conclusion"><span>QUÉ PUEDES CONCLUIR</span><p>{iguales ? 'A y B representan la misma selección.' : cambio(resultado.a, resultado.b)}</p>
-        {diferencia == null && <p>Prueba otra fecha o parámetro. Un dato ausente no significa cero.</p>}
-        {diferencia != null && !iguales && <p>{modo === 'meses' ? 'Esta diferencia describe el ciclo histórico; no anticipa cómo será el próximo mes.' : modo === 'zonas' ? 'Es una diferencia entre áreas amplias, no entre puntos de pesca.' : 'Es un cambio entre dos fechas. Por sí solo no demuestra una tendencia.'}</p>}
+      <div className="comparacion-conclusion"><span>DIFFERENCE</span><p>{iguales ? 'A and B are the same selection.' : cambio(resultado.a, resultado.b)}</p>
+        {diferencia == null && <p>Try another date or parameter. Missing does not mean zero.</p>}
+        {diferencia != null && !iguales && <p>{modo === 'meses' ? 'Historical data, not a forecast.' : modo === 'zonas' ? 'Broad areas, not fishing spots.' : 'Two dates do not establish a trend.'}</p>}
       </div>
-      {modo === 'meses' && <p className="comparacion-ayuda">Referencia: {periodo(resultado.comunes)} dentro de 1998–2025. Solo se incluyen años con datos en ambos meses.</p>}
+      {modo === 'meses' && <p className="comparacion-ayuda">Shared reference: {periodo(resultado.comunes)} (1998–2025).</p>}
     </section>
-    {modo !== 'meses' && <div className="comparacion-acciones-globo" role="group" aria-label="Ver la selección en el globo">
-      {[{ s: a, letra: 'A' }, { s: b, letra: 'B' }].map(({ s, letra }) => <button key={letra} type="button" disabled={valor(s) == null || modelo.idxMes(s.anio, s.mes) > modelo.ultimo} onClick={() => verGlobo(s)}>Ver {letra} en el globo</button>)}
+    {modo !== 'meses' && <div className="comparacion-acciones-globo" role="group" aria-label="View selection on the globe">
+      {[{ s: a, letra: 'A' }, { s: b, letra: 'B' }].map(({ s, letra }) => <button key={letra} type="button" disabled={valor(s) == null || modelo.idxMes(s.anio, s.mes) > modelo.ultimo} onClick={() => verGlobo(s)}>View {letra} on globe</button>)}
     </div>}
-    <details className="comparacion-fuente comparacion-lectura" open>
-      <summary>Lee temperatura y clorofila juntas</summary>
-      <p>¿Cambió el calor del agua y también el pigmento del fitoplancton? Observa cada parámetro con su propia unidad.</p>
+    <details className="comparacion-fuente comparacion-lectura">
+      <summary>Temperature and chlorophyll</summary>
       <div className="comparacion-tabla-envoltura"><table className="comparacion-tabla">
-        <caption>Las mismas selecciones A y B</caption>
-        <thead><tr><th scope="col">Parámetro</th><th scope="col">A</th><th scope="col">B</th></tr></thead>
+        <caption>The same selections A and B</caption>
+        <thead><tr><th scope="col">Parameter</th><th scope="col">A</th><th scope="col">B</th></tr></thead>
         <tbody>{OPCIONES.slice(0, 2).map((o) => {
           const r = comparar(o.id)
           return <tr key={o.id}><th scope="row">{o.nombre}<small>{cambio(r.a, r.b, o.id)}{modo === 'meses' && <> {periodo(r.comunes)}.</>}</small></th><td>{fmt(r.a, o.id)}</td><td>{fmt(r.b, o.id)}</td></tr>
         })}</tbody>
       </table></div>
-      <p>Dos selecciones no prueban una relación entre variables. La clorofila indica pigmento, no cantidad de peces.</p>
+      <p>Two selections do not establish a relationship. Chlorophyll indicates pigment, not fish abundance.</p>
     </details>
     {modo === 'anios' && <details className="comparacion-fuente">
-      <summary>¿Hay un cambio a lo largo de los años?</summary>
-      <p>{modelo.zonas[zona].nombre} · {MESES[mes]} · {opcion.nombre}. {periodo(refA.registros.map((r) => r.anio))} dentro de 1998–2025.</p>
-      <p>{tendencia == null ? 'Se necesitan al menos seis años con datos para estimar el cambio lineal.' : <>Cambio lineal descriptivo: <strong>{tendencia > 0 ? '+' : tendencia < 0 ? '−' : ''}{fmt(Math.abs(tendencia * 10))} por década</strong>.</>}</p>
-      <p>Resume los registros de este mes. No es una prueba de significancia ni un pronóstico.</p>
+      <summary>Historical trend</summary>
+      <p>{modelo.zona(zona).nombre} · {MESES[mes]} · {opcion.nombre}. {periodo(refA.registros.map((r) => r.anio))} within 1998–2025.</p>
+      <p>{tendencia == null ? 'At least six years with data are needed to estimate linear change.' : <>Descriptive linear change: <strong>{tendencia > 0 ? '+' : tendencia < 0 ? '−' : ''}{fmt(Math.abs(tendencia * 10))} per decade</strong>.</>}</p>
+      <p>Describes this month’s record; not a significance test or forecast.</p>
     </details>}
-    <details className="comparacion-fuente"><summary>Fuentes y alcance</summary>
-      {[...new Set([parametro, ...OPCIONES.slice(0, 2).map((o) => o.id)])].map((id) => { const v = variablePorId(id); return <p key={id}><strong>{OPCIONES.find((o) => o.id === id)?.nombre}:</strong> {v.fuente} Cobertura del producto: {v.periodo}.</p> })}
-      <p>Resúmenes mensuales de zonas amplias; puede haber huecos dentro de la cobertura. La referencia histórica usa los registros disponibles entre 1998 y 2025. No son condiciones actuales, un pronóstico de siete días ni una recomendación de profundidad o captura.</p>
+    <details className="comparacion-fuente"><summary>Sources and scope</summary>
+      {[...new Set([parametro, ...OPCIONES.slice(0, 2).map((o) => o.id)])].map((id) => { const v = variablePorId(id); return <p key={id}><strong>{OPCIONES.find((o) => o.id === id)?.nombre}:</strong> {v.fuente} Product coverage: {v.periodo}.</p> })}
+      <p>Monthly summaries of broad areas; coverage may contain gaps. Historical references use available records from 1998–2025. These are not current conditions, seven-day forecasts or fishing recommendations.</p>
     </details>
   </div>
 }

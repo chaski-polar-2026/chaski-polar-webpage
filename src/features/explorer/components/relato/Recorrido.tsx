@@ -21,16 +21,16 @@ export default function Recorrido({ paso }: { paso: number }) {
   const final = paso === RECORRIDO.length - 1
 
   return <>
-    <BotonVolver texto="Salir del recorrido" />
+    <BotonVolver texto="Exit tour" />
     <ol className="pasos" aria-hidden="true">{RECORRIDO.map((_, k) => <li key={k} className={k <= paso ? 'hecho' : ''} />)}</ol>
-    <p className="paso-num">Paso {paso + 1} de {RECORRIDO.length}</p>
+    <p className="paso-num">Step {paso + 1} of {RECORRIDO.length}</p>
     <h2>{p.titulo}</h2>
     {t.parrafos.map((x) => <p key={x}><Rico texto={x} /></p>)}
     {t.dato && <div className="dato-clave"><b className="num">{t.dato.valor}</b><span>{t.dato.texto}</span></div>}
     <div className="nav-pasos">
       {paso > 0 && <button className="btn" type="button" onClick={() => acciones.paso(paso - 1)}>Previous</button>}
       {final
-        ? <><button ref={siguiente} className="btn btn-claro" type="button" onClick={() => acciones.general()}>Explore on my own</button><a className="btn" href="#hallazgos">View the findings</a></>
+        ? <><button ref={siguiente} className="btn btn-claro" type="button" onClick={() => acciones.general()}>Explore on my own</button><a className="btn" href="/research#hallazgos">View the findings</a></>
         : <button ref={siguiente} className="btn btn-claro" type="button" onClick={() => acciones.paso(paso + 1)}>Next</button>}
     </div>
     <p className="nota" style={{ marginTop: 16 }}>You can also move forward or back with the keyboard arrow keys.</p>
