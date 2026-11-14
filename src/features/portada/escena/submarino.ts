@@ -170,7 +170,7 @@ export function crearSubmarino(escena: THREE.Scene, C: Calidad): Capa {
       "#include <begin_vertex>\nfloat fase = dot(instanceMatrix[3].xyz, vec3(1.3, 2.1, 0.7));\nfloat haciaCola = smoothstep(0.15, -0.42, position.x);\ntransformed.z += sin(uT * 11.0 + fase + position.x * 9.0) * 0.07 * haciaCola;");
   };
   const peces = new THREE.InstancedMesh(geometriaAnchoveta(), matPez, C.peces);
-  const datos: Pez[] = Array.from({ length: C.peces }, () => ({ a: azar(0, Math.PI * 2), r: azar(1.5, 7.5), y: azar(-1.6, 1.6), v: azar(0.22, 0.32), d: azar(-0.5, 0.5), s: azar(1.1, 1.5) }));
+  const datos: Pez[] = Array.from({ length: C.peces }, () => ({ a: azar(0, Math.PI * 2), r: azar(1.5, 7.5), y: azar(-1.6, 1.6), v: azar(0.22, 0.32), d: azar(-0.5, 0.5), s: azar(1.5, 2) }));
 
   const fondo = crearFondo(C);
   poblarFondo(fondo, C);
@@ -193,7 +193,7 @@ export function crearSubmarino(escena: THREE.Scene, C: Calidad): Capa {
       nieve.position.y = -((t * 0.15) % 6);
       tiempoPez.value = t;
       // cada pez gira alrededor de un centro que se desplaza y se orienta hacia donde nada
-      const cx = Math.sin(t * 0.13) * 3, cz = -15 + Math.cos(t * 0.11) * 2.5, cy = -7.2 + Math.sin(t * 0.17) * 0.6;
+      const cx = Math.sin(t * 0.13) * 0.8, cz = -14.5 + Math.cos(t * 0.11) * 1.5, cy = -6.3 + Math.sin(t * 0.17) * 0.5;
       for (let i = 0; i < datos.length; i++) {
         const f = datos[i]!;
         f.a += f.v * 0.016;
