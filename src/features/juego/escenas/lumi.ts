@@ -6,11 +6,12 @@
 import * as THREE from "three";
 import { crearSeguidor } from "../motor/camara";
 import type { Entrada } from "../motor/entrada";
-import { azar, sinContorno, toon, type Escena, type Motor } from "../motor/escena";
+import { azar, sinContorno, type Escena, type Motor } from "../motor/escena";
 import { crearPersonaje, type Personaje } from "../motor/personaje";
 import { sonar } from "../motor/sonido";
 import { dibujarFito, dibujarLumi, dibujarNutriente } from "../personajes/antartida";
 import { sprite } from "../personajes/sprites";
+import { crearEntornoLumiVoxel, crearPersonajeVoxel, crearPlacaHieloVoxel } from "../motor/voxel";
 
 export const DIVISIONES_META = 3;
 const X = 14, Y_MIN = -13, Y_MAX = -0.8, Z = 5;
@@ -59,28 +60,14 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
     const sol = new THREE.DirectionalLight(0xffffff, 1.3);
     sol.position.set(0, 20, 5);
     escena.add(sol);
-
-    // agua que se oscurece con la profundidad (fondo lejano con degradado)
-    const c = Object.assign(document.createElement("canvas"), { width: 4, height: 256 });
-    const g = c.getContext("2d");
-    if (g) { const d = g.createLinearGradient(0, 0, 0, 256); d.addColorStop(0, "#7cc9e6"); d.addColorStop(0.4, "#2a7fa8"); d.addColorStop(1, "#06223a"); g.fillStyle = d; g.fillRect(0, 0, 4, 256); }
-    const fondo = new THREE.Mesh(new THREE.PlaneGeometry(120, 22), sinContorno(new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), fog: false })));
-    fondo.position.set(0, (Y_MIN + 1) / 2, -20);
-    escena.add(fondo);
+    crearEntornoLumiVoxel(escena);
+    const lumiVoxel = crearPersonajeVoxel(escena, sprite("lumi", dibujarLumi), 0.07, 2);
 
     // hielo marino: placas con carámbanos que derivan en la superficie y dan sombra debajo
-    const hielo = toon(0xeef8fc), carambano = toon(0xbfe2f5);
     const matSombra = sinContorno(new THREE.MeshBasicMaterial({ color: 0x041526, transparent: true, opacity: 0.3, depthWrite: false }));
     const placas: Placa[] = [-11, 1, 11].map((x, i) => {
       const ancho = azar(5.5, 7.5);
-      const grupo = new THREE.Group();
-      grupo.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, Z * 2 + 4), hielo));
-      for (let k = 0; k < 5; k++) {
-        const cono = new THREE.Mesh(new THREE.ConeGeometry(azar(0.1, 0.18), azar(0.6, 1.4), 5), carambano);
-        cono.rotation.x = Math.PI;
-        cono.position.set(azar(-0.45, 0.45), -0.9, azar(-1, 1.5));
-        grupo.add(cono);
-      }
+      const grupo = crearPlacaHieloVoxel(escena, ancho, Z * 2 + 4);
       grupo.scale.x = ancho;
       grupo.position.set(x, 0.2, 0);
       const sombra = new THREE.Mesh(new THREE.BoxGeometry(1, -Y_MIN, Z * 2 + 3.8), matSombra);
@@ -89,12 +76,9 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
       escena.add(grupo, sombra);
       return { grupo, sombra, vel: (i % 2 ? -1 : 1) * azar(0.6, 1.1), ancho };
     });
-    const superficie = new THREE.Mesh(new THREE.PlaneGeometry(120, 30).rotateX(Math.PI / 2), sinContorno(new THREE.MeshBasicMaterial({ color: 0xd8f3ff, transparent: true, opacity: 0.3, side: THREE.DoubleSide, depthWrite: false })));
-    escena.add(superficie);
-
     // rayos de luz: se encienden donde no hay hielo encima
     const rayos = Array.from({ length: 12 }, (_, i) => {
-      const r = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 2.2, 13, 7, 1, true),
+      const r = new THREE.Mesh(new THREE.BoxGeometry(1.4, 13, 2),
         sinContorno(new THREE.MeshBasicMaterial({ color: 0xf2ffd8, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })));
       r.position.set(-X + (i + 0.5) * ((2 * X) / 12), -6.3, azar(-2, 1));
       r.rotation.z = 0.08;
@@ -119,6 +103,7 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
     escena.add(nieve);
 
     const lumi = crearPersonaje(escena, sprite("lumi", dibujarLumi), { ancho: 2, alto: 2 });
+    lumi.sprite.visible = false;
     lumi.posicion.set(-4.5, -6, 0); // en un claro entre las placas de hielo
     const halo = new THREE.Sprite(sinContorno(new THREE.SpriteMaterial({ map: texturaHalo(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })));
     escena.add(halo);
@@ -130,8 +115,10 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
     const dibujoChispa = sprite("nutriente", dibujarNutriente);
     const chispas = Array.from({ length: 20 }, () => {
       const p = crearPersonaje(escena, dibujoChispa, { ancho: 0.8, alto: 0.8 });
+      p.sprite.visible = false;
+      const voxel = crearPersonajeVoxel(escena, dibujoChispa, 0.04, 1);
       p.posicion.set(azar(-X, X), azar(Y_MIN, -3), azar(-0.3, 0.3));
-      return { p, vel: azar(0.5, 1.1), fase: azar(0, 6) };
+      return { p, voxel, vel: azar(0.5, 1.1), fase: azar(0, 6) };
     });
     const renacer = (ch: (typeof chispas)[number]) => ch.p.posicion.set(azar(-X, X), Y_MIN, azar(-0.3, 0.3));
 
@@ -161,6 +148,8 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
         estallido = Math.max(0, estallido - dt * 3);
         lumi.escala = 1 + estado.crecimiento * 0.4 + Math.sin(estallido * Math.PI) * 0.25;
         lumi.animar(t, vel, seguidor.derecha, VELOCIDAD);
+        lumiVoxel.position.copy(lumi.posicion);
+        lumiVoxel.scale.setScalar(lumi.escala);
         lumi.sprite.material.rotation = Math.sin(t * 0.8) * 0.15;
 
         // el hielo deriva y rebota en los bordes; se va derritiendo con cada división
@@ -186,6 +175,7 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
         for (const ch of chispas) {
           if (!detenido) ch.p.posicion.y += ch.vel * dt;
           ch.p.posicion.x += Math.sin(t + ch.fase) * 0.01;
+          ch.voxel.position.copy(ch.p.posicion);
           ch.p.sprite.material.rotation = t * 0.8 + ch.fase;
           ch.p.animar(t, quieto, seguidor.derecha, 1);
           if (ch.p.posicion.y > -2.5) renacer(ch); // cerca de la superficie ya no quedan nutrientes

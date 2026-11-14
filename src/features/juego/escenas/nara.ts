@@ -13,6 +13,7 @@ import { dibujarFlecha, dibujarNara } from "../personajes/antartida";
 import { dibujarLetrero } from "../personajes/costa";
 import { sonar } from "../motor/sonido";
 import { sprite } from "../personajes/sprites";
+import { crearPersonajeVoxel } from "../motor/voxel";
 
 const V: Ventana = { lonO: -105, latN: 15, lonE: -30, latS: -70 };
 const RECORRIDO: Ventana = { lonO: -105, latN: 0, lonE: -55, latS: -70 };
@@ -61,7 +62,27 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
       if (!vivo) return;
       const cv = Object.assign(document.createElement("canvas"), { width: W, height: H }), g = cv.getContext("2d");
       if (!g) return;
-      g.drawImage(mar, 0, 0); g.drawImage(capaTierra, 0, 0);
+      g.drawImage(mar, 0, 0);
+      materialMapa.visible = true;
+      const mascaraTierra = capaTierra.getContext('2d')?.getImageData(0, 0, W, H).data;
+      const geo = new THREE.BoxGeometry(0.2, 0.2, 0.2), mat = sinContorno(new THREE.MeshLambertMaterial());
+      const paso = 2, instancias: Array<{ x: number; z: number; c: number }> = [];
+      for (let py = 0; py < H; py += paso) for (let px = 0; px < W; px += paso) {
+        const i = (py * W + px) * 4;
+        const esTierraPixel = mascaraTierra != null && mascaraTierra[i + 3]! > 100;
+        if (!esTierraPixel) continue;
+        const lon = V.lonO + (px / W) * (V.lonE - V.lonO), lat = V.latN - (py / H) * (V.latN - V.latS);
+        instancias.push({ x: aX(lon), z: aZ(lat), c: lat < -58 ? 0xeaf6fd : 0x89a8ba });
+      }
+      const tierraVoxel = new THREE.InstancedMesh(geo, mat, instancias.length);
+      const matriz = new THREE.Matrix4(), color = new THREE.Color();
+      // La malla del mapa queda como respaldo cartográfico y los voxels se elevan sobre ella.
+      // Antes estaban a -0.22, detrás del plano opaco situado en y=0, por eso no se veían.
+      instancias.forEach(({ x, z, c }, indice) => { matriz.setPosition(x, 0.16, z); tierraVoxel.setMatrixAt(indice, matriz); tierraVoxel.setColorAt(indice, color.setHex(c)); });
+      tierraVoxel.instanceMatrix.needsUpdate = true;
+      tierraVoxel.instanceColor!.needsUpdate = true;
+      tierraVoxel.computeBoundingSphere();
+      escena.add(tierraVoxel);
       materialMapa.map = textura(cv); materialMapa.color.set(0xffffff); materialMapa.needsUpdate = true;
       tierra = capaTierra.getContext("2d")?.getImageData(0, 0, W, H).data ?? null;
     });
@@ -108,6 +129,8 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
     escena.add(meta);
 
     const nara = crearPersonaje(escena, sprite("nara", dibujarNara), { ancho: 5, alto: 4.7, suelo: 0 });
+    const naraVoxel = crearPersonajeVoxel(escena, sprite("nara", dibujarNara), 0.12, 2);
+    nara.sprite.visible = false;
     nara.posicion.set(aX(INICIO.lon), 1.6, aZ(INICIO.lat));
     const seguidor = crearSeguidor(camara, renderer.domElement, nara.posicion, { distancia: 26, giro: 0.6, inclinacionVertical: 0 });
 
@@ -142,6 +165,10 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
         nara.posicion.y = 1.6 + Math.sin(t * 1.2) * 0.25;
         seguidor.seguir(nara.posicion);
         nara.animar(t, vel, seguidor.derecha, VELOCIDAD);
+        naraVoxel.position.copy(nara.posicion);
+        // El sprite original se espeja según el producto velocidad·derecha de cámara.
+        // El modelo voxel mira inicialmente a +X, así que refleja esa misma orientación con un giro Y.
+        naraVoxel.rotation.y = vel.lengthSq() > 0.2 && vel.dot(seguidor.derecha) < 0 ? Math.PI : 0;
 
         for (const f of flechas) (f.material as THREE.MeshBasicMaterial).opacity = 0.35 + 0.25 * Math.sin(t * 3 - f.position.z * 0.2);
         meta.scale.setScalar(1 + Math.sin(t * 3) * 0.05);
