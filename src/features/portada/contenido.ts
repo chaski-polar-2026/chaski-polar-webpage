@@ -135,6 +135,6 @@ export function nombreCapa(y: number): string {
   if (y > 30) return "Space";
   if (y > 0) return "Surface";
   if (y > -10) return "Light and phytoplankton";
-  if (y > -30) return "Oxygen minimum zone";
+  if (y > -34) return "Oxygen minimum zone";
   return "Seafloor";
 }
