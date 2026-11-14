@@ -12,6 +12,8 @@ import { sprite } from "../personajes/sprites";
 const ALTURA_NADO = 4;
 const LIMITE = 28;
 const VELOCIDAD = 7;
+// Persecución original: 9 unidades/s. Se reduce un 25 % sin cambiar la ronda ni las colisiones.
+const VELOCIDAD_PERSECUCION_PINGUINO = 6.75;
 
 export interface AvisosKiri {
   comio(total: number): void;
@@ -136,7 +138,7 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
           } else {
             u.dur += dt;
             hacia.subVectors(kiri.posicion, u.p.posicion).normalize();
-            u.p.posicion.addScaledVector(hacia, dt * 9);
+            u.p.posicion.addScaledVector(hacia, dt * VELOCIDAD_PERSECUCION_PINGUINO);
             if (aturdido <= 0 && u.p.posicion.distanceTo(kiri.posicion) < 1.5) {
               aturdido = 1.5; comidos = Math.max(0, comidos - 2); sonar("golpe");
               avisos.comio(comidos); avisos.golpe(); u.estado = "ronda";
