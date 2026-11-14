@@ -4,8 +4,8 @@
 .portada { --hud: "Rajdhani", "Arial Narrow", system-ui, sans-serif; --celeste: #8fe3f2; }
 .portada h1, .portada h2 { font-family: var(--hud); font-weight: 600; line-height: 1.05; text-transform: uppercase; }
 
-.portada .portada-recorrido { position: relative; height: 900vh; }
-.portada .portada-ventana { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; }
+.portada .portada-recorrido { position: relative; height: 1700svh; }
+.portada .portada-ventana { position: sticky; top: 0; height: 100dvh; overflow: hidden; isolation: isolate; }
 .portada #escena { position: absolute; inset: 0; display: block; }
 .portada #secciones { position: absolute; inset: 0; pointer-events: none; }
 .portada .portada-seccion { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(560px, 86vw); text-align: center;
