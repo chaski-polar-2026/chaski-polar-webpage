@@ -21,6 +21,8 @@ export function crearSecciones(alEntrar: () => void): Interfaz {
       etiqueta.textContent = y > 30 ? "ORBIT" : y > 0 ? "ALTITUDE" : "DEPTH";
       valor.textContent = y > 30 ? "700 km" : y > 0 ? `${Math.round(y * 20)} m` : `${Math.round(-y * 5)} m`;
       marca.style.top = `calc(${progreso * 100}% - 6px)`;
+      // sobre el cielo claro el panel necesita mas opacidad para leerse; bajo el agua puede ser mas transparente
+      contenedor.style.setProperty("--panel-a", (0.5 + 0.4 * Math.max(0, Math.min(1, (y + 34) / 114))).toFixed(3));
       capa.textContent = nombreCapa(y);
       for (const { nodo, de, a, panel } of nodos) {
         const dentro = progreso >= de && progreso <= a;

@@ -7,7 +7,11 @@
 .portada .portada-cierre a { min-height: 44px; display: inline-flex; align-items: center; color: #eaf3f5; text-underline-offset: 5px; }
 .portada .portada-cierre span { display: inline-flex; align-items: center; font: 600 20px var(--hud); }
 
-.portada .portada-panel { width: min(820px, 90vw); padding: 24px; background: #071e33; color: #eaf3f5; border: 1px solid #24507a; border-radius: 6px; text-align: left; }
+.portada .portada-panel { width: min(820px, 90vw); padding: 24px; color: #eaf3f5; border: 1px solid rgba(99, 205, 232, .28); border-radius: 6px; text-align: left;
+  background: rgba(7, 30, 51, calc(var(--panel-a, .62) + var(--panel-hover, 0)));
+  translate: calc(var(--px, 0) * -10px) calc(var(--py, 0) * -6px);
+  transition: background-color .25s, border-color .25s; }
+.portada .portada-panel:hover { --panel-hover: .16; border-color: rgba(143, 227, 242, .7); }
 .portada .portada-panel h2 { font-size: clamp(26px, 3vw, 36px); text-transform: none; letter-spacing: 0; }
 .portada .portada-panel h3 { margin: 0 0 4px; font: 600 20px/1.15 var(--hud); color: #8fe3f2; }
 .portada .portada-panel p { font-size: 15px; line-height: 1.4; margin: 6px 0; }
