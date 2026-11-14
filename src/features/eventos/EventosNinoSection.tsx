@@ -1,0 +1,78 @@
+import { media } from '../../lib/estadistica'
+import { nf, signo } from '../../lib/formato'
+import { useExplorer } from '../explorer/ExplorerContext'
+import { useAcciones } from '../explorer/hooks/useAcciones'
+import type { ClaveZonaMonitor, IdZona } from '../explorer/lib/tipos'
+import { useExplorerStore } from '../explorer/store'
+
+const ZONAS_PERU: ClaveZonaMonitor[] = ['paita', 'chimbote', 'callao', 'pisco', 'ilo']
+
+/** Meses que se promediaron en cada evento */
+const PERIODOS: Record<string, string> = {
+  '1997-98': 'Jan–Jun 1998',
+  '2015-16': 'Jun 2015–Apr 2016',
+  '2017': 'Jan–May 2017',
+  '2023-24': 'Mar 2023–Jan 2024',
+  '2026': 'May–Sep 2026, partial',
+}
+const periodo = (nombre: string): string | undefined => Object.entries(PERIODOS).find(([k]) => nombre.includes(k))?.[1]
+
+/** Color de la celda: naranja si la clorofila cayó, verde si subió (más intenso cuanto mayor el cambio) */
+function colorCambio(p: number): string {
+  const a = Math.min(1, Math.abs(p) / 60) * 0.75 + 0.1
+  return p < 0 ? `rgba(240,138,75,${a})` : `rgba(63,194,140,${a})`
+}
+
+/** Each El Niño, zone by zone: how chlorophyll changed relative to normal */
+export default function EventosNinoSection() {
+  const { modelo } = useExplorer()
+  const acciones = useAcciones()
+  const eventos = modelo.metadataMonitor.eventos_nino ?? []
+  const zonas = modelo.metadataMonitor.zonas ?? {}
+  if (!eventos.length) return null
+
+  const completos = eventos.filter((e) => e.cambio_clorofila_pct && !e.nombre.includes('2026'))
+  const promedio = ZONAS_PERU.map((c) => ({ c, p: media(completos.map((e) => e.cambio_clorofila_pct?.[c])) }))
+  const picos = modelo.eventosNino()
+  const vulnerables = modelo.metadataMonitor.hallazgos?.find((h) => h.id === 'zonas_vulnerables')
+
+  // tocar una celda lleva al globo: esa zona, con la clorofila del mes más cálido de ese El Niño
+  const ir = (nombre: string, c: ClaveZonaMonitor) => {
+    const z = zonas[c]?.id_original as IdZona | undefined
+    if (!z) return
+    const anio = Number(nombre.match(/\d{4}/)?.[0])
+    const pico = picos.find((p) => p.anio === anio || p.anio === anio + 1)
+    useExplorerStore.getState().setVariable('clorofila_mg_m3')
+    if (pico) acciones.fijarMes(pico.i)
+    acciones.irAZona(z)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  return <section className="seccion" id="eventos-nino" aria-labelledby="t-eventos">
+    <div className="encabezado-seccion">
+      <h2 id="t-eventos">Each El Niño, zone by zone</h2>
+      <p>How phytoplankton (chlorophyll) changed relative to normal during each El Niño in the five zones along the Peruvian coast. Orange means a decline; green, an increase. {vulnerables?.resumen ?? ''}</p>
+    </div>
+    <div className="tabla-envoltura">
+      <table className="eventos-nino">
+        <thead><tr><th scope="col">El Niño</th>{ZONAS_PERU.map((c) => <th scope="col" key={c}>{zonas[c]?.nombre ?? c}</th>)}</tr></thead>
+        <tbody>
+          {eventos.map((e) => <tr key={e.nombre}>
+            <th scope="row">{e.nombre.replace("(en curso)", "(ongoing)")}{periodo(e.nombre) && <small>{periodo(e.nombre)}</small>}{e.nombre.includes('2026') && <button type="button" className="enlace" onClick={() => { acciones.nino2026(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>View on the globe</button>}</th>
+            {e.cambio_clorofila_pct
+              ? ZONAS_PERU.map((c) => {
+                const p = e.cambio_clorofila_pct?.[c]
+                return <td key={c}>{p == null ? '—' : <button type="button" style={{ background: colorCambio(p) }} onClick={() => ir(e.nombre, c)} title={`View ${zonas[c]?.nombre ?? c} on the globe`}>{signo(p)}{nf(0).format(Math.abs(p))} %</button>}</td>
+              })
+              : <td colSpan={ZONAS_PERU.length} className="evento-nota">{e.nombre.includes('2026') ? 'The event is ongoing; the full event comparison is not available.' : e.nota ?? 'No data yet.'} <button type="button" className="enlace" onClick={() => { acciones.nino2026(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>View El Niño 2026 on the globe</button></td>}
+          </tr>)}
+          <tr className="fila-promedio">
+            <th scope="row">Event average<small>excluding 2026, which is ongoing</small></th>
+            {promedio.map(({ c, p }) => <td key={c}>{p == null ? '—' : <span style={{ background: colorCambio(p) }}>{signo(p)}{nf(0).format(Math.abs(p))} %</span>}</td>)}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p className="nota">Average OC-CCI chlorophyll during the indicated months of each event, compared with the same month in a normal year (geometric mean). Tap a cell to view that zone on the globe. This is an association with El Niño, not a measure of its cause.</p>
+  </section>
+}

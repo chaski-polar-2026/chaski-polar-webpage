@@ -1,0 +1,115 @@
+import { useMemo } from 'react'
+import { Area, Bar, Cell, ComposedChart, Legend, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { media } from '../../../../lib/estadistica'
+import { etiquetaMes, mesLargo, nf, signo } from '../../../../lib/formato'
+import { useData } from '../../../../contexts/DataContext'
+import { useExplorer } from '../../ExplorerContext'
+import { useAcciones } from '../../hooks/useAcciones'
+import { esPeru } from '../../lib/modelo'
+import type { NombreEscenario } from '../../lib/tipos'
+import { variablePorId } from '../../lib/variables'
+import { useExplorerStore } from '../../store'
+import { BotonVolver } from './comun'
+
+const ESCENARIOS: { id: NombreEscenario; nombre: string }[] = [
+  { id: 'weak', nombre: 'weak' },
+  { id: 'central', nombre: 'central' },
+  { id: 'intense', nombre: 'intense' },
+]
+const pct = (x: number) => `${signo(x)}${nf(0).format(Math.abs(x))} %`
+
+/** El Niño 2026, en curso: lo que dicen los datos hasta el último mes disponible y los escenarios hasta 2027 */
+export default function Nino2026() {
+  const { modelo } = useExplorer()
+  const { cruises } = useData()
+  const acciones = useAcciones()
+
+  const d = useMemo(() => {
+    const desde = modelo.idxMes(2025, 0)
+    const meses = modelo.meses.slice(desde).map((_, k) => desde + k)
+    const esc = Object.fromEntries(ESCENARIOS.map((e) => [e.id, modelo.serieEscenario('nino12_anom_c', e.id)])) as Record<NombreEscenario, (number | null)[]>
+    const filas = meses.map((i) => {
+      const a = esc.weak[i], b = esc.intense[i]
+      return { i, mes: etiquetaMes(modelo.mes(i)), nino: modelo.nino[i] ?? null, central: esc.central[i], banda: a != null && b != null ? [Math.min(a, b), Math.max(a, b)] : null }
+    }).filter((f) => f.nino != null || f.central != null)
+
+    // pico de 2026 en lo observado
+    let pico: number | null = null
+    for (let i = modelo.idxMes(2026, 0); i <= modelo.ultimoObservado; i++) if (modelo.nino[i] != null && (pico == null || (modelo.nino[i] as number) > (modelo.nino[pico] as number))) pico = i
+    const icen = modelo.ultimoMonitor('icen')
+
+    // clorofila de la costa en cada escenario frente a un mes normal (promedio de los meses de escenario)
+    const normal = Array.from({ length: 12 }, (_, m) => media(modelo.registrosMonitor.filter((r) => Number(r.date.slice(5, 7)) - 1 === m).map((r) => r.chlorophyll_a_mg_m3)))
+    const clorofila = ESCENARIOS.map((e) => {
+      const serie = modelo.serieEscenario('chlorophyll_a_mg_m3', e.id)
+      const cambios = modelo.meses.map((_, i) => (modelo.esEscenario(i) && serie[i] != null && normal[modelo.mes(i).mes] ? ((serie[i] as number) / (normal[modelo.mes(i).mes] as number) - 1) * 100 : null))
+      return { ...e, cambio: media(cambios) }
+    })
+    const inicioEsc = modelo.inicioEscenario, finEsc = filas.at(-1)?.i
+
+    // clorofila por zona en el último mes con dato y su cambio durante el evento (mismo método que la tabla de El Niño)
+    const chl = variablePorId('clorofila_mg_m3')
+    const evento = modelo.metadataMonitor.eventos_nino?.find((e) => e.nombre.includes('2026'))
+    const zonas = modelo.ids.filter(esPeru).map((z) => ({ z, a: modelo.anomaliaTxt(z, chl, modelo.ultimoSeries), cambio: evento?.cambio_clorofila_pct?.[modelo.claveMonitor(z) ?? 'paita'] ?? null }))
+
+    return { filas, pico, icen, clorofila, inicioEsc, finEsc, zonas }
+  }, [modelo])
+
+  // cruceros de primavera en la región norte-centro (código AA09-..): el último es de este año
+  const primavera = cruises.filter((c) => c.stock === 'norte_centro' && c.crucero.slice(2, 4) === '09').sort((a, b) => a.anio - b.anio)
+  const ultimo = primavera.at(-1)
+  const anteriores = primavera.filter((c) => c !== ultimo)
+  const promAnteriores = media(anteriores.map((c) => c.biomasa_t))
+  const prediccion = modelo.metadataMonitor.hallazgos?.find((h) => h.id === 'prediccion_2026')
+  const pico = d.pico
+
+  return <>
+    <BotonVolver />
+    <h2>El Niño 2026, ongoing</h2>
+    <div className="region">Peruvian coast · observed data through {mesLargo(modelo.mes(modelo.ultimoObservado))}</div>
+    <div className="cifras">
+      {pico != null && <div className="cifra"><b className="num">{signo(modelo.nino[pico] as number)}{nf(2).format(Math.abs(modelo.nino[pico] as number))} °C</b><span>Niño 1+2 in {mesLargo(modelo.mes(pico))}: sea off northern Peru, above normal</span></div>}
+      {d.icen?.icen != null && <div className="cifra"><b className="num">{signo(d.icen.icen)}{nf(2).format(Math.abs(d.icen.icen))} °C</b><span>coastal ICEN index for {d.icen.date.slice(0, 7)} (IGP/ENFEN)</span></div>}
+    </div>
+    <div className="grafico" role="img" aria-label="Monthly Niño 1+2 since 2025 and scenarios through February 2027">
+      <ResponsiveContainer width="100%" height="100%">
+        <ComposedChart data={d.filas} margin={{ top: 6, right: 18, bottom: 0, left: -14 }}>
+          <XAxis dataKey="mes" tick={{ fill: "#a3bccb", fontSize: 11 }} stroke="rgba(36,80,122,.55)" interval={5} />
+          <YAxis tick={{ fill: '#a3bccb', fontSize: 12 }} stroke="rgba(36,80,122,.55)" unit=" °C" width={58} />
+          <ReferenceLine y={0} stroke="rgba(234,243,245,.5)" />
+          <Tooltip contentStyle={{ background: 'rgba(7,30,51,.96)', border: '1px solid #24507a', borderRadius: 8 }} formatter={(x, n) => [Array.isArray(x) ? x.map((y: number) => nf(2).format(y)).join(' – ') : `${nf(2).format(Number(x))} °C`, String(n)]} />
+          <Legend verticalAlign="bottom" height={24} wrapperStyle={{ fontSize: 12, color: '#a3bccb' }} />
+          <Bar dataKey="nino" name="Observed Niño 1+2" fill="#f08a4b" isAnimationActive={false}>{d.filas.map((f) => <Cell key={f.i} fill={(f.nino ?? 0) >= 0 ? '#f08a4b' : '#2b6cb0'} />)}</Bar>
+          <Area dataKey="banda" name="Weak to intense scenarios" stroke="none" fill="rgba(240,138,75,0.22)" isAnimationActive={false} />
+          <Line dataKey="central" name="Central scenario" stroke="#f08a4b" strokeDasharray="5 4" strokeWidth={2} dot={false} isAnimationActive={false} />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
+    <p className="nota">Niño 1+2 from NOAA PSL. From {d.inicioEsc != null ? etiquetaMes(modelo.mes(d.inicioEsc)) : 'September 2026'} the dashed line and band are scenarios built from climatology and an assumed El Niño trajectory: they are not observations or forecasts.</p>
+
+    <h3>What would happen to phytoplankton?</h3>
+    <p>Compared with a normal month, coastal chlorophyll during the scenario months{d.finEsc != null && d.inicioEsc != null ? ` (${etiquetaMes(modelo.mes(d.inicioEsc))} to ${etiquetaMes(modelo.mes(d.finEsc))})` : ''} would average:</p>
+    <div className="cifras">{d.clorofila.map((e) => <div className="cifra" key={e.id}><b className="num">{e.cambio == null ? '—' : pct(e.cambio)}</b><span>{e.nombre} scenario</span></div>)}</div>
+    <p className="nota">Monitor chlorophyll (CMEMS reanalysis for the entire coast).  {prediccion ? `This is a scenario, not a forecast.` : ''}</p>
+
+    {ultimo && <>
+      <h3>Anchoveta this year</h3>
+      <p>Survey {ultimo.crucero} estimated <strong>{nf(2).format(ultimo.biomasa_t / 1e6)} million t</strong> in the north-central region{ultimo.provisional ? ' (provisional estimate)' : ''}.{promAnteriores ? ` This is ${nf(0).format(Math.abs((ultimo.biomasa_t / promAnteriores - 1) * 100))} % ${ultimo.biomasa_t < promAnteriores ? 'less' : 'more'} than the average of earlier spring surveys in that region (${anteriores.map((c) => c.anio).join(', ')}).` : ''}</p>
+    </>}
+
+    <h3>Phytoplankton during the warm period</h3>
+    <p>Change in chlorophyll relative to normal in each zone, from May to {mesLargo(modelo.mes(modelo.ultimoSeries))}{d.zonas.some((x) => x.cambio != null) ? '' : ' (no data yet)'}. The latest month appears in parentheses.</p>
+    <ul className="lista-zonas">{d.zonas.map(({ z, a, cambio }) => <li key={z}><button className="fila-zona" type="button" onClick={() => acciones.irAZona(z)}>
+      <span className="punto" style={{ background: cambio == null ? undefined : cambio < 0 ? 'var(--nino)' : 'var(--fito)' }} />
+      <span>{modelo.zona(z).nombre}<small>{a ? `${a.corto} in ${mesLargo(modelo.mes(modelo.ultimoSeries))}` : 'no data in the latest month'}</small></span>
+      <span className="valor">{cambio == null ? '—' : pct(cambio)}</span>
+    </button></li>)}</ul>
+    <p className="nota">Average chlorophyll (ESA OC-CCI) from May to {mesLargo(modelo.mes(modelo.ultimoSeries))}, compared with the same month in a normal year (1998–2025). This is partial: the event is ongoing.</p>
+
+    <div className="acciones-relato">
+      <button className="btn" type="button" onClick={() => { useExplorerStore.getState().setMonitorZone(null); document.getElementById('monitor')?.scrollIntoView({ behavior: 'smooth' }) }}>View the monitor</button>
+      <a className="btn" href="#eventos-nino">Compare with other El Niño events</a>
+      <a className="btn" href="#cruceros">View the surveys</a>
+    </div>
+  </>
+}
