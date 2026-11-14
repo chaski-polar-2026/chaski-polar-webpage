@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ocean-950: #071e33;
+  --color-ocean-900: #0c2c4a;
+  --color-ocean-800: #133c61;
+  --color-ocean-700: #24507a;
+  --color-ice-100: #eaf3f5;
+  --color-ice-300: #a3bccb;
+  --color-ice-500: #6f8ea3;
+  --color-phytoplankton: #3fc28c;
+  --color-nino: #f08a4b;
+  --color-current: #63cde8;
+  --font-display: "Newsreader", Georgia, serif;
+  --font-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --text-control: .9rem;
+  --radius-card: 14px;
+  --radius-pill: 6px; /* botones: esquinas poco redondeadas */
+}
+
+@layer components {
+  /* barra azul sólida con borde fino: el contenido que pasa por debajo no se mezcla con el texto del encabezado */
+  .app-header { background: rgb(7 30 51 / .96); border-bottom: 1px solid rgb(36 80 122 / .7); backdrop-filter: blur(8px); }
+  .data-state { @apply grid min-h-screen place-content-center gap-2 bg-ocean-950 p-8 text-center text-ice-100; }
+  .button-primary { @apply inline-flex items-center justify-center gap-2 rounded-pill border border-ocean-700 bg-ocean-800 px-5 py-3 font-bold text-ice-100 no-underline transition-colors transition-transform; }
+  .button-primary:hover { @apply bg-ocean-700; }
+  .button-primary:active { @apply scale-95; }
+}
+
+/* opciones del encabezado: sin borde, en gris azulado; la activa, en fondo claro con texto azul oscuro.
+   Van fuera de @layer para ganarle a `a:hover` de estilos.css, que si no las pondría blancas al pasar el cursor */
+.app-nav a { font-size: .95rem; color: var(--color-ice-300); transition: background-color .15s, color .15s; }
+.app-nav a:hover { background-color: rgb(163 188 203 / .14); color: var(--color-ice-100); }
+.app-nav a[aria-current], .app-nav a[aria-current]:hover { background-color: var(--color-ice-100); color: var(--color-ocean-950); font-weight: 700; }
+
+:root {
+  font-family: var(--font-body);
+  color: var(--color-ice-100);
+  background: var(--color-ocean-950);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow-x: hidden;
+  background: var(--color-ocean-950);
+  color: var(--color-ice-100);
+}
+
+/* paso de la portada al explorador: todo en negro hasta que el globo está listo */
+.entrando .data-state { background: #02040a; color: transparent; }
+.entrando .app-header, .entrando .saltar { visibility: hidden; }
