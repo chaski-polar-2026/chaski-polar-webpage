@@ -213,7 +213,7 @@ export default function JuegoPage() {
         fin: (datos, historia) => {
           sonar('exito')
           setInforme({ datos, historia })
-          const r: ResultadoAnio = { anio, inicial: datos.inicial, sobrevivientes: datos.sobrevivientes, estrategia: datos.estrategia }
+          const r: ResultadoAnio = { anio, inicial: datos.inicial, sobrevivientes: datos.sobrevivientes, estrategia: datos.estrategia, alimentoPromedio: datos.alimentoPromedio, ninoPromedio: datos.ninoPromedio }
           setResultados((rs) => [...rs.filter((x) => x.anio !== anio), r])
         },
       }, { anio, peces: pantalla.peces, pausa: hayDialogo, compacto: () => compactoRef.current, rapidez: RAPIDEZ,
