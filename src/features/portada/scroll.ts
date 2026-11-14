@@ -3,7 +3,13 @@ export const Y_ESPACIO = 80;
 export const Y_FONDO = -40;
 
 // [progreso, altura]: cada tramo dura lo necesario para que su texto coincida con la capa visible
-const TRAMOS: readonly (readonly [number, number])[] = [[0, Y_ESPACIO], [0.22, 25], [0.4, 0], [0.55, -4.5], [0.7, -9], [0.86, -30], [1, Y_FONDO]];
+export const TRAMOS: readonly (readonly [number, number])[] = [[0, Y_ESPACIO], [0.12, 40], [0.22, 25], [0.31, 0], [0.42, -4.5], [0.52, -5], [0.63, -9], [0.72, -30], [0.82, -33], [1, Y_FONDO]];
+
+export function posicionScroll(progreso: number): number {
+  const recorrido = document.getElementById('portada-recorrido')!;
+  // Redondear hacia arriba evita quedar un subpíxel antes del inicio del panel.
+  return Math.ceil(recorrido.offsetTop + progreso * (recorrido.offsetHeight - innerHeight));
+}
 
 export function alturaEn(p: number): number {
   for (let i = 0; i < TRAMOS.length - 1; i++) {

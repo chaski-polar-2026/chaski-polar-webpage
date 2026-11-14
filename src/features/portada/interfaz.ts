@@ -6,48 +6,26 @@ export interface Interfaz {
   detener(): void;
 }
 
-// Crea los textos de cada tramo a partir de contenido.ts y mueve los medidores de profundidad
+// Activa los paneles renderizados por React y mueve los medidores de profundidad.
 export function crearSecciones(alEntrar: () => void): Interfaz {
   const contenedor = porId("secciones");
-  contenedor.replaceChildren();
   const etiqueta = porId("mEtiqueta"), valor = porId("mValor"), marca = porId("marca"), capa = porId("mCapa"), pista = porId("pista");
 
-  const nodos = SECCIONES.map((s) => {
-    const sec = document.createElement("section");
-    sec.className = "portada-seccion";
-    const titulo = document.createElement(s.principal ? "h1" : "h2");
-    if (s.principal) {
-      const [a, ...resto] = s.titulo.split(" ");
-      const l1 = Object.assign(document.createElement("span"), { className: "t-contorno", textContent: a });
-      const l2 = Object.assign(document.createElement("span"), { className: "t-relleno", textContent: resto.join(" ") });
-      titulo.append(l1, l2);
-      titulo.setAttribute("aria-label", s.titulo);
-    } else titulo.textContent = s.titulo;
-    const texto = document.createElement("p");
-    texto.textContent = s.texto;
-    sec.append(titulo, texto);
-    for (const b of s.botones ?? []) {
-      const boton = b.href ? Object.assign(document.createElement("a"), { href: b.href }) : Object.assign(document.createElement("button"), { type: "button" });
-      boton.className = "portada-boton";
-      boton.textContent = b.texto;
-      if (b.accion === "entrar") boton.addEventListener("click", alEntrar);
-      sec.append(boton);
-    }
-    contenedor.append(sec);
-    return { nodo: sec, de: s.de, a: s.a };
-  });
+  const botones = [...contenedor.querySelectorAll<HTMLButtonElement>('[data-entrar]')];
+  botones.forEach(b => b.addEventListener('click', alEntrar));
+  const nodos = SECCIONES.map((s, i) => ({ nodo: contenedor.children[i] as HTMLElement, de: s.de, a: s.a, panel: Boolean(s.variante) }));
 
   return {
-    detener() { for (const { nodo } of nodos) nodo.remove(); },
+    detener() { botones.forEach(b => b.removeEventListener("click", alEntrar)); },
     actualizar(progreso, y, enTransicion) {
-  etiqueta.textContent = y > 30 ? "ORBIT" : y > 0 ? "ALTITUDE" : "DEPTH";
+      etiqueta.textContent = y > 30 ? "ORBIT" : y > 0 ? "ALTITUDE" : "DEPTH";
       valor.textContent = y > 30 ? "700 km" : y > 0 ? `${Math.round(y * 20)} m` : `${Math.round(-y * 5)} m`;
       marca.style.top = `calc(${progreso * 100}% - 6px)`;
       capa.textContent = nombreCapa(y);
-      for (const { nodo, de, a } of nodos) {
+      for (const { nodo, de, a, panel } of nodos) {
         const dentro = progreso >= de && progreso <= a;
         const borde = de === 0 ? a - progreso : Math.min(progreso - de, a - progreso);
-        nodo.style.opacity = String(dentro ? Math.min(1, borde / 0.025) : 0);
+        nodo.style.opacity = String(dentro ? panel ? 1 : Math.min(1, borde / 0.01) : 0);
         nodo.classList.toggle("activa", dentro);
         if (nodo.inert === dentro) {
           nodo.inert = !dentro;

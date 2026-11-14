@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useExplorerStore } from '../features/explorer/store'
 import { montarPortada } from '../features/portada/montar'
-import DesafioPortada from '../features/portada/DesafioPortada'
-import { DESAFIO, NAVEGACION_PORTADA, SECCIONES } from '../features/portada/contenido'
+import PanelesPortada from '../features/portada/PanelesPortada'
+import { posicionScroll } from '../features/portada/scroll'
+import { NAVEGACION_PORTADA, SECCIONES } from '../features/portada/contenido'
 import '../features/portada/portada.css'
 import '../features/portada/desafio.css'
 
@@ -35,15 +36,19 @@ export default function PortadaPage() {
   }, [navigate])
 
   useEffect(() => {
-    if (location.hash !== '#challenge') return
-    let activo = true
-    const alinear = () => { if (activo && location.hash === '#challenge') document.getElementById('challenge')?.scrollIntoView({ block: 'start', behavior: 'instant' }) }
+    const alinear = () => {
+      if (location.hash !== '#challenge') return
+      const panel = document.getElementById('challenge')
+      if (sinEscena) panel?.scrollIntoView({ block: 'start', behavior: 'instant' })
+      else scrollTo({ top: posicionScroll(SECCIONES.find(s => s.variante === 'reto')!.de), behavior: 'instant' })
+      requestAnimationFrame(() => { if (panel) { panel.inert = false; panel.setAttribute('aria-hidden', 'false'); panel.focus({ preventScroll: true }) } })
+    }
     const frame = requestAnimationFrame(alinear)
-    void document.fonts.ready.then(alinear)
-    const cancelar = () => { activo = false; cancelAnimationFrame(frame) }
-    const eventos = ['wheel', 'pointerdown', 'touchstart', 'keydown'] as const
-    eventos.forEach((evento) => addEventListener(evento, cancelar, { passive: true, once: true }))
-    return () => { cancelar(); eventos.forEach((evento) => removeEventListener(evento, cancelar)) }
+    const enlaces = [...document.querySelectorAll<HTMLAnchorElement>('.portada a[href="#challenge"]')]
+    const navegar = (e: Event) => { e.preventDefault(); if (location.hash !== '#challenge') history.pushState(null, '', '#challenge'); alinear() }
+    enlaces.forEach(a => a.addEventListener('click', navegar))
+    addEventListener('hashchange', alinear)
+    return () => { cancelAnimationFrame(frame); removeEventListener('hashchange', alinear); enlaces.forEach(a => a.removeEventListener('click', navegar)) }
   }, [sinEscena])
 
   return <div className={`portada${sinEscena ? ' portada-sin-escena' : ''}`}>
@@ -59,14 +64,10 @@ export default function PortadaPage() {
             <span className="hud-fila"><i id="mEtiqueta">ORBIT</i><b id="mValor">700 km</b></span>
             <span className="hud-fila"><i>{NAVEGACION_PORTADA.capa}</i><b id="mCapa">Space</b></span>
           </div>
-          <div id="secciones">{sinEscena && <section className="portada-seccion activa">
-            <h1 aria-label={NAVEGACION_PORTADA.proyecto}><span className="t-contorno">{NAVEGACION_PORTADA.proyecto.split(' ')[0]}</span><span className="t-relleno">{NAVEGACION_PORTADA.proyecto.split(' ').slice(1).join(' ')}</span></h1>
-            <p>{SECCIONES[0]!.texto}</p><a className="portada-boton" href={DESAFIO.enlace}>{DESAFIO.boton}</a>
-          </section>}</div>
+          <div id="secciones"><PanelesPortada sinEscena={sinEscena} /></div>
           <div className="portada-pista" id="pista">{NAVEGACION_PORTADA.desplazamiento}</div>
         </div>
       </div>
-      <DesafioPortada />
     </main>
     <footer className="portada-cierre"><span>{NAVEGACION_PORTADA.proyecto}</span><a href="#portada-recorrido">{NAVEGACION_PORTADA.volver}</a></footer>
     <div className="portada-velo" id="velo" />
