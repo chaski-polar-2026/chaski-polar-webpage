@@ -22,7 +22,7 @@ export default function DatosZona({ zona }: { zona: IdZona }) {
       const campo = variablePorId(id)
       const x = id === 'oxigeno_disuelto' && !esPeru(zona) ? null : modelo.valorZona(zona, campo, month)
       return <li key={id}><IconoVariable tipo={tipo} /><span>{campo.nombre}</span><b>{x == null ? 'no data for this zone' : modelo.valorTxt(campo, x)}</b>
-        {(campo.modo === 'regional' || campo.modo === 'indice') && <small>{campo.cobertura}. Not a local measurement.</small>}
+        {(campo.modo === 'regional' || campo.modo === 'indice') && <small>{id === 'oxigeno_disuelto' && !esPeru(zona) ? 'The loaded oxygen series covers the Peruvian coast only.' : `${campo.cobertura}. Not a local measurement.`}</small>}
       </li>
     })}</ul>
     <h4>{v.nombre}</h4>

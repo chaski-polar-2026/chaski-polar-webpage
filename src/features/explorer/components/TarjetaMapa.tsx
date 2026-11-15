@@ -82,7 +82,7 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
           <p className="vista-zona-nota">{chl == null ? 'Phytoplankton: no data for this zone this month.' : 'Green dots reflect the selected month’s chlorophyll pigment, not a count of organisms or fish.'}</p>
           <p className="vista-zona-sub">Species documented off the Peruvian coast</p>
           <ul className="vista-zona-peces">
-            {peces.map((e) => <li key={e.id}>{iconoPez(e.id, e.group)}<span>{e.common_name_en}</span></li>)}
+            {peces.map((e) => <li key={e.id}><span aria-hidden="true">{iconoPez(e.id, e.group)}</span><span>{e.common_name_en}</span></li>)}
           </ul>
           <p className="vista-zona-nota">The species list is for the whole Peruvian coast and does not say what lives in this zone today.</p>
           {section === 'anchoveta' && <a className="zona-pescadores" href="/fishers">For fishers →</a>}

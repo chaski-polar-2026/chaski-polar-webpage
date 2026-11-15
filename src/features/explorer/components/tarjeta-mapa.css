@@ -42,6 +42,7 @@
 .zona-mapa figcaption, .vista-zona-nota { color: #c0d3df; opacity: 1; font-size: .8rem; line-height: 1.5; }
 .zona-mapa figcaption { margin-top: 8px; }
 .zona-region { margin: 3px 0 0; font-size: .85rem; color: #c0d3df; }
+.vista-zona-barra { position: sticky; top: -12px; z-index: 1; padding-block: 8px; background: #071e33; }
 .vista-zona-cuerpo > .zona-mapa > svg { max-height: 340px; }
 .vista-zona-datos { min-width: 0; }
 .vista-zona-cifras { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
