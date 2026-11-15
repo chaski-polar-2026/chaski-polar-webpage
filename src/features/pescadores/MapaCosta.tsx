@@ -34,15 +34,15 @@ export default function MapaCosta({ resaltar, compacto = false }: { resaltar?: s
         <polygon points={tierra} fill="#b9a077" fillOpacity="0.85" />
         <polyline points={linea} fill="none" stroke="#eaf3f5" strokeOpacity="0.7" strokeWidth="1.5" />
         <path d={`M ${px(-85.2)} ${py(-14)} L ${px(-85.2)} ${py(-7.5)}`} stroke="#8fe3f2" strokeWidth="2" strokeDasharray="5 4" markerEnd="url(#flecha)" fill="none" />
-        <text x={px(-85.5)} y={py(-10.8)} fill="#8fe3f2" fontSize="11" transform={`rotate(-90 ${px(-85.5)} ${py(-10.8)})`} textAnchor="middle">Humboldt Current, flowing north</text>
+        <text x={px(-85.5)} y={py(-10.8)} fill="#8fe3f2" fontSize="16" transform={`rotate(-90 ${px(-85.5)} ${py(-10.8)})`} textAnchor="middle">Humboldt Current, flowing north</text>
         <text x={W - 10} y={py(-9)} fill="#4a3d27" fontSize="12" textAnchor="end" fontWeight="600">PERU</text>
-        <text x={W - 10} y={14} fill="#a3bccb" fontSize="10" textAnchor="end">N ↑</text>
+        <text x={W - 10} y={14} fill="#a3bccb" fontSize="16" textAnchor="end">N ↑</text>
         {ZONAS.map((z) => (
           <g key={z.id} opacity={resaltar && resaltar !== z.id ? 0.55 : 1}>
             {resaltar === z.id && <circle cx={px(z.lon)} cy={py(z.lat)} r="14" fill="none" stroke="#8fe3f2" strokeWidth="2" strokeOpacity="0.8" />}
             <circle cx={px(z.lon)} cy={py(z.lat)} r={resaltar === z.id ? 8 : 6} fill={resaltar && resaltar !== z.id ? "#4a7a92" : "#63cde8"} stroke="#071e33" strokeWidth="2" />
-            <text x={px(z.lon) - 12} y={py(z.lat) + 4} textAnchor="end" fill="#eaf3f5" fontSize="13" fontWeight="600">{z.nombre}</text>
-            <text x={px(z.lon) - 12} y={py(z.lat) + 18} textAnchor="end" fill="#8fe3f2" fontSize="11">{resaltar === z.id ? 'Selected zone' : ''}</text>
+            <text x={px(z.lon) - 12} y={py(z.lat) + 4} textAnchor="end" fill="#eaf3f5" fontSize="20" fontWeight="600">{z.nombre}</text>
+            <text x={px(z.lon) - 12} y={py(z.lat) + 18} textAnchor="end" fill="#8fe3f2" fontSize="16">{resaltar === z.id ? 'Selected zone' : ''}</text>
           </g>
         ))}
       </svg>
