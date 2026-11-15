@@ -18,6 +18,7 @@ export default function Relato() {
   const setPanel = useExplorerStore((s) => s.setPanel)
   const [tab, setTab] = useState<'datos' | 'comparar'>(panel.tipo === 'comparar' ? 'comparar' : 'datos')
   useEffect(() => { setTab(panel.tipo === 'comparar' ? 'comparar' : 'datos') }, [panel])
+  useEffect(() => { setTab('datos') }, [section])
   const clave = JSON.stringify(panel)
 
   let vista

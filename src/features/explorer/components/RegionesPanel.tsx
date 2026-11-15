@@ -14,7 +14,7 @@ export default function RegionesPanel({ alElegir }: { alElegir?: () => void }) {
     st.setSection(a.id)
     st.setSidebarTab(a.id === 'anchoveta' ? 'biologia' : 'parametro')
     st.setMonitorZone(null)
-    const primera = variablesDeSeccion(a.id)[0]
+    const primera = variablesDeSeccion(a.id === 'anchoveta' ? 'humboldt' : a.id)[0]
     if (primera) st.setVariable(primera.id)
     st.setPlaying(false)
     st.flyTo(a.pov, 1400)
