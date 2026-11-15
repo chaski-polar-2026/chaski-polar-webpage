@@ -2,6 +2,8 @@
 // en el que aparece cada texto. Las cifras provienen de análisis exploratorios con datos satelitales
 // (clorofila ESA OC-CCI, temperatura NOAA, índice Niño 1+2 NOAA) para cinco zonas de la costa peruana.
 
+import acierto from '../prediccion/perspectiva_acierto.json'
+
 export interface Boton {
   texto: string;
   accion?: "entrar";
@@ -83,11 +85,11 @@ export const NAVEGACION_PORTADA = {
 } as const;
 
 export const DESAFIO = {
-  titulo: "Be An Earth System Trend Detective!",
+  titulo: "The question we are answering",
   subtitulo: "NASA SPACE APPS CHALLENGE 2026",
-  resumen: "Pick a variable, a region and a period to see the rate of change and whether it is statistically significant.",
-  retos: "Challenge",
-  herramienta: "Our tool",
+  resumen: "Is the ocean changing, or are we seeing a short-lived shift?",
+  retos: "The problem today",
+  herramienta: "What our tool does",
   filas: [
     {
       reto: "Earth system trends are hard to verify. A change can look real or disappear depending on the start year you choose.",
@@ -96,7 +98,7 @@ export const DESAFIO = {
     },
     {
       reto: "El Niño can hide or imitate a trend.",
-      herramienta: "Robustness checks. Test several start years and exclude the extreme El Niño years.",
+      herramienta: "Check the effect of El Niño, try different start years and remove extreme years. We also show when no significant trend is detected.",
       pesca: false,
     },
     {
@@ -109,25 +111,31 @@ export const DESAFIO = {
   enlace: "/research#trends",
 } as const;
 
+// Verified counts and altimetry provenance: docs/PORTADA_IMPACTO_FUENTES.md.
+// Skill is a retrospective MAE reduction against monthly climatology, not a future guarantee.
+const mejorasSST = acierto.results.filter(r => r.variable === 'SST' && r.model === 'nino' && r.horizon_months === 1).map(r => r.mae_improvement * 100)
+const rangoSST = `${Math.min(...mejorasSST).toFixed(0)}–${Math.max(...mejorasSST).toFixed(0)}%`
+
 export const HALLAZGOS_PORTADA = {
-  titulo: "What we found",
+  titulo: "Our results in numbers",
   tarjetas: [
-    { cifra: "About 1,100", etiqueta: "statistical tests run", nota: "Controlled for El Niño, with false-discovery correction." },
-    { cifra: "+2.6 cm", etiqueta: "sea level rise per decade, Peru coast, 1998–2025", nota: "From a reanalysis (model-based), not a direct observation." },
-    { cifra: "28 years", etiqueta: "of satellite and reanalysis data (1998–2025)", nota: "Plus longer records for sea-ice extent and sea surface temperature." },
-    { cifra: "7 zones", etiqueta: "5 on the Peru coast and 2 in Antarctica", nota: "" },
+    { icono: 'nivel', cifra: "+3.0 cm", etiqueta: "Sea level rise per decade", nota: "C3S satellite altimetry, 1998–2025. 95% interval: 2.2–3.7 cm/decade." },
+    { icono: 'periodo', cifra: "28 years", etiqueta: "Six variables reviewed", nota: "Core record: 1998–2025; some checks use longer records." },
+    { icono: 'pruebas', prefijo: "More than", cifra: "2,300", etiqueta: "Statistical tests run", nota: "Four published test families, including null results." },
+    { icono: 'temperatura', cifra: rangoSST, etiqueta: "Less error at one month", nota: "Approx. range across zones vs a normal month in past tests. Outlook for sea temperature only." },
   ],
-  limite: "A result with no significant trend is also a result, and we show it the same way.",
+  limite: "No robust Antarctic link was detected with these data. Past accuracy does not guarantee future results.",
 } as const;
 
 export const DATOS_PORTADA = {
-  titulo: "Built on open data",
+  titulo: "Powered by open data",
   tarjetas: [
-    { titulo: "Time series by zone", texto: "Monthly series of chlorophyll, temperature, sea level, oxygen and sea ice, from NASA and other agencies." },
-    { titulo: "Significance tests", texto: "Mann–Kendall test, Sen's slope with a 95% interval, and false-discovery correction." },
-    { titulo: "Robustness checks", texto: "We test whether a trend survives a change of start year and the removal of extreme El Niño years." },
+    { icono: 'satelite', titulo: "Satellites and open records", texto: "ESA OC-CCI with NASA sensors for chlorophyll; NOAA for temperature; Copernicus Marine reanalyses; NSIDC for Antarctic ice." },
+    { icono: 'pruebas', titulo: "Tests, not assumptions", texto: "Mann–Kendall checks for a trend. Multiple-test correction limits false positives when many relationships are tested." },
+    { icono: 'codigo', titulo: "A traceable analysis", texto: "Source records, code and published tables let us trace and reproduce the results." },
   ],
-  fuentes: "Data: NASA (MODIS-Aqua via Giovanni), ESA OC-CCI, NOAA (ERSST v5, Coral Reef Watch), Copernicus Marine, NSIDC.",
+  fuentes: "Read the sources and methods",
+  enlace: "/research#fuentes",
 } as const;
 
 // Nombre de la capa según la altura de la cámara (y = 0 es la superficie; 1 unidad = 5 m bajo el agua)

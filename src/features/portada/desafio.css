@@ -8,7 +8,7 @@
 .portada .portada-cierre span { display: inline-flex; align-items: center; font: 600 20px var(--hud); }
 
 .portada .portada-panel { width: min(820px, 90vw); padding: 24px; color: #eaf3f5; border: 1px solid rgba(99, 205, 232, .28); border-radius: 6px; text-align: left;
-  background: rgba(7, 30, 51, calc(var(--panel-a, .62) + var(--panel-hover, 0)));
+  background: rgba(7, 30, 51, clamp(.78, calc(var(--panel-a, .62) + var(--panel-hover, 0)), .98));
   translate: calc(var(--px, 0) * -10px) calc(var(--py, 0) * -6px + var(--entra, 0) * 36px);
   scale: calc(1 - var(--entra, 0) * 0.04);
   transition: background-color .25s, border-color .25s, opacity .2s linear; }
@@ -44,4 +44,36 @@
   .portada .portada-datos { margin: 12px 0; }
   .portada .portada-panel h3 { font-size: 19px; }
   .portada .portada-cierre { padding-inline: 16px; }
+}
+
+/* Information cards share the existing panel activation, parallax and scroll windows. */
+.portada .portada-pregunta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.portada .portada-pregunta article,
+.portada .portada-cifras article,
+.portada .portada-datos article { min-width: 0; padding: 16px; border: 1px solid rgba(99, 205, 232, .24); border-radius: 10px; background: rgba(2, 12, 24, .62); }
+.portada .portada-panel .portada-icono { display: block; width: 28px; height: 28px; margin-bottom: 10px; color: #8fe3f2; }
+.portada .portada-panel .portada-cifra { color: #8fe3f2; font: 600 clamp(30px, 3vw, 40px)/1.1 var(--hud); margin: 0 0 8px; }
+.portada .portada-cifra .portada-prefijo { margin-right: .3em; font-size: .45em; vertical-align: middle; }
+.portada .portada-panel article h3 { color: #eaf3f5; font-size: 20px; }
+.portada .portada-panel .portada-nota { color: #c0d3df; }
+.portada .portada-datos { gap: 12px; }
+.portada .portada-fuentes { display: inline-flex; align-items: center; min-height: 44px; color: #8fe3f2; font-size: 14px; text-underline-offset: 4px; }
+.portada .portada-fuentes:focus-visible { outline: 2px solid #8fe3f2; outline-offset: 4px; }
+@media (max-width: 640px) {
+  .portada .portada-pregunta { grid-template-columns: minmax(0, 1fr); gap: 8px; margin-top: 10px; }
+  .portada .portada-pregunta article, .portada .portada-cifras article, .portada .portada-datos article { padding: 10px; }
+  .portada .portada-panel article h3 { font-size: 17px; }
+  .portada .portada-panel .portada-cifra { font-size: 28px; white-space: normal; }
+  .portada .portada-cifra .portada-prefijo { display: block; font-size: 13px; }
+  .portada .portada-panel .portada-icono { width: 24px; height: 24px; margin-bottom: 6px; }
+  .portada .portada-datos article { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 10px; }
+  .portada .portada-datos .portada-icono { grid-row: span 2; }
+}
+@media (max-width: 640px) and (max-height: 740px) {
+  .portada .portada-panel { padding: 10px 12px; }
+  .portada .portada-cifras { gap: 8px; margin-block: 10px; }
+  .portada .portada-cifras article { padding: 8px; }
+  .portada .portada-panel .portada-cifra { font-size: 26px; margin-bottom: 4px; }
+  .portada .portada-panel .portada-icono { width: 20px; height: 20px; margin-bottom: 4px; }
+  .portada .portada-panel article h3 { font-size: 16px; }
 }
