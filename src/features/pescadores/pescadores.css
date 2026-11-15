@@ -1,0 +1,14 @@
+.pescadores h2 { margin: 4px 0 10px; }
+.pesc-rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-top: 16px; }
+.pesc-ficha { padding: 16px 18px; border: 1px solid rgba(143, 227, 242, .28); border-radius: 8px; background: rgba(7, 30, 51, .55); }
+.pesc-ficha header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 8px; }
+.pesc-ficha h3 { margin: 0; font-size: 1.1rem; }
+.pesc-ficha i { opacity: .8; font-size: .9rem; }
+.pesc-grupo { margin-left: auto; padding: 2px 8px; border: 1px solid rgba(143, 227, 242, .4); border-radius: 999px; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase; color: #8fe3f2; }
+.pesc-ficha p { margin: 6px 0; font-size: .92rem; line-height: 1.45; }
+.pesc-ficha dl { margin: 8px 0 0; font-size: .88rem; }
+.pesc-ficha dt { margin-top: 8px; font-weight: 600; color: #8fe3f2; }
+.pesc-ficha dd { margin: 2px 0 0; line-height: 1.45; }
+.pesc-fuente { font-size: .8rem; }
+.pesc-pendiente { opacity: .75; font-size: .82rem !important; }
+.pesc-pasos { margin: 14px 0; padding-left: 1.2rem; display: grid; gap: 10px; line-height: 1.5; }

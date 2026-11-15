@@ -56,6 +56,7 @@ export default function Header() {
         <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/explorer" onClick={irAExplorar} aria-current={pathname === '/explorer' ? 'page' : undefined}>Explore</Link>
         <a className="rounded-pill px-3 py-1.5 no-underline transition-colors" href="/research" onClick={irAHallazgos} aria-current={pathname === '/research' && seccion === 'findings' ? 'location' : undefined}>Research</a>
         <a className="rounded-pill px-3 py-1.5 no-underline transition-colors" href={pathname === '/research' ? '#trends' : '/research#trends'} aria-current={pathname === '/research' && seccion === 'trends' ? 'location' : undefined}>Trends</a>
+        <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/fishers" aria-current={pathname === "/fishers" ? "page" : undefined}>Fishers</Link>
         <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/juego">Game</Link>
       </nav>
     </header>
