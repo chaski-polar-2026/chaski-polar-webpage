@@ -77,3 +77,6 @@
 }
 
 .lienzo-globo[data-zone-phase="map"] > :is(.globe-toolbar,.tarjeta-mapa,.timeline-panel,.ver-relato,.lectura) { visibility: hidden; }
+
+.zona-mapa .zona-escala, .zona-mapa figcaption .zona-escala { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: .72rem; opacity: .9; }
+.zona-escala i { flex: 1; max-width: 160px; height: 8px; border-radius: 4px; border: 1px solid rgba(143, 227, 242, .35); }

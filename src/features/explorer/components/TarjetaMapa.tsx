@@ -1,5 +1,6 @@
-import { useEffect, useId, useRef } from 'react'
-import MapaCosta, { COSTA, LON0, ZONAS, px, py } from '../../pescadores/MapaCosta'
+import { useEffect, useId, useRef, useState } from 'react'
+import MapaCosta, { COSTA, K, LAT0, LON0, ZONAS, px, py } from '../../pescadores/MapaCosta'
+import { degradadoClorofila, recorteClorofila } from '../lib/recorteClorofila'
 import { iconoPez } from '../../pescadores/iconosPez'
 import especies from '../data/especies.json'
 import { useExplorer } from '../ExplorerContext'
@@ -19,7 +20,7 @@ const pseudo = (i: number) => { const s = Math.sin(i * 127.1 + 311.7) * 43758.54
 
 /** Vista ampliada y centrada de una zona: mapa acercado, datos del mes y especies documentadas en la costa peruana. */
 function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; cerrar: () => void }) {
-  const { modelo } = useExplorer()
+  const { modelo, mapa, mapaEstado, pedirMapa } = useExplorer()
   const month = useExplorerStore((s) => s.month)
   const section = useExplorerStore(s => s.section)
   const phase = useExplorerStore(s => s.zonePhase)
@@ -56,6 +57,16 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
   const tierra = `${costa} ${px(LON0 + 30)},${py(-18.35)} ${px(LON0 + 30)},${py(-3.2)}`
   const id = `zm-${uid}`
   const cx0 = px(z.lon), cy0 = py(z.lat)
+  // Campo real de clorofila del satélite (el mismo dato y colores del globo en vista Detailed), recortado a esta zona
+  const [campo, setCampo] = useState<{ url: string; escala: string; lonO: number; latN: number; lonE: number; latS: number } | null>(null)
+  useEffect(() => { pedirMapa() }, [pedirMapa])
+  useEffect(() => {
+    const capa = mapa.capas.clorofila
+    if (mapaEstado !== 'listo' || !capa || !peru) { setCampo(null); return }
+    const lonO = LON0 + (x0 - 70) / K, lonE = LON0 + (x0 + ancho + 70) / K, latN = LAT0 - (y0 - 70) / K, latS = LAT0 - (y0 + alto + 70) / K
+    const url = recorteClorofila(capa, month - capa.i0, lonO, lonE, latN, latS)
+    setCampo(url ? { url, escala: degradadoClorofila(capa), lonO, latN, lonE, latS } : null)
+  }, [mapa, mapaEstado, month, peru, x0, y0, ancho, alto])
   // Eje perpendicular a la costa (aprox. tramo Paita–Ilo): u apunta al mar
   const ux = -0.79, uy = 0.62
   // Abscisa de la costa a una altura dada, para colocar plancton y olas en el mar
@@ -118,6 +129,7 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
           {/* Mar: degradado perpendicular a la costa, bandas de profundidad y olas */}
           <rect x={x0 - 300} y={y0 - 300} width={ancho + 600} height={alto + 600} fill={`url(#${id}-mar)`} />
           {bandas.map((dx, i) => <polyline key={dx} points={costa} transform={`translate(${-dx} 0)`} fill="none" stroke="#bfe9f2" strokeOpacity={[.22, .17, .13, .09][i]} strokeWidth=".9" />)}
+          {campo && <image href={campo.url} x={px(campo.lonO)} y={py(campo.latN)} width={(campo.lonE - campo.lonO) * K} height={(campo.latN - campo.latS) * K} preserveAspectRatio="none" opacity=".92" />}
           <path d={olas} fill="none" stroke="#8fe3f2" strokeOpacity=".18" strokeWidth=".6" strokeLinecap="round" />
           {/* Tierra: arena cerca de la costa, ocre y pardo hacia el interior, sierras y sombra */}
           <polygon points={tierra} fill={`url(#${id}-suelo)`} />
@@ -131,7 +143,7 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
           <polyline points={costa} fill="none" stroke="#ffffff" strokeOpacity=".3" strokeWidth="3.6" strokeLinejoin="round" strokeLinecap="round" />
           <polyline points={costa} fill="none" stroke="#eaf3f5" strokeOpacity=".7" strokeWidth="1.6" />
           {/* Fitoplancton: manchas degradadas y destellos sobre las grandes */}
-          {puntos.map((p, i) => <g key={i}>
+          {!campo && puntos.map((p, i) => <g key={i}>
             {[0, 1, 2].map((k) => { const a = pseudo(i * 7 + k + 900) * 6.28, d = k === 0 ? 0 : 1.6 + pseudo(i * 3 + k) * 2.6, rr = k === 0 ? 1.5 + p.r * 0.22 : 0.8 + pseudo(i + k * 11) * 0.9, cx = p.x + Math.cos(a) * d, cy = p.y + Math.sin(a) * d; return <g key={k}><circle cx={cx} cy={cy} r={rr} fill="#46c98f" stroke="#0b5a43" strokeWidth=".35" /><circle cx={cx - rr * 0.3} cy={cy - rr * 0.3} r={rr * 0.35} fill="#c9ffe0" /></g> })}
           </g>)}
           {/* Corriente de Humboldt: trazo discontinuo con punta suave (animado salvo reduced-motion) */}
@@ -141,11 +153,12 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
           <circle cx={cx0} cy={cy0} r="3.6" fill="#63cde8" stroke="#071e33" strokeWidth="1.6" />
           <circle className="zm-anillo" cx={cx0} cy={cy0} r="7" fill="none" stroke="#8fe3f2" strokeOpacity=".75" strokeWidth="1.1" />
           <text x={cx0 - 11} y={cy0 + 3} textAnchor="end" fontSize="8" fontWeight="600" fill="#eaf3f5" stroke="#071e33" strokeWidth="2.5" paintOrder="stroke">{z.nombre}</text>
-        </svg><figcaption>Schematic map, not to scale. Arrow: Humboldt Current, flowing north.</figcaption></figure> : <MapaAntartico zona={zona} />}
+        </svg><figcaption>Schematic map, not to scale. Arrow: Humboldt Current, flowing north.
+          {campo && <span className="zona-escala"><span>Less chlorophyll</span><i style={{ background: campo.escala }} aria-hidden="true" /><span>More</span></span>}</figcaption></figure> : <MapaAntartico zona={zona} />}
         <div className="vista-zona-datos">
           {section !== 'anchoveta' && <DatosZona zona={zona} />}
           {peru && <section className="zona-biologia" aria-label="Coast-wide biological context">
-          <p className="vista-zona-nota">{chl == null ? 'Phytoplankton: no data for this zone this month.' : 'Green dots reflect the selected month’s chlorophyll pigment, not a count of organisms or fish.'}</p>
+          <p className="vista-zona-nota">{chl == null ? 'Phytoplankton: no data for this zone this month.' : (campo ? 'Sea colours show the satellite chlorophyll pigment for the selected month, with the same scale as the Detailed globe view. It is not a count of organisms or fish.' : 'Green dots reflect the selected month’s chlorophyll pigment, not a count of organisms or fish.')}</p>
           <p className="vista-zona-sub">Species documented off the Peruvian coast</p>
           <ul className="vista-zona-peces">
             {peces.map((e) => <li key={e.id}><span aria-hidden="true">{iconoPez(e.id, e.group)}</span><span>{e.common_name_en}</span></li>)}
