@@ -1,3 +1,4 @@
+import IconoJuego from './IconoJuego'
 import { useState, type PointerEvent } from 'react'
 import type { Entrada } from '../motor/entrada'
 import { NOMBRE_ZONA, type Mar } from '../motor/mar'
@@ -35,7 +36,7 @@ function Historico({ puntos, mesFin, tipo, etiqueta }: { puntos: PuntoHistorico[
 /** Lo necesario para sobrevivir permanece visible; el parte científico se consulta a voluntad. */
 export default function HudCardumen({ entrada, mar, compacto, alternar }: { entrada: Entrada | null; mar: Mar | null; compacto: boolean; alternar: () => void }) {
   const hud = useHud((s) => s.hud)
-  const [parteAbierto, setParteAbierto] = useState(true)
+  const [parteAbierto, setParteAbierto] = useState(() => !matchMedia('(max-width: 760px)').matches)
   if (!hud) return null
   const pctComida = Math.round(hud.alimento * 100)
   const supervivencia = hud.inicial > 0 ? hud.peces / hud.inicial : 0
@@ -70,18 +71,18 @@ export default function HudCardumen({ entrada, mar, compacto, alternar }: { entr
       <section className="bitacora-supervivencia juego-caja" aria-label="School status">
         <div className="bitacora-indicadores">
           <div className="bitacora-indicador">
-            <span>School</span><b>{n0.format(hud.peces)} <small>fish</small></b>
+            <span><IconoJuego tipo="pez" />School</span><b>{n0.format(hud.peces)} <small>fish</small></b>
             <Medidor valor={supervivencia} tono="hielo" etiqueta="School survival" />
             <small>{Math.round(supervivencia * 100)} % of the initial generation</small>
           </div>
           <div className="bitacora-indicador">
-            <span>Energy</span><b>{Math.round(hud.energia * 100)} <small>%</small></b>
+            <span><IconoJuego tipo="energia" />Energy</span><b>{Math.round(hud.energia * 100)} <small>%</small></b>
             <Medidor valor={hud.energia} tono={hud.energia < 0.25 ? 'alerta' : 'salvia'} etiqueta="School energy" />
             <small>{hud.energia < 0.25 ? 'You need food' : 'Find food to maintain it'}</small>
           </div>
         </div>
         <div className="bitacora-profundidad" aria-label={`Approximate depth: ${profundidad} meters; low oxygen below ${limiteOxigeno} meters`}>
-          <div className="bitacora-profundidad-titulo"><span>Depth</span><b>~{profundidad} m</b></div>
+          <div className="bitacora-profundidad-titulo"><span><IconoJuego tipo="profundidad" />Depth</span><b>~{profundidad} m</b></div>
           <div className="bitacora-profundidad-escala" aria-hidden="true">
             <div className="bitacora-profundidad-riel">
               <span className="bitacora-profundidad-zona" style={{ top: `${limitar(-hud.yOxigeno / FONDO * 100)}%` }} />

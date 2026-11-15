@@ -58,6 +58,7 @@ export default function MenuCardumen({ historia, cardumen, escena, rapidez, alCa
             <button type="button" className="juego-caja" onClick={cardumen}>Go to the anchoveta campaign</button>
             <a className="juego-caja" href="/extra-game/juego.html">Extra game: From Ice to Anchovy <span aria-hidden="true">↗</span></a>
           </div>
+          <p className="menu-carta-controles">Swim with <kbd>WASD</kbd> or arrow keys. Use <kbd>Space</kbd> to rise and <kbd>C</kbd> to dive. On touchscreens, use the joystick and depth buttons.</p>
           <fieldset className="menu-carta-ritmo">
             <legend>Expedition pace</legend>
             {RITMOS.map((ritmo) => <label key={ritmo.valor}>

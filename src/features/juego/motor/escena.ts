@@ -56,6 +56,7 @@ export function crearMotor(lienzo: HTMLCanvasElement): Motor {
   const vaciar = () => {
     escena.traverse((o) => {
       if (o instanceof THREE.Mesh || o instanceof THREE.Points || o instanceof THREE.Sprite) {
+        if (o instanceof THREE.InstancedMesh) o.dispose();
         o.geometry.dispose();
         for (const m of [o.material].flat() as THREE.Material[]) {
           // Todos los cuadros, también los que no estaban visibles al salir de la escena.
@@ -72,9 +73,26 @@ export function crearMotor(lienzo: HTMLCanvasElement): Motor {
     escena.background = null;
   };
 
-  // ?depurar=1 guarda en window.__juego cuántas piezas y triángulos se dibujan por cuadro (para medir rendimiento)
+  // ?depurar=1 exposes render counts and real, unclamped frame timing in window.__juego.
+  // A bounded sample avoids collecting an unbounded trace during longer games.
+  const cuadros: number[] = [];
+  let cuadroAnterior = performance.now(), publicarEn = cuadroAnterior + 1000;
   const depurar = new URLSearchParams(location.search).has("depurar")
-    ? (calls: number, tris: number) => { (window as unknown as { __juego?: unknown }).__juego = { calls, tris }; }
+    ? (calls: number, tris: number) => {
+      const ahora = performance.now(), ms = ahora - cuadroAnterior;
+      cuadroAnterior = ahora;
+      if (document.visibilityState !== 'visible') { cuadros.length = 0; return; }
+      if (ms > 0 && ms < 1000) cuadros.push(ms);
+      if (cuadros.length > 300) cuadros.shift();
+      if (ahora < publicarEn || !cuadros.length) return;
+      publicarEn = ahora + 1000;
+      const ordenados = [...cuadros].sort((a, b) => a - b);
+      const promedio = cuadros.reduce((total, n) => total + n, 0) / cuadros.length;
+      (window as unknown as { __juego?: unknown }).__juego = {
+        calls, tris, fps: 1000 / promedio, frameMs: promedio,
+        p95Ms: ordenados[Math.ceil(ordenados.length * 0.95) - 1], samples: cuadros.length,
+      };
+    }
     : null;
   // el contorno dibuja la escena dos veces: el conteo se reinicia a mano una vez por cuadro
   renderer.info.autoReset = false;

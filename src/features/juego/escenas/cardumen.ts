@@ -16,6 +16,8 @@ import { sonar } from "../motor/sonido";
 import { sprite } from "../personajes/sprites";
 import { crearFondoCardumenVoxel, crearPersonajeVoxel } from "../motor/voxel";
 
+import { crearDiorama } from "../motor/diorama";
+
 const LARGO_ZONA = 30;
 const X_MIN = -16, X_MAX = 9;
 const Y_MIN = -12.5, Y_MAX = -0.6;
@@ -25,7 +27,7 @@ const VELOCIDAD = 7, VELOCIDAD_VERTICAL = 6;
 const IMPULSO = { fuerza: 2.3, dura: 0.55, espera: 2.5, energia: 0.06 };
 const ZONA_INICIAL: ZonaMar = "chimbote";
 const PECES_POR_DIBUJO = 250, DIBUJOS_MAX = 40;
-const AGUA_FRIA = new THREE.Color(0x2a86ad), AGUA_CALIDA = new THREE.Color(0x5f8a63);
+const AGUA_FRIA = new THREE.Color(0x124462), AGUA_CALIDA = new THREE.Color(0x305a57);
 
 export const zonaEn = (z: number): ZonaMar => ZONAS_PERU[Math.min(ZONAS_PERU.length - 1, Math.max(0, Math.floor(-z / LARGO_ZONA)))]!;
 const centroZona = (zona: ZonaMar) => -(ZONAS_PERU.indexOf(zona as (typeof ZONAS_PERU)[number]) + 0.5) * LARGO_ZONA;
@@ -93,66 +95,7 @@ function crearMundo(escena: THREE.Scene): Mundo {
   escena.add(sol);
 
   const largo = -Z_MIN + 60;
-  // rocas, estrellas de mar y erizos: cada tipo es un solo dibujo repetido (instancias), con su contorno
-  const repetir = (geo: THREE.BufferGeometry, n: number, colores: number[], colocar: (i: number, pos: THREE.Vector3, esc: THREE.Vector3, rot: THREE.Euler) => void) => {
-    const malla = new THREE.InstancedMesh(geo, toon(0xffffff), n);
-    const m = new THREE.Matrix4(), pos = new THREE.Vector3(), esc = new THREE.Vector3(1, 1, 1), rot = new THREE.Euler(), q = new THREE.Quaternion(), col = new THREE.Color();
-    for (let i = 0; i < n; i++) {
-      esc.set(1, 1, 1); rot.set(0, 0, 0);
-      colocar(i, pos, esc, rot);
-      malla.setMatrixAt(i, m.compose(pos, q.setFromEuler(rot), esc));
-      malla.setColorAt(i, col.setHex(colores[i % colores.length]!));
-    }
-    escena.add(malla);
-  };
-  const enFondo = (x: number) => -14 + Math.max(0, x - 6) * 0.9;
-  repetir(new THREE.IcosahedronGeometry(1, 0), 60, [0x6d6a63, 0x5b5e5f, 0x7a6f62], (i, pos, esc, rot) => { // rocas, más juntas cerca de la costa
-    const x = i % 3 ? azar(0, 9) : azar(-18, 9);
-    pos.set(x, enFondo(x) + 0.4, azar(Z_MIN, Z_MAX));
-    esc.set(azar(0.8, 2.5), azar(0.5, 1.6), azar(0.8, 2.5));
-    rot.set(azar(0, 3), azar(0, 3), 0);
-  });
-  repetir(new THREE.ConeGeometry(0.4, 0.15, 5), 40, [0xe4572e, 0xf39c12, 0xd96aa7], (_i, pos) => { const x = azar(-16, 8); pos.set(x, enFondo(x) + 0.3, azar(Z_MIN, Z_MAX)); }); // estrellas de mar
-  repetir(new THREE.IcosahedronGeometry(0.3, 0), 30, [0x7b2d8e, 0x3b2a4f], (_i, pos) => { const x = azar(-16, 8); pos.set(x, enFondo(x) + 0.3, azar(Z_MIN, Z_MAX)); }); // erizos
-  // algas: un solo dibujo repetido (instancias); se mecen en la tarjeta gráfica, más arriba más se mueven
-  const N_ALGAS = 90;
-  const tiempoAlgas = { value: 0 };
-  const geoAlga = new THREE.CylinderGeometry(0.1, 0.16, 6, 5, 8).translate(0, 3, 0);
-  const matAlga = sinContorno(toon(0xffffff));
-  matAlga.onBeforeCompile = (sh) => {
-    sh.uniforms.uT = tiempoAlgas;
-    sh.vertexShader = "uniform float uT;\n" + sh.vertexShader.replace("#include <begin_vertex>",
-      "#include <begin_vertex>\nfloat fase = dot(instanceMatrix[3].xyz, vec3(0.7, 0.0, 1.3));\nfloat h = position.y / 6.0;\n" +
-      "transformed.x += sin(uT * 0.9 + fase + h * 2.5) * 0.7 * h * h;\ntransformed.z += cos(uT * 0.7 + fase) * 0.3 * h * h;");
-  };
-  const algas = new THREE.InstancedMesh(geoAlga, matAlga, N_ALGAS);
-  const verdes = [0x6b8f3a, 0x8a9a3b, 0x557a35].map((h) => new THREE.Color(h));
-  const m4 = new THREE.Matrix4(), escala = new THREE.Vector3(), q = new THREE.Quaternion(), pAlga = new THREE.Vector3();
-  for (let i = 0; i < N_ALGAS; i++) {
-    const x = i % 4 ? azar(1, 9) : azar(-14, 1);
-    pAlga.set(x, -14 + Math.max(0, x - 6) * 0.9, azar(Z_MIN, Z_MAX));
-    escala.set(azar(0.8, 1.3), azar(0.6, 1.4), azar(0.8, 1.3));
-    algas.setMatrixAt(i, m4.compose(pAlga, q, escala));
-    algas.setColorAt(i, verdes[i % 3]!);
-  }
-  escena.add(algas);
-  // rayos de luz desde la superficie
-  const rayos: THREE.Mesh[] = [];
-  for (let i = 0; i < 14; i++) {
-    const r = new THREE.Mesh(new THREE.CylinderGeometry(0.5, azar(2, 3.5), 14, 7, 1, true),
-      sinContorno(new THREE.MeshBasicMaterial({ color: 0xe6f8ff, transparent: true, opacity: 0.06, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })));
-    r.position.set(azar(-16, 8), -7, azar(Z_MIN, Z_MAX));
-    r.rotation.z = 0.18;
-    escena.add(r);
-    rayos.push(r);
-  }
-  // plancton y partículas en suspensión
-  const n = 2500, pos = new Float32Array(n * 3);
-  for (let i = 0; i < n; i++) pos.set([azar(-18, 10), azar(-13.5, -0.3), azar(Z_MIN, Z_MAX)], i * 3);
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-  const plancton = new THREE.Points(geo, sinContorno(new THREE.PointsMaterial({ color: 0xe9fff4, size: 0.07, transparent: true, opacity: 0.6, depthWrite: false })));
-  escena.add(plancton);
+  const animarDiorama = crearDiorama(escena, { xMin: X_MIN, xMax: X_MAX, zMin: Z_MIN, zMax: Z_MAX, suelo: -13.8 });
 
   const superficie = new THREE.Mesh(new THREE.PlaneGeometry(80, largo).rotateX(Math.PI / 2),
     sinContorno(new THREE.MeshBasicMaterial({ color: 0xbfe9f5, transparent: true, opacity: 0.35, side: THREE.DoubleSide, depthWrite: false })));
@@ -176,9 +119,7 @@ function crearMundo(escena: THREE.Scene): Mundo {
   return {
     capaOxigeno,
     animar(t) {
-      tiempoAlgas.value = t;
-      rayos.forEach((r, i) => { (r.material as THREE.MeshBasicMaterial).opacity = 0.045 + 0.025 * Math.sin(t * 0.7 + i); });
-      plancton.position.y = Math.sin(t * 0.3) * 0.3;
+      animarDiorama(t);
     },
   };
 }

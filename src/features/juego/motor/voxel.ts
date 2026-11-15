@@ -7,7 +7,7 @@ export const PIXEL_VOXEL = VOXEL * 0.5
 type Cubo = [number, number, number, number]
 
 const PIEDRA = [0x4d6274, 0x5b7083, 0x41566a, 0x506a7d]
-const ARENA = [0x7d9db0, 0x6f90a4, 0x89a8ba]
+const ARENA = [0xb9a077, 0xa78f6c, 0xc4ad88]
 const HIELO = [0xeaf6fd, 0xd8eef8, 0xffffff]
 const elegir = (colores: number[], indice: number) => colores[Math.abs(indice) % colores.length]!
 
@@ -120,16 +120,18 @@ export function crearPersonajeVoxel(escena: THREE.Scene, canvas: HTMLCanvasEleme
 /** Lecho voxel para el corredor costero peruano; comparte escala y paleta del prototipo. */
 export function crearFondoCardumenVoxel(escena: THREE.Scene, zMin: number, zMax: number): void {
   const cubos: Cubo[] = []
-  for (let x = -95; x <= 48; x += 2) for (let z = Math.floor(zMin / VOXEL); z <= Math.ceil(zMax / VOXEL); z += 2) {
-    const h = 3 + Math.round(Math.sin(x * 0.09) * 1.3 + Math.cos(z * 0.04) * 1.5 + Math.sin((x + z) * 0.035))
-    for (let y = h - 4; y <= h; y++) cubos.push([x, y, z, elegir(y === h ? ARENA : PIEDRA, x + y + z)])
+  // Contiguous 0.8 m blocks, one exposed surface per cell instead of five buried layers.
+  // Highest terrain remains below Y_MIN (-12.5); decorative geometry cannot hide food.
+  for (let x = -100; x <= 56; x += 4) for (let z = Math.floor(zMin / VOXEL); z <= Math.ceil(zMax / VOXEL); z += 4) {
+    const h = -1 + Math.round(Math.sin(x * 0.09) + Math.cos(z * 0.04) + Math.sin((x + z) * 0.035))
+    cubos.push([x, h, z, elegir(ARENA, x + z)])
   }
   // Afloramientos laterales voxel fuera del corredor navegable principal.
   for (let i = 0; i < 32; i++) {
-    const cx = i % 2 ? -82 - (i % 9) : 45 + (i % 8), cz = Math.floor(zMin / VOXEL) + Math.floor((i + 1) * (zMax - zMin) / (VOXEL * 34)), radio = 3 + i % 4
+    const cx = i % 2 ? -100 - (i % 9) : 66 + (i % 8), cz = Math.floor(zMin / VOXEL) + Math.floor((i + 1) * (zMax - zMin) / (VOXEL * 34)), radio = 3 + i % 4
     for (let x = -radio; x <= radio; x++) for (let z = -radio; z <= radio; z++) for (let y = 0; y < radio; y++) if (Math.hypot(x, z, y / 0.8) < radio && Math.hypot(x, z, y / 0.8) > radio - 1.5) cubos.push([cx + x, 5 + y, cz + z, elegir(PIEDRA, x + y + z)])
   }
-  const lecho = instanciar(cubos, new THREE.BoxGeometry(VOXEL, VOXEL, VOXEL))
+  const lecho = instanciar(cubos, new THREE.BoxGeometry(VOXEL * 4, VOXEL * 4, VOXEL * 4))
   // Los índices Y del terreno y los afloramientos describen relieve relativo al lecho.
   // Sin este desplazamiento quedaban alrededor de y=0 y formaban una rejilla sobre la superficie.
   lecho.position.y = -14

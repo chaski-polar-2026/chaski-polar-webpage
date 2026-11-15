@@ -1,3 +1,4 @@
+@import './diorama.css';
 /* Dirección Bitácora oceanográfica. UI de juego; los documentos del escritorio conservan su material. */
 .juego.bitacora {
   --oceano-950: #071b29; --oceano-900: #0b2435; --oceano-800: #143445; --oceano-700: #345361;

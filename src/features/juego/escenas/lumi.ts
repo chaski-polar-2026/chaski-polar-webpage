@@ -12,6 +12,7 @@ import { sonar } from "../motor/sonido";
 import { dibujarFito, dibujarLumi, dibujarNutriente } from "../personajes/antartida";
 import { sprite } from "../personajes/sprites";
 import { crearEntornoLumiVoxel, crearPersonajeVoxel, crearPlacaHieloVoxel } from "../motor/voxel";
+import { crearDiorama } from "../motor/diorama";
 
 export const DIVISIONES_META = 3;
 const X = 14, Y_MIN = -13, Y_MAX = -0.8, Z = 5;
@@ -61,6 +62,8 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
     sol.position.set(0, 20, 5);
     escena.add(sol);
     crearEntornoLumiVoxel(escena);
+    const animarDiorama = crearDiorama(escena, { xMin: -X, xMax: X, zMin: -9, zMax: 2, suelo: -13.6 });
+    const movimientoReducido = matchMedia('(prefers-reduced-motion: reduce)');
     const lumiVoxel = crearPersonajeVoxel(escena, sprite("lumi", dibujarLumi), 0.07, 2);
 
     // hielo marino: placas con carámbanos que derivan en la superficie y dan sombra debajo
@@ -162,7 +165,8 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
         estado.bajoHielo = bajoHieloEn(lumi.posicion.x);
         for (const r of rayos) {
           const m = r.material as THREE.MeshBasicMaterial;
-          m.opacity += ((bajoHieloEn(r.position.x) ? 0 : 0.09 + 0.03 * Math.sin(t + r.position.x)) - m.opacity) * Math.min(1, dt * 3);
+          const brillo = movimientoReducido.matches ? 0.09 : 0.09 + 0.03 * Math.sin(t + r.position.x);
+          m.opacity += ((bajoHieloEn(r.position.x) ? 0 : brillo) - m.opacity) * Math.min(1, dt * 3);
         }
 
         // luz: se apaga con la profundidad; bajo el hielo casi no llega
@@ -195,7 +199,8 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
           }
           f.p.sprite.material.rotation = Math.sin(t * 0.4 + f.fase) * 0.3;
         }
-        nieve.position.y = -((t * 0.2) % 2);
+        nieve.position.y = movimientoReducido.matches ? 0 : -((t * 0.2) % 2);
+        animarDiorama(t);
 
         if (!detenido) {
           // crecer necesita las dos cosas a la vez: luz y nutrientes

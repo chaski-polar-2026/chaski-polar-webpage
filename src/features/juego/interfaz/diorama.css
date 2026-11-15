@@ -1,0 +1,80 @@
+/* Scoped expedition UI. The stage attribute gives these rules priority over the base UI. */
+.juego.bitacora[data-etapa] {
+  --panel: #0c2c4a; --borde: #386586; --corriente: #63cde8; --verde: #3fc28c;
+  --hielo-100: #f0f8fc; --hielo-300: #bfdce8; --nino: #f5b58e;
+}
+.juego.bitacora[data-etapa] *, .juego.bitacora[data-etapa] *::before, .juego.bitacora[data-etapa] *::after { box-sizing: border-box; }
+.juego.bitacora[data-etapa] :is(button, a, summary, input):focus-visible { outline: 3px solid #8fe3f2; outline-offset: 3px; }
+.juego.bitacora[data-etapa] button.juego-caja, .juego.bitacora[data-etapa] a.juego-caja {
+  min-height: 48px; border-radius: 2px !important;
+  corner-shape: bevel;
+  border-color: #467b9e; background: #0c2c4a; color: #f0f8fc;
+  transition: background-color .15s, border-color .15s;
+}
+.juego.bitacora[data-etapa] :is(button, a).juego-caja:not(:disabled):hover { background: #174766; border-color: #8fe3f2; }
+.juego.bitacora[data-etapa] :is(button, a).juego-caja:not(:disabled):active { background: #245974; }
+.juego.bitacora[data-etapa] :is(button, a).juego-caja.principal { color: #062438; background: #63cde8; border-color: #8fe3f2; font-weight: 700; }
+.juego.bitacora[data-etapa] :is(button, a).juego-caja.principal:hover { background: #8fe3f2; }
+.juego.bitacora[data-etapa] button.juego-caja:disabled { opacity: .55; cursor: not-allowed; }
+.juego.bitacora[data-etapa] .juego-caja.activo { border-color: #3fc28c; background: #124b48; }
+.juego.bitacora[data-etapa] :is(.bitacora-fecha, .bitacora-supervivencia, .bitacora-prologo, .bitacora-parte) {
+  border-radius: 2px 10px 2px 10px; corner-shape: bevel; border-top: 2px solid #63cde8;
+  background: #0c2c4a;
+}
+.juego.bitacora[data-etapa] .bitacora-prologo h2 { font-size: 27px; }
+.juego.bitacora[data-etapa] .bitacora-objetivo { font-size: 14px; color: #d8eaf0; }
+.juego.bitacora[data-etapa] .bitacora-recurso { grid-template-columns: 120px 1fr; }
+.juego.bitacora[data-etapa] .bitacora-recurso > span,
+.juego.bitacora[data-etapa] .bitacora-indicador > span,
+.juego.bitacora[data-etapa] .bitacora-profundidad-titulo > span { display: inline-flex; align-items: center; gap: 7px; }
+.juego.bitacora[data-etapa] .icono-juego { display: inline-block; flex: 0 0 18px; width: 18px; height: 18px; color: #8fe3f2; vertical-align: middle; }
+.juego.bitacora[data-etapa] .bitacora-medidor { height: 7px; background: #204660; }
+.juego.bitacora[data-etapa] .bitacora-medidor > span { border-right: 2px solid #e1fbff; }
+.juego.bitacora[data-etapa] .bitacora-indicador > b { font-weight: 650; font-size: 28px; }
+.juego.bitacora[data-etapa] button.juego-dialogo {
+  background: #0a263e; border: 1px solid #467b9e; border-left: 4px solid #63cde8;
+  padding: 22px; max-height: min(50dvh, 440px); gap: 18px;
+}
+.juego.bitacora[data-etapa] button.juego-dialogo:hover { background: #0c2c4a; }
+.juego.bitacora[data-etapa] .juego-dialogo-retrato { flex: 0 0 72px; width: 72px; height: 72px; padding: 4px; border: 1px solid #386586; background: #123953; }
+.juego.bitacora[data-etapa] .juego-dialogo-texto { min-width: 0; font-size: 18px; line-height: 1.65; }
+.juego.bitacora[data-etapa] .juego-dialogo-texto b { color: #8fe3f2; font-size: 21px; }
+.juego.bitacora[data-etapa] .bitacora-dialogo-paso { margin-top: 8px; color: #8fe3f2; font-weight: 600; }
+.juego.bitacora[data-etapa] .juego-menu.menu-carta {
+  background: radial-gradient(ellipse at 80% 20%, #124462 0, transparent 55%), #071b2c;
+}
+.juego.bitacora[data-etapa] .menu-carta-marca { color: #8fe3f2; border-color: #386586; }
+.juego.bitacora[data-etapa] .menu-carta h1 { font-weight: 650; color: #f0f8fc; text-shadow: 3px 3px 0 #1c526c; }
+.juego.bitacora[data-etapa] .menu-carta h1 span { color: #8fe3f2; font-size: 22px; text-shadow: none; }
+.juego.bitacora[data-etapa] .menu-carta-acciones { display: grid; justify-items: stretch; text-align: center; }
+.juego.bitacora[data-etapa] .menu-carta-acciones .juego-caja { display: flex; justify-content: center; align-items: center; padding: 13px 18px; font-size: 15px; text-decoration: none; }
+.juego.bitacora[data-etapa] .menu-carta-controles { color: #d8eaf0; font-size: 13px; line-height: 1.8; margin: 16px 0; }
+.juego.bitacora[data-etapa] .menu-carta-ritmo { border-color: #386586; }
+.juego.bitacora[data-etapa] .menu-carta-ritmo label { min-height: 44px; padding: 4px; }
+.juego.bitacora[data-etapa] .menu-carta-ritmo small { color: #bfdce8; }
+.juego.bitacora[data-etapa] .menu-carta-datos { color: #bfdce8; font-size: 12px; }
+.juego.bitacora[data-etapa] .menu-carta-mapa { border: 1px solid #386586; border-top: 3px solid #63cde8; background: #0c2c4a; padding: 14px; }
+.juego.bitacora[data-etapa] .menu-carta-pie :is(button, a) { display: inline-flex; align-items: center; min-height: 44px; padding: 8px; }
+.juego.bitacora[data-etapa] .menu-carta-reparto { border-color: #386586; }
+@media (max-width: 760px) {
+  .juego.bitacora[data-etapa] .menu-carta-principal { gap: 20px; }
+  .juego.bitacora[data-etapa] .menu-carta h1 { font-size: clamp(42px, 13vw, 70px); }
+  .juego.bitacora[data-etapa] .menu-carta-relato { min-width: 0; }
+  .juego.bitacora[data-etapa] .menu-carta-mapa { max-width: 100%; }
+  .juego.bitacora[data-etapa] .menu-carta-acciones .juego-caja { width: 100%; overflow-wrap: anywhere; }
+  .juego.bitacora[data-etapa] .menu-carta-reparto li { min-width: 0; gap: 6px; }
+  .juego.bitacora[data-etapa] .menu-carta-reparto img { width: 52px; height: 44px; }
+  .juego.bitacora[data-etapa] .menu-carta-reparto span { line-height: 1.5; }
+  .juego.bitacora[data-etapa] button.juego-dialogo { padding: 16px 14px; gap: 10px; }
+  .juego.bitacora[data-etapa] .juego-dialogo-retrato { flex-basis: 48px; width: 48px; height: 48px; }
+  .juego.bitacora[data-etapa] .juego-dialogo-texto { font-size: 16px; line-height: 1.6; }
+  .juego.bitacora[data-etapa] .bitacora-dialogo-canal { letter-spacing: .02em; }
+  .juego.bitacora[data-etapa] .bitacora-profundidad-escala { display: none; }
+  .juego.bitacora[data-etapa] .bitacora-supervivencia { padding: 10px 12px; }
+  .juego.bitacora[data-etapa] .bitacora-profundidad { margin-top: 6px; padding-top: 6px; }
+  .juego.bitacora[data-etapa] .bitacora-parte { max-height: min(180px, max(64px, calc(100dvh - 430px))); }
+  .juego.bitacora[data-etapa] .bitacora-prologo { max-height: calc(100dvh - 245px); overflow-y: auto; touch-action: pan-y; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .juego.bitacora[data-etapa] *, .juego.bitacora[data-etapa] *::before, .juego.bitacora[data-etapa] *::after { animation: none !important; transition: none !important; }
+}

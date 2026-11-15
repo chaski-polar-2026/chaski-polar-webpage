@@ -39,6 +39,7 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
     sol.position.set(14, 30, 8);
     escena.add(sol);
     const { rayos, nieve } = crearFondoKiriVoxel(escena);
+    const movimientoReducido = matchMedia('(prefers-reduced-motion: reduce)');
     const dibujoKiri = sprite("kiri", dibujarKiri);
     const kiri = crearPersonaje(escena, dibujoKiri, { ancho: 2.6, alto: 2.6, suelo: 0 });
     kiri.sprite.visible = false;
@@ -133,9 +134,11 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
         }
 
         const arr = nieve.geometry.getAttribute("position");
-        for (let i = 0; i < arr.count; i++) { let y = arr.getY(i) - dt * 0.4; if (y < 0) y = 14; arr.setY(i, y); }
-        arr.needsUpdate = true;
-        rayos.forEach((r, i) => { (r.material as THREE.MeshBasicMaterial).opacity = 0.06 + 0.02 * Math.sin(t * 0.8 + i); });
+        if (!movimientoReducido.matches) {
+          for (let i = 0; i < arr.count; i++) { let y = arr.getY(i) - dt * 0.4; if (y < 0) y = 14; arr.setY(i, y); }
+          arr.needsUpdate = true;
+        }
+        rayos.forEach((r, i) => { (r.material as THREE.MeshBasicMaterial).opacity = movimientoReducido.matches ? 0.06 : 0.06 + 0.02 * Math.sin(t * 0.8 + i); });
       },
       destruir: () => seguidor.destruir(),
     };
