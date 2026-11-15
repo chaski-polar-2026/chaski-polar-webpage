@@ -7,10 +7,12 @@ import { fmtCoord, fmtR, MESES_LARGOS, nf, signo } from '../../../lib/formato'
 import { useTamano } from '../../../hooks/useTamano'
 import { useExplorer } from '../ExplorerContext'
 import { useAcciones, VISTA_INICIAL } from '../hooks/useAcciones'
+import { useTransicionZona } from '../hooks/useTransicionZona'
 import { useAtlas } from '../hooks/useAtlas'
 import { useEnlace } from '../hooks/useEnlace'
 import { esAngosto, menosMovimiento, punteroFino } from '../lib/entorno'
 import { zonaActiva, type IdCorriente, type Pov } from '../lib/estado'
+import { APARTADOS } from '../lib/regiones'
 import { RECUADRO } from '../lib/mapa'
 import { BASE_MACHU_PICCHU } from '../lib/modelo'
 import { RECORRIDO } from '../lib/recorrido'
@@ -59,6 +61,9 @@ export default function GlobePanel() {
   useEnlace()
 
   const globo = useRef<GlobeMethods | undefined>(undefined)
+  const [ready, setReady] = useState(false)
+  useTransicionZona(globo, ready)
+  const zonePhase = useExplorerStore(s => s.zonePhase)
   const contenedor = useRef<HTMLDivElement>(null)
   const lienzo = useRef<HTMLDivElement>(null)
   const vistaAnterior = useRef({ panel, section: useExplorerStore.getState().section })
@@ -193,6 +198,7 @@ export default function GlobePanel() {
   const alListo = useCallback(() => {
     const g = globo.current
     if (!g) return
+    setReady(true)
     const c = g.controls()
     c.enableDamping = true
     c.minDistance = 130
@@ -202,7 +208,7 @@ export default function GlobePanel() {
     const inicio = useExplorerStore.getState().panel.tipo === 'general'
     if (giroPortada != null) g.pointOfView(puntoDeVistaDesdeGiro(giroPortada), 0)
     if (inicio) g.pointOfView(useExplorerStore.getState().camera?.pov ?? encuadreInicial(contenedor.current?.clientWidth ?? 0, contenedor.current?.clientHeight ?? 0), 0)
-    else if (useExplorerStore.getState().camera) g.pointOfView(useExplorerStore.getState().camera!.pov, 0)
+    else g.pointOfView(useExplorerStore.getState().camera?.pov ?? APARTADOS.find(a => a.id === useExplorerStore.getState().section)?.pov ?? VISTA_INICIAL, 0)
     // el mapa pesa unos 3 MB: se pide cuando el globo ya está en pantalla
     setTimeout(pedirMapa, 300)
   }, [giroPortada, pedirMapa])
@@ -271,6 +277,11 @@ export default function GlobePanel() {
     const alTeclear = (e: KeyboardEvent) => {
       const escribiendo = e.target instanceof Element && e.target.closest('input, select, textarea')
       const p = useExplorerStore.getState().panel
+      if (e.defaultPrevented || document.querySelector('.proposito')) return
+      if (useExplorerStore.getState().zonePhase !== 'globe') {
+        if (e.key === 'Escape') { e.preventDefault(); useExplorerStore.getState().closeZone() }
+        return
+      }
       if (e.key === 'Escape' && p.tipo !== 'general') acciones.general()
       else if (p.tipo === 'recorrido' && !escribiendo && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
         e.preventDefault()
@@ -282,7 +293,7 @@ export default function GlobePanel() {
   }, [acciones])
 
   return <section className="escenario" aria-label="Globe explorer">
-    <div className="lienzo-globo" ref={lienzo}>
+    <div className="lienzo-globo" data-zone-phase={zonePhase} ref={lienzo}>
       <div id="globo" ref={contenedor} role="img" aria-label={`Earth globe showing ${v.nombre.toLowerCase()}. The ${modelo.ids.length} study zones are listed in the panel.`}
         onPointerDown={interaccion} onWheel={interaccion} onPointerMove={alMover} onPointerLeave={() => setLectura(null)}>
         {width > 0 && <Globe

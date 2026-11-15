@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useExplorer } from '../ExplorerContext'
 import type { Comparacion, IdCorriente, IdRegion, NotaHistoria, Pov } from '../lib/estado'
 import { HISTORIAS, type IdHistoria } from '../lib/historias'
-import { BASE_MACHU_PICCHU, distanciaKm, esPeru, zonasCercanas } from '../lib/modelo'
+import { BASE_MACHU_PICCHU, distanciaKm, zonasCercanas } from '../lib/modelo'
 import { RECORRIDO } from '../lib/recorrido'
 import type { IdZona } from '../lib/tipos'
 import { variablePorId } from '../lib/variables'
@@ -24,9 +24,8 @@ export function useAcciones() {
     }
 
     const irAZona = (z: IdZona, nota?: NotaHistoria) => {
-      const p = modelo.zona(z), peru = esPeru(z)
-      st().flyTo({ lat: p.lat + (peru ? -1.2 : 4), lng: p.lon + (peru ? -1.6 : 0), altitude: z === 'antartida_peninsula' ? 1.15 : peru ? 0.42 : 1.0 }, 1600)
       st().setPanel(nota ? { tipo: 'zona', z, nota } : { tipo: 'zona', z })
+      st().openZone(z)
     }
 
     const general = (volar = true) => {
