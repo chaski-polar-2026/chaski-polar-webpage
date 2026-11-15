@@ -8,7 +8,6 @@ import { esPeru } from '../../lib/modelo'
 import { variablePorId } from '../../lib/variables'
 import { useExplorerStore } from '../../store'
 import { ChipsEventos } from './comun'
-import Proposito from './Proposito'
 
 /** Resumen de todas las zonas en el mes elegido */
 export default function General() {
@@ -38,7 +37,6 @@ export default function General() {
   }
 
   return <>
-    <Proposito />
     <h2 id="variable-actual">{v.nombre}</h2>
     <Guia variable={v} />
     {section === 'humboldt' && <InsigniaNino variable={v.id} />}

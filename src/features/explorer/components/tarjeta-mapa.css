@@ -1,6 +1,11 @@
 .tarjeta-mapa { position: absolute; right: 12px; top: 12px; z-index: 5; width: 190px; padding: 8px; border: 1px solid rgba(143, 227, 242, .35); border-radius: 8px; background: rgba(7, 30, 51, .82); box-shadow: 0 0 18px rgba(99, 205, 232, .12); pointer-events: auto; }
 .tarjeta-mapa-titulo { margin: 0 0 6px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: #8fe3f2; }
-@media (max-width: 900px) { .tarjeta-mapa { display: none; } }
+@media (max-width: 900px) {
+  .tarjeta-mapa { width: auto; padding: 0; border: 0; background: none; box-shadow: none; top: 268px; right: auto; left: 8px; bottom: auto; }
+  .tarjeta-mapa .pesc-mapa, .tarjeta-mapa-titulo { display: none; }
+  .tarjeta-mapa:not(:has(.tarjeta-mapa-ampliar)) { display: none; }
+  .tarjeta-mapa-ampliar { margin: 0; width: auto; padding: 8px 10px; min-height: 44px; font-size: 11px; background: rgba(7, 30, 51, .9); }
+}
 
 .tarjeta-mapa-ampliar { width: 100%; margin-top: 6px; padding: 7px 8px; border: 1px solid #8fe3f2; background: rgba(7, 30, 51, .6); color: #eaf3f5; font: 700 12px var(--cp-hud, system-ui); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: background-color 180ms; }
 .tarjeta-mapa-ampliar:hover { background: rgba(99, 205, 232, .25); }

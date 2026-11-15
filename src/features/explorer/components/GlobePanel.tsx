@@ -23,6 +23,7 @@ import RegionesPanel from './RegionesPanel'
 import Relato from './relato/Relato'
 import { TimelinePanel } from './TimelinePanel'
 import TarjetaMapa from './TarjetaMapa'
+import Proposito from './relato/Proposito'
 
 type Lado = 'der' | 'izq' | 'der-arriba' | 'der-abajo'
 type Marca = { z: string; lat: number; lng: number; texto: string; lado?: Lado; forma?: 'punto' | 'base' | 'rio' | 'grupo'; soloCerca?: number; soloLejos?: number }
@@ -345,6 +346,7 @@ export default function GlobePanel() {
         />}
       </div>
       <TarjetaMapa />
+      <Proposito />
       <div className="globe-toolbar">
         <GlobeViewToggle value={view} onChange={(x) => { interaccion(); setView(x) }} />
         <RecorridoAyuda />
@@ -360,7 +362,7 @@ export default function GlobePanel() {
       <TimelinePanel />
     </div>
     <aside className="relato" id="relato" aria-label="What the globe shows">
-      <div className="relato-orientacion"><span>Explore the selected view below</span><a href="/research">Research <span aria-hidden="true">→</span></a><a href="/fishers">For fishers <span aria-hidden="true">→</span></a></div>
+      <div className="relato-orientacion"><span>Explore the selected view below</span><a href="/research">Research <span aria-hidden="true">→</span></a><a href="/fishers">For fishers <span aria-hidden="true">→</span></a><button type="button" className="orientacion-boton" onClick={() => window.dispatchEvent(new Event("abrir-proposito"))}>What is this for?</button></div>
       <div aria-live="polite"><Relato /></div>
     </aside>
     <div className={`velo-entrada${veloAbierto ? ' abierto' : ''}`} aria-hidden="true" />
