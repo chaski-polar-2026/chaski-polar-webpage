@@ -1,4 +1,3 @@
-import RecorridoAyuda from '../features/recorrido/RecorridoAyuda'
 import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import '../App.css'
@@ -34,7 +33,6 @@ function Explorador() {
           <main id="contenido"><Suspense fallback={<div className="data-state">
             <p>Preparing the interactive globe…</p>
           </div>}>
-            <RecorridoAyuda />
             <GlobePanel />
           </Suspense></main>
 
