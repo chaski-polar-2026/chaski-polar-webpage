@@ -1,3 +1,5 @@
+import { Frase, Guia } from '../../../lectura/PanelLectura'
+import { leerComparacion } from '../../../lectura/lectura'
 import { useState } from 'react'
 import { CartesianGrid, Line, LineChart, ReferenceDot, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { media, pendiente } from '../../../../lib/estadistica'
@@ -191,6 +193,8 @@ export default function ComparacionPesca() {
     {modo !== 'meses' && <div className="comparacion-acciones-globo" role="group" aria-label="View selection on the globe">
       {[{ s: a, letra: 'A' }, { s: b, letra: 'B' }].map(({ s, letra }) => <button key={letra} type="button" disabled={valor(s) == null || modelo.idxMes(s.anio, s.mes) > modelo.ultimo} onClick={() => verGlobo(s)}>View {letra} on globe</button>)}
     </div>}
+    <Guia variable={variable} />
+    <Frase texto={leerComparacion(resultado.a, resultado.b, variable.unidad)} />
     <details className="comparacion-fuente comparacion-lectura">
       <summary>Temperature and chlorophyll</summary>
       <div className="comparacion-tabla-envoltura"><table className="comparacion-tabla">

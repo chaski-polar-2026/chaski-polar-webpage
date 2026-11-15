@@ -1,0 +1,6 @@
+.lectura-simple,.guia-variable { background:#071e33; color:#eaf3f5; border:1px solid #24507a; border-radius:6px; padding:12px; margin:12px 0; min-width:0; overflow-wrap:anywhere; font-size:14px; line-height:1.5; }
+.lectura-simple p,.guia-variable p { margin:6px 0; }
+.guia-variable summary { cursor:pointer; color:#8fe3f2; }
+.guia-variable summary:focus-visible { outline:2px solid #8fe3f2; outline-offset:4px; }
+.guia-variable dt { font-weight:600; margin-top:8px; }
+.guia-variable dd { margin:0; }
