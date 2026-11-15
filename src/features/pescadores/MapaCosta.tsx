@@ -2,22 +2,22 @@ import datos from '../prediccion/perspectiva_acierto.json'
 import './pescadores.css'
 
 /* Mapa esquemático de la costa peruana (línea de costa simplificada; no está a escala). */
-const COSTA: [number, number][] = [
+export const COSTA: [number, number][] = [
   [-80.45, -3.55], [-81.25, -4.25], [-81.11, -5.09], [-81.17, -5.8], [-80.95, -5.95], [-80.2, -6.6], [-79.93, -6.84],
   [-79.4, -7.7], [-78.97, -8.22], [-78.59, -9.07], [-78.4, -9.45], [-78.17, -10.1], [-77.8, -10.75], [-77.62, -11.1],
   [-77.15, -12.05], [-76.5, -13.03], [-76.2, -13.71], [-76.3, -13.85], [-75.17, -15.35], [-74.25, -15.85],
   [-72.7, -16.6], [-72.0, -17.02], [-71.34, -17.64], [-70.6, -18.2], [-70.37, -18.35],
 ]
-const ZONAS = [
+export const ZONAS = [
   { id: 'paita', nombre: 'Paita', lon: -81.11, lat: -5.09 },
   { id: 'chimbote', nombre: 'Chimbote', lon: -78.59, lat: -9.07 },
   { id: 'callao', nombre: 'Callao', lon: -77.15, lat: -12.05 },
   { id: 'pisco', nombre: 'Pisco', lon: -76.2, lat: -13.71 },
   { id: 'ilo', nombre: 'Ilo', lon: -71.34, lat: -17.64 },
 ]
-const K = 26, LON0 = -86, LAT0 = -3, W = 420, H = 410
-const px = (lon: number) => (lon - LON0) * K
-const py = (lat: number) => (LAT0 - lat) * K
+export const K = 26, LON0 = -86, LAT0 = -3, W = 420, H = 410
+export const px = (lon: number) => (lon - LON0) * K
+export const py = (lat: number) => (LAT0 - lat) * K
 
 /** Dónde están las zonas costeras del panel, con la mejora del pronóstico de temperatura a 1 mes. */
 export default function MapaCosta({ resaltar, compacto = false }: { resaltar?: string; compacto?: boolean }) {
