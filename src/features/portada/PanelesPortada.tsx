@@ -1,4 +1,4 @@
-import { DATOS_PORTADA, DESAFIO, HALLAZGOS_PORTADA, MOSTRAR_PESCA, SECCIONES } from './contenido'
+import { DATOS_PORTADA, DESAFIO, HALLAZGOS_PORTADA, MOSTRAR_PESCA, SECCIONES, type Boton } from './contenido'
 
 type Icono = 'nivel' | 'periodo' | 'pruebas' | 'temperatura' | 'satelite' | 'codigo'
 const trazos: Record<Icono, string> = {
@@ -13,12 +13,24 @@ function IconoPortada({ tipo }: { tipo: Icono }) {
   return <svg className="portada-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={trazos[tipo]} /></svg>
 }
 
+function BotonPortada({ boton: b, sinEscena, principal = false }: { boton: Boton; sinEscena: boolean; principal?: boolean }) {
+  const clase = `portada-boton${principal ? ' portada-boton--principal' : ''}`
+  return b.href || sinEscena
+    ? <a className={clase} href={b.href ?? '/explorer'}>{b.texto}</a>
+    : <button className={clase} type="button" data-entrar>{b.texto}</button>
+}
+
 export default function PanelesPortada({ sinEscena }: { sinEscena: boolean }) {
   return SECCIONES.map((s, indice) => <section key={indice}
     id={s.variante === 'reto' ? 'challenge' : undefined}
-    className={`portada-seccion${s.variante ? ` portada-panel portada-panel--${s.variante}` : ''}${sinEscena || indice === 0 ? ' activa' : ''}`}
+    className={`portada-seccion${s.principal ? ' portada-intro' : ''}${s.variante ? ` portada-panel portada-panel--${s.variante}` : ''}${sinEscena || indice === 0 ? ' activa' : ''}`}
     tabIndex={-1} inert={!sinEscena && indice !== 0} aria-hidden={!sinEscena && indice !== 0}>
-    {s.variante === 'reto' ? <>
+    {s.principal ? <>
+      <div className="portada-intro-copia">
+        <h1>{s.titulo}</h1><p className="portada-intro-subtitulo">{s.texto}</p><p className="portada-intro-apoyo">{s.apoyo}</p>
+        <div className="portada-intro-botones">{s.botones?.map((b, i) => <BotonPortada key={b.texto} boton={b} sinEscena={sinEscena} principal={i === 0} />)}</div>
+      </div>
+    </> : s.variante === 'reto' ? <>
       <p className="portada-antetitulo">{DESAFIO.subtitulo}</p><h2>{DESAFIO.titulo}</h2><p>{DESAFIO.resumen}</p>
       <div className="portada-pregunta">
         <article><h3>{DESAFIO.retos}</h3>{DESAFIO.filas.filter(f => !f.pesca || MOSTRAR_PESCA).map(f => <p key={f.reto}>{f.reto}</p>)}</article>
@@ -34,10 +46,7 @@ export default function PanelesPortada({ sinEscena }: { sinEscena: boolean }) {
       <h2>{DATOS_PORTADA.titulo}</h2><div className="portada-datos">{DATOS_PORTADA.tarjetas.map(t =>
         <article key={t.titulo}><IconoPortada tipo={t.icono} /><h3>{t.titulo}</h3><p>{t.texto}</p></article>)}</div><a className="portada-fuentes" href={DATOS_PORTADA.enlace}>{DATOS_PORTADA.fuentes}</a>
     </> : <>
-      {s.principal ? <h1 aria-label={s.titulo}><span className="t-contorno">{s.titulo.split(' ')[0]}</span><span className="t-relleno">{s.titulo.split(' ').slice(1).join(' ')}</span></h1> : <h2>{s.titulo}</h2>}
-      <p>{s.texto}</p>{s.botones?.map(b => b.href || sinEscena
-        ? <a className="portada-boton" href={b.href ?? '/explorer'} key={b.texto}>{b.texto}</a>
-        : <button className="portada-boton" type="button" data-entrar key={b.texto}>{b.texto}</button>)}
+      <h2>{s.titulo}</h2><p>{s.texto}</p>{s.botones?.map(b => <BotonPortada key={b.texto} boton={b} sinEscena={sinEscena} />)}
     </>}
   </section>)
 }

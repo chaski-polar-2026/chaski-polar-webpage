@@ -1,0 +1,26 @@
+/* Opening composition only; journey timing and camera remain unchanged. */
+.portada .portada-seccion.portada-intro { inset: 0; width: auto; transform: none; }
+.portada .portada-intro-copia { position: absolute; top: 52%; left: 50%; width: min(720px, 88vw); transform: translateX(-50%); }
+.portada .portada-intro h1 { margin: 0; color: #eaf3f5; font-size: clamp(40px, 5vw, 72px); line-height: 1; letter-spacing: .035em; }
+.portada .portada-intro .portada-intro-subtitulo { margin: 12px 0 8px; color: #8fe3f2; font: 600 26px/1.2 var(--hud); }
+.portada .portada-intro .portada-intro-apoyo { max-width: 580px; margin: 0 auto; color: #d0e1e9; font-size: 16px; line-height: 1.45; }
+.portada .portada-intro-botones { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+.portada .portada-intro-botones .portada-boton { margin: 0; min-height: 44px; padding: 10px 22px; border-radius: 6px; clip-path: none; font-size: 17px; letter-spacing: .02em; text-transform: none; background: rgba(7, 30, 51, .85); }
+.portada .portada-intro-botones .portada-boton--principal { background: #8fe3f2; color: #071e33; border-color: #8fe3f2; }
+.portada .portada-intro-botones .portada-boton--principal:hover { background: #c3f2fa; }
+.portada.portada-sin-escena .portada-intro-copia { position: static; width: auto; transform: none; }
+.portada.portada-sin-escena .portada-intro { inset: auto; padding: 0 16px; width: min(100%, 960px); }
+@media (max-width: 640px) {
+  .portada .portada-intro-copia { top: 44%; width: calc(100% - 40px); }
+  .portada .portada-intro h1 { font-size: clamp(30px, 10.5vw, 44px); letter-spacing: .015em; }
+  .portada .portada-intro .portada-intro-subtitulo { font-size: 21px; margin: 8px 0; }
+  .portada .portada-intro .portada-intro-apoyo { font-size: 14px; line-height: 1.35; }
+  .portada .portada-intro-botones { gap: 8px; margin-top: 12px; flex-wrap: nowrap; }
+  .portada .portada-intro-botones .portada-boton { padding: 10px 12px; font-size: 15px; }
+}
+@media (max-width: 640px) and (max-height: 740px) {
+  .portada .portada-intro-copia { top: 39%; }
+  .portada .portada-intro h1 { font-size: 34px; }
+  .portada .portada-intro .portada-intro-subtitulo { font-size: 18px; margin: 6px 0; }
+  .portada .portada-intro .portada-intro-apoyo { font-size: 13px; }
+}

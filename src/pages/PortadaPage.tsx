@@ -7,6 +7,7 @@ import { posicionScroll } from '../features/portada/scroll'
 import { NAVEGACION_PORTADA, SECCIONES } from '../features/portada/contenido'
 import '../features/portada/portada.css'
 import '../features/portada/desafio.css'
+import '../features/portada/intro.css'
 
 /** Portada: descenso con scroll desde la órbita hasta el fondo del mar peruano */
 export default function PortadaPage() {

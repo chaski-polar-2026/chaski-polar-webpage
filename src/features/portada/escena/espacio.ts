@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { crearSateliteObservacion } from "../modelos/instrumentos";
 import { GIRO_INICIAL, INCLINACION, RADIO_GLOBO } from "../../../lib/encuadre";
-import { Y_ESPACIO } from "../scroll";
+import { alturaEn, Y_ESPACIO } from "../scroll";
 import { DIR_SOL_ESPACIO } from "./ambiente";
 import type { Calidad } from "./calidad";
 import { azar, contexto, fbm, lienzo, type Capa } from "./materiales";
@@ -85,6 +85,13 @@ export function crearEspacio(escena: THREE.Scene, C: Calidad): Capa & { globo: T
     globo: tierra,
     actualizar(t, y) {
       grupo.visible = y > 28;
+      // Reserve a clear title area only at the opening; restore the original globe
+      // before the second text window. Camera and scroll stops stay unchanged.
+      const apertura = THREE.MathUtils.smoothstep(y, alturaEn(0.04), alturaEn(0.03));
+      const movil = innerWidth <= 640;
+      const escalaInicial = movil ? (innerHeight <= 740 ? 0.42 : 0.5) : 0.65;
+      tierra.scale.setScalar(1 - apertura * (1 - escalaInicial));
+      tierra.position.y = Y_ESPACIO + apertura * (movil ? 8 : 5);
       tierra.rotation.y += 0.0002;
       nubes.rotation.y += 0.00012;
       // Encuadre ilustrativo frente al globo: visible también en pantallas estrechas.

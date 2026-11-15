@@ -17,15 +17,17 @@ export interface Seccion {
   principal?: boolean;
   titulo: string;
   texto: string;
+  apoyo?: string;
   botones?: Boton[];
 }
 
 export const SECCIONES: readonly Seccion[] = [
   {
     de: 0, a: 0.03, principal: true,
-    titulo: "Chaski Polar",
-    texto: "Explore a changing ocean, from satellite to seafloor",
-    botones: [{ texto: "Enter the explorer →", accion: "entrar" }, { texto: "Play Cardumen", href: "/juego" }],
+    titulo: "CHASKI POLAR",
+    texto: "Ids off Peru, tested.",
+    apoyo: "We test six ocean variables against El Niño and show which trends hold up.",
+    botones: [{ texto: "Enter the explorer", accion: "entrar" }, { texto: "Play Cardumen", href: "/juego" }],
   },
   {
     de: 0.04, a: 0.11,
