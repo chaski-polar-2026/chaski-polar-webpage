@@ -61,7 +61,7 @@ export const PASOS = [
     "texto": "Move through the months and years. The marks show strong El Niño events."
   },
   {
-    "selector": "#relato",
+    "selector": "#variable-actual, #panel-datos h2, #tab-datos",
     "titulo": "The data panel",
     "texto": "Here you can read the value for the selected zone, with a short sentence that explains it."
   },

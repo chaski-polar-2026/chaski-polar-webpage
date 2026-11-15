@@ -3,8 +3,12 @@ import { FAQ, PASOS } from './contenido'
 import './recorrido.css'
 const CLAVE = 'chaski-polar-guide-v1'
 function objetivo(i: number) {
- const el = document.querySelector<HTMLElement>(PASOS[i]!.selector)
- return el && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden' ? el : null
+ for (const selector of PASOS[i]!.selector.split(',')) {
+  const visible = [...document.querySelectorAll<HTMLElement>(selector.trim())]
+   .find(el => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden')
+  if (visible) return visible
+ }
+ return null
 }
 export default function RecorridoAyuda() {
  const [paso, setPaso] = useState<number | null>(null)
