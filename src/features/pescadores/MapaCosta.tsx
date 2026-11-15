@@ -1,4 +1,4 @@
-import datos from '../prediccion/perspectiva_acierto.json'
+﻿
 import './pescadores.css'
 
 /* Mapa esquemático de la costa peruana (línea de costa simplificada; no está a escala). */
@@ -21,10 +21,6 @@ export const py = (lat: number) => (LAT0 - lat) * K
 
 /** Dónde están las zonas costeras del panel, con la mejora del pronóstico de temperatura a 1 mes. */
 export default function MapaCosta({ resaltar, compacto = false }: { resaltar?: string; compacto?: boolean }) {
-  const mejora = (z: string) => {
-    const f = datos.results.find((r) => r.variable === 'SST' && r.model === 'nino' && r.zone === z && r.horizon_months === 1)
-    return f ? `${f.mae_improvement >= 0 ? '+' : '−'}${Math.abs(f.mae_improvement * 100).toFixed(0)}%` : ''
-  }
   const linea = COSTA.map(([lo, la]) => `${px(lo).toFixed(1)},${py(la).toFixed(1)}`).join(' ')
   const tierra = `${linea} ${W},${py(-18.35)} ${W},${py(-3.55)}`
   return (
@@ -46,11 +42,12 @@ export default function MapaCosta({ resaltar, compacto = false }: { resaltar?: s
             {resaltar === z.id && <circle cx={px(z.lon)} cy={py(z.lat)} r="14" fill="none" stroke="#8fe3f2" strokeWidth="2" strokeOpacity="0.8" />}
             <circle cx={px(z.lon)} cy={py(z.lat)} r={resaltar === z.id ? 8 : 6} fill={resaltar && resaltar !== z.id ? "#4a7a92" : "#63cde8"} stroke="#071e33" strokeWidth="2" />
             <text x={px(z.lon) - 12} y={py(z.lat) + 4} textAnchor="end" fill="#eaf3f5" fontSize="13" fontWeight="600">{z.nombre}</text>
-            <text x={px(z.lon) - 12} y={py(z.lat) + 18} textAnchor="end" fill="#8fe3f2" fontSize="11">{mejora(z.id)} at 1 month</text>
+            <text x={px(z.lon) - 12} y={py(z.lat) + 18} textAnchor="end" fill="#8fe3f2" fontSize="11">{resaltar === z.id ? 'Selected zone' : ''}</text>
           </g>
         ))}
       </svg>
-      {!compacto && <figcaption>Schematic map: the coast is simplified and not to scale. The figure under each zone is how much smaller the one-month temperature outlook errors were than predicting a normal month, 2010–2025.</figcaption>}
+      {!compacto && <figcaption>Schematic map: the coast is simplified and not to scale. The ring marks your selected zone. The arrow shows the Humboldt Current flowing north.</figcaption>}
     </figure>
   )
 }
+

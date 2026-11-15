@@ -1,11 +1,11 @@
-import { IconoVariable } from '../guias/GuiasInvestigacion'
+﻿import { IconoVariable } from '../guias/GuiasInvestigacion'
 import './pescadores.css'
 
 /* Guías ilustradas esquemáticas para lectores no especialistas. Son dibujos simplificados, no a escala. */
 
 const FRIO = '#2a74c9', CALIDO = '#f08a4b', TXT = '#eaf3f5', SUAVE = '#a3bccb', CIAN = '#8fe3f2'
 
-function Afloramiento() {
+export function Afloramiento() {
   return (
     <svg viewBox="0 0 420 250" width="100%" role="img" aria-label="Cross-section of the sea off Peru. Wind blows along the coast, pushes surface water away from land, and cold nutrient-rich water rises near the coast, where plankton grow and fish feed.">
       <defs>
@@ -32,7 +32,7 @@ function Afloramiento() {
   )
 }
 
-function NinoDiagrama() {
+export function NinoDiagrama() {
   const mar = (x: number, calido: boolean) => (
     <g transform={`translate(${x} 0)`}>
       <rect width="196" height="150" y="40" rx="6" fill={calido ? '#7a4a2b' : '#0f4a7a'} fillOpacity={0.55} />
@@ -71,7 +71,8 @@ const VARIABLES = [
 ]
 
 /** Pasos de uso, diagramas explicativos y leyenda de variables para la página de pescadores. */
-export default function GuiasPescadores() {
+export default function GuiasPescadores({ diagramsOnly = false }: { diagramsOnly?: boolean }) {
+  if (diagramsOnly) return <div className="pesc-diagramas"><figure><Afloramiento /><figcaption>How does water rise near the coast? What this means for you: this drawing explains a sea process. Arrows show water movement. Schematic, not to scale; expert review pending.</figcaption></figure><figure><NinoDiagrama /><figcaption>What can change during El Niño? What this means for you: past warm events differed by place and species. Left: normal conditions. Right: a warm event. Expert review pending.</figcaption></figure></div>
   return (
     <>
       <section className="seccion pescadores" id="how-to-use" aria-labelledby="t-uso">
@@ -104,3 +105,4 @@ export default function GuiasPescadores() {
     </>
   )
 }
+
