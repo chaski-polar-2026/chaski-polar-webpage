@@ -38,6 +38,10 @@ export const FAQ = [
   [
     "Why is there no data for some zones or months?",
     "The data may not exist or may be uncertain. Missing never means zero."
+  ],
+  [
+    "What about red tides?",
+    "A red tide is a popular name for a harmful algal bloom: fast growth of certain microscopic algae that can harm marine life or people. IMARPE linked 40 such blooms between December 2016 and May 2017 to the unusually warm sea of the 2017 coastal El Niño (Sánchez et al., 2021). This page cannot detect them: it shows monthly averages for broad zones, and satellites cannot tell a harmful bloom from a harmless one. For alerts, follow IMARPE and the health authorities."
   ]
 ] as const;
 export const PASOS = [
