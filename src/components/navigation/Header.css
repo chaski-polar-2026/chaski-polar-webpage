@@ -16,5 +16,8 @@
 .app-header.chaski-header :focus-visible { outline-color: var(--brand-accent); }
 .app-header.chaski-header .app-nav { flex-shrink: 0; }
 @media (max-width: 639px) {
-  .app-header.chaski-header .app-brand img { width: 36px; height: 32px; }
+  .app-header.chaski-header { gap: 4px; padding: 4px 8px; }
+  .app-header.chaski-header .app-brand img { width: 30px; height: 30px; }
+  .app-header.chaski-header .app-nav { flex: 1; min-width: 0; justify-content: space-evenly; gap: 0; }
+  .app-header.chaski-header .app-nav a { display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 4px; font-size: clamp(.68rem, 3vw, .8rem); white-space: nowrap; }
 }

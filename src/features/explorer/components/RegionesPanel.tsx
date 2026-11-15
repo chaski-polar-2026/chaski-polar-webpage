@@ -18,9 +18,15 @@ export default function RegionesPanel({ alElegir }: { alElegir?: () => void }) {
     if (primera) st.setVariable(primera.id)
     st.setPlaying(false)
     st.flyTo(a.pov, 1400)
+    if (a.id === 'anchoveta' && window.matchMedia('(max-width: 900px)').matches) {
+      document.getElementById('relato')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
+    }
   }
   return <nav className="regiones" aria-label="Study areas">
     <p className="regiones-titulo">Study areas</p>
+    <label className="regiones-movil">Study area<select value={section} onChange={(e) => { const apartado = APARTADOS.find(a => a.id === e.target.value); if (apartado) elegir(apartado) }}>
+      {APARTADOS.map(a => <option key={a.id} value={a.id}>{a.nombre}</option>)}
+    </select></label>
     {APARTADOS.map((a) => <button key={a.id} type="button" className="region" aria-pressed={section === a.id} onClick={() => elegir(a)}>
       <b>{a.nombre}</b>
     </button>)}

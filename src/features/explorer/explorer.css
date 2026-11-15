@@ -318,6 +318,7 @@ table.eventos-nino { width: 100%; border-collapse: separate; border-spacing: 4px
 
 /* apartados de estudio (columna izquierda en escritorio; fila desplazable en celular) */
 .regiones { display: grid; gap: 6px; margin-top: 10px; width: 300px; }
+.regiones-movil { display: none; }
 .regiones-titulo { margin: 0 0 2px; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--niebla); }
 .region { display: grid; gap: 1px; text-align: left; font: inherit; padding: 8px 12px; border: 0; border-radius: var(--r-chico); background: rgba(7, 30, 51, .92); color: var(--niebla); cursor: pointer; transition: background-color .15s, color .15s; }
 .region b { font-family: var(--serif); font-weight: 500; font-size: 1rem; color: var(--hielo); }
@@ -332,10 +333,10 @@ table.eventos-nino { width: 100%; border-collapse: separate; border-spacing: 4px
 .indicadores li[data-ok="false"] { background: transparent; border: 1px dashed var(--linea); }
 .indicadores li[data-ok="false"] b { color: var(--tenue); }
 @media (max-width: 900px) {
-  .regiones { grid-auto-flow: column; grid-auto-columns: max-content; width: auto; max-width: calc(100vw - 24px); overflow-x: auto; margin-top: 6px; }
-  .regiones-titulo, .region small { display: none; }
-  .region { padding: 6px 10px; }
-  .region b { font-size: .85rem; }
+  .regiones { display: block; width: 100%; max-width: none; margin: 0; }
+  .regiones-titulo, .regiones .region { display: none; }
+  .regiones-movil { display: flex; align-items: center; gap: 8px; color: var(--niebla); font-size: .75rem; }
+  .regiones-movil select { flex: 1; min-width: 0; min-height: 44px; padding: 6px 8px; color: var(--hielo); background: #0c2c4a; border: 1px solid var(--linea); border-radius: 6px; font: inherit; }
 }
 
 /* Comparaciones guiadas: controles simples y lectura en un panel estrecho. */
