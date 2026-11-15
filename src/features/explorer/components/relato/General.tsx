@@ -1,3 +1,4 @@
+import { InsigniaNino } from '../../../nino/RelacionesNino'
 import { Guia } from '../../../lectura/PanelLectura'
 import { mesLargo } from '../../../../lib/formato'
 import { useExplorer } from '../../ExplorerContext'
@@ -38,6 +39,7 @@ export default function General() {
   return <>
     <h2>{v.nombre}</h2>
     <Guia variable={v} />
+    {section === 'humboldt' && <InsigniaNino variable={v.id} />}
     <h3>Select a zone · {mes}</h3>
     <ul className="lista-zonas">{filas.map((f) => <li key={f.z}><button className="fila-zona" type="button" onClick={() => acciones.irAZona(f.z)}>
       <span className="punto" style={{ background: modelo.colorZona(f.z, v, i, 1) }} />

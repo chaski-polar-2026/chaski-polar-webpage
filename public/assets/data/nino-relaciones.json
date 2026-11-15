@@ -1,0 +1,97 @@
+{
+ "source": "Monthly anomalies, Humboldt box (CMEMS); Niño 1+2 (NOAA PSL). 1998–2025.",
+ "nota": "Pearson correlations; p uses an effective sample size that accounts for autocorrelation. Associations, not proof of causation.",
+ "variables": {
+  "sst": {
+   "nombre": "Sea surface temperature",
+   "unidad": "°C",
+   "r_lag0": 0.843,
+   "n": 336,
+   "neff_lag0": 46.8,
+   "p_lag0": 0.0,
+   "mejor_desfase_meses": 0,
+   "r_mejor_desfase": 0.843,
+   "p_mejor_desfase": 0.0,
+   "r_sin_anios_extremos": 0.767,
+   "signo": "positive"
+  },
+  "seaLevel": {
+   "nombre": "Sea level",
+   "unidad": "m",
+   "r_lag0": 0.682,
+   "n": 336,
+   "neff_lag0": 35.5,
+   "p_lag0": 0.0,
+   "mejor_desfase_meses": 0,
+   "r_mejor_desfase": 0.682,
+   "p_mejor_desfase": 0.0,
+   "r_sin_anios_extremos": 0.541,
+   "signo": "positive"
+  },
+  "deepTemperature": {
+   "nombre": "Temperature at 100–200 m",
+   "unidad": "°C",
+   "r_lag0": 0.603,
+   "n": 336,
+   "neff_lag0": 29.0,
+   "p_lag0": 0.0005,
+   "mejor_desfase_meses": 2,
+   "r_mejor_desfase": 0.64,
+   "p_mejor_desfase": 0.0001,
+   "r_sin_anios_extremos": 0.335,
+   "signo": "positive"
+  },
+  "deepOxygen": {
+   "nombre": "Oxygen at 100–200 m",
+   "unidad": "mmol/m³",
+   "r_lag0": 0.599,
+   "n": 336,
+   "neff_lag0": 25.8,
+   "p_lag0": 0.0013,
+   "mejor_desfase_meses": 0,
+   "r_mejor_desfase": 0.599,
+   "p_mejor_desfase": 0.0013,
+   "r_sin_anios_extremos": 0.479,
+   "signo": "positive"
+  },
+  "oxygen": {
+   "nombre": "Surface oxygen",
+   "unidad": "mmol/m³",
+   "r_lag0": -0.637,
+   "n": 336,
+   "neff_lag0": 49.9,
+   "p_lag0": 0.0,
+   "mejor_desfase_meses": 1,
+   "r_mejor_desfase": -0.656,
+   "p_mejor_desfase": 0.0,
+   "r_sin_anios_extremos": -0.452,
+   "signo": "negative"
+  },
+  "phosphate": {
+   "nombre": "Phosphate",
+   "unidad": "mmol/m³",
+   "r_lag0": -0.489,
+   "n": 336,
+   "neff_lag0": 24.6,
+   "p_lag0": 0.014,
+   "mejor_desfase_meses": 2,
+   "r_mejor_desfase": -0.541,
+   "p_mejor_desfase": 0.0053,
+   "r_sin_anios_extremos": -0.274,
+   "signo": "negative"
+  },
+  "chlorophyll": {
+   "nombre": "Chlorophyll",
+   "unidad": "mg/m³",
+   "r_lag0": -0.323,
+   "n": 336,
+   "neff_lag0": 75.3,
+   "p_lag0": 0.0046,
+   "mejor_desfase_meses": 0,
+   "r_mejor_desfase": -0.323,
+   "p_mejor_desfase": 0.0046,
+   "r_sin_anios_extremos": -0.262,
+   "signo": "negative"
+  }
+ }
+}

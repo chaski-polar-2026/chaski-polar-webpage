@@ -1,3 +1,4 @@
+import { InsigniaNino } from '../../../nino/RelacionesNino'
 import { Lectura, Guia } from '../../../lectura/PanelLectura'
 import { useMemo } from 'react'
 import { media, pendiente } from '../../../../lib/estadistica'
@@ -59,6 +60,7 @@ export default function Zona({ z, nota }: { z: IdZona; nota?: NotaHistoria }) {
     </div>
     <Lectura modelo={modelo} zona={z} variable={v} mes={i} />
     <Guia variable={v} />
+    {esPeru(z) && <InsigniaNino variable={v.id} />}
     <div className="grafico" aria-label={`Monthly ${v.nombre} in ${p.nombre}`}>
       <SerieMensual modelo={modelo} serie={serie} color={v.escala === 'rampa' ? '#3fc28c' : '#63cde8'} mesActual={i} alElegirMes={acciones.fijarMes} decimales={v.dec} />
     </div>

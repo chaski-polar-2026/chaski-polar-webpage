@@ -81,7 +81,7 @@ function Research() {
             </details>
             <CargarAlVer id="hallazgos" alto={2600}><InsightsSection /></CargarAlVer>
             <CargarAlVer id="eventos-nino" alto={760}><EventosNinoSection /></CargarAlVer>
-            <CargarAlVer id="physical-chain" alto={1100}><PhysicalChainSection /></CargarAlVer>
+            <CargarAlVer id={/^#nino-link-(sst|seaLevel|deepTemperature|deepOxygen|oxygen|phosphate|chlorophyll)$/.test(location.hash) ? location.hash.slice(1) : "physical-chain"} alto={1100}><PhysicalChainSection /></CargarAlVer>
             <CargarAlVer id="cruceros" alto={820}><CrucerosSection /></CargarAlVer>
             <CargarAlVer id="trends" alto={1100}><TendenciasSection /></CargarAlVer>
             <CargarAlVer id="trend-map" alto={900}><MapaTendencias /></CargarAlVer>
