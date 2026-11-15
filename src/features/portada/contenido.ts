@@ -117,17 +117,21 @@ export const DESAFIO = {
 // Skill is a retrospective MAE reduction against monthly climatology, not a future guarantee.
 const mejorasSST = acierto.results.filter(r => r.variable === 'SST' && r.model === 'nino' && r.horizon_months === 1).map(r => r.mae_improvement * 100)
 const rangoSST = `${Math.min(...mejorasSST).toFixed(0)}–${Math.max(...mejorasSST).toFixed(0)}%`
+const intervaloAltimetria = "95% interval: 2.2–3.7 cm/decade"
 
 export const HALLAZGOS_PORTADA = {
   titulo: "Our results in numbers",
   tarjetas: [
-    { icono: 'nivel', cifra: "+3.0 cm", etiqueta: "Sea level rise per decade", nota: "C3S satellite altimetry, 1998–2025. 95% interval: 2.2–3.7 cm/decade." },
-    { icono: 'periodo', cifra: "28 years", etiqueta: "Six variables reviewed", nota: "Core record: 1998–2025; some checks use longer records." },
-    { icono: 'pruebas', prefijo: "More than", cifra: "2,300", etiqueta: "Statistical tests run", nota: "Four published test families, including null results." },
+    { icono: 'nivel', cifra: "+3.0 cm", etiqueta: "Sea level rise per decade", nota: `C3S satellite altimetry, 1998–2025. ${intervaloAltimetria}.`, franja: { unidad: "per decade", fuente: "C3S altimetry", detalle: intervaloAltimetria } },
+    { icono: 'periodo', cifra: "28 years", etiqueta: "Six variables reviewed", nota: "Core record: 1998–2025; some checks use longer records.", franja: { unidad: "1998–2025 core record", fuente: "Six-variable review", detalle: "Some checks use longer records" } },
+    { icono: 'pruebas', prefijo: "More than", cifra: "2,300", etiqueta: "Statistical tests run", nota: "Four published test families, including null results.", franja: { unidad: "statistical tests", fuente: "Published result tables", detalle: "Includes null results" } },
     { icono: 'temperatura', cifra: rangoSST, etiqueta: "Less error at one month", nota: "Approx. range across zones vs a normal month in past tests. Outlook for sea temperature only." },
   ],
   limite: "No robust Antarctic link was detected with these data. Past accuracy does not guarantee future results.",
 } as const;
+
+// A compact first-screen summary references the existing records and values.
+export const FRANJA_PORTADA = HALLAZGOS_PORTADA.tarjetas.filter(t => 'franja' in t)
 
 export const DATOS_PORTADA = {
   titulo: "Powered by open data",

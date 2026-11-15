@@ -1,4 +1,4 @@
-import { DATOS_PORTADA, DESAFIO, HALLAZGOS_PORTADA, MOSTRAR_PESCA, SECCIONES, type Boton } from './contenido'
+import { DATOS_PORTADA, DESAFIO, FRANJA_PORTADA, HALLAZGOS_PORTADA, MOSTRAR_PESCA, SECCIONES, type Boton } from './contenido'
 
 type Icono = 'nivel' | 'periodo' | 'pruebas' | 'temperatura' | 'satelite' | 'codigo'
 const trazos: Record<Icono, string> = {
@@ -30,6 +30,10 @@ export default function PanelesPortada({ sinEscena }: { sinEscena: boolean }) {
         <h1>{s.titulo}</h1><p className="portada-intro-subtitulo">{s.texto}</p><p className="portada-intro-apoyo">{s.apoyo}</p>
         <div className="portada-intro-botones">{s.botones?.map((b, i) => <BotonPortada key={b.texto} boton={b} sinEscena={sinEscena} principal={i === 0} />)}</div>
       </div>
+      <dl className="portada-franja" aria-label="Verified results at a glance">{FRANJA_PORTADA.map(t => <div key={t.icono}>
+        <dt>{t.franja.unidad}</dt><dd className="portada-franja-cifra">{'prefijo' in t && <small>{t.prefijo} </small>}{t.cifra}</dd>
+        <dd className="portada-franja-fuente">{t.franja.fuente}</dd><dd className="portada-franja-detalle">{t.franja.detalle}</dd>
+      </div>)}</dl>
     </> : s.variante === 'reto' ? <>
       <p className="portada-antetitulo">{DESAFIO.subtitulo}</p><h2>{DESAFIO.titulo}</h2><p>{DESAFIO.resumen}</p>
       <div className="portada-pregunta">
