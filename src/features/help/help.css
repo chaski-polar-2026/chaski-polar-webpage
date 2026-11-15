@@ -1,0 +1,32 @@
+.help-page { padding-bottom: 40px; }
+.help-section { max-width: 1180px; margin: 0 auto; }
+.help-section > h2 { margin: 8px 0 24px; color: var(--hielo); font: 400 clamp(1.7rem, 3vw, 2.5rem)/1.2 var(--serif); }
+.help-faq-list { border-top: 1px solid var(--linea); }
+.help-faq-item { border-bottom: 1px solid var(--linea); }
+.help-faq-item summary { min-height: 52px; display: flex; align-items: center; cursor: pointer; color: var(--hielo); font-weight: 600; line-height: 1.5; }
+.help-faq-item summary::marker { color: var(--frio); }
+.help-faq-item summary:focus-visible { outline: 3px solid var(--frio); outline-offset: 4px; border-radius: 3px; }
+.help-answer { max-width: 78ch; padding: 0 0 10px; color: var(--niebla); line-height: 1.7; }
+.help-answer a, .help-activity a { color: var(--frio); text-underline-offset: 3px; }
+.help-glossary { margin: 0; border-top: 1px solid var(--linea); }
+.help-term { display: grid; grid-template-columns: minmax(180px, .34fr) minmax(0, 1fr); gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--linea); }
+.help-term dt { color: var(--hielo); font-weight: 700; }
+.help-term dd { margin: 0; max-width: 78ch; color: var(--niebla); line-height: 1.65; }
+.help-teacher-intro { max-width: 75ch; color: var(--niebla); }
+.help-activities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.help-activity { min-width: 0; padding: 20px; border: 1px solid var(--linea); border-top: 2px solid var(--frio); border-radius: 6px; background: var(--panel-medio); color: var(--niebla); line-height: 1.6; }
+.help-activity h3 { color: var(--hielo); font: 400 1.35rem/1.3 var(--serif); margin: 0 0 14px; }
+.help-activity h4 { color: var(--hielo); font-size: .95rem; margin: 18px 0 6px; }
+.help-activity ol, .help-activity ul { padding-left: 1.25rem; margin: 6px 0; }
+.help-activity li { padding-left: 2px; margin: 5px 0; }
+.help-expected { padding-top: 12px; border-top: 1px solid var(--linea); }
+.help-activity strong { color: var(--hielo); }
+@media (max-width: 760px) {
+  .help-section { padding-left: 20px; padding-right: 20px; }
+  .help-term { grid-template-columns: 1fr; gap: 4px; }
+  .help-activities { grid-template-columns: 1fr; }
+  .help-activity { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .help-page *, .help-page *::before, .help-page *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

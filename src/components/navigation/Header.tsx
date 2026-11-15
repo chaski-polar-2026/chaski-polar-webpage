@@ -59,6 +59,7 @@ export default function Header() {
         <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/fishers" aria-current={pathname === "/fishers" ? "page" : undefined}>Fishers</Link>
         <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/juego">Game</Link>
         <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/about" aria-current={pathname === "/about" ? "page" : undefined}>About</Link>
+        <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/help" aria-current={pathname === "/help" ? "page" : undefined}>Help</Link>
       </nav>
     </header>
   </>
