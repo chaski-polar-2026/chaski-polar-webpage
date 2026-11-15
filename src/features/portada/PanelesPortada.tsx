@@ -27,7 +27,7 @@ export default function PanelesPortada({ sinEscena }: { sinEscena: boolean }) {
     tabIndex={-1} inert={!sinEscena && indice !== 0} aria-hidden={!sinEscena && indice !== 0}>
     {s.principal ? <>
       <div className="portada-intro-copia">
-        <h1 aria-label={s.titulo}>{s.titulo.split(" ").map((w, i) => <span key={w} aria-hidden="true" className={i === 0 ? "portada-titulo-contorno" : "portada-titulo-solido"}>{i > 0 && " "}{w}</span>)}</h1><p className="portada-intro-subtitulo">{s.texto}</p><p className="portada-intro-apoyo">{s.apoyo}</p>
+        <h1 aria-label={s.titulo}>{s.titulo.split(" ").map((w, i) => <span key={w} aria-hidden="true" className={i === 0 ? "portada-titulo-contorno" : "portada-titulo-solido"}>{w}</span>)}</h1><p className="portada-intro-subtitulo">{s.texto}</p><p className="portada-intro-apoyo">{s.apoyo}</p>
         <div className="portada-intro-botones">{s.botones?.map((b, i) => <BotonPortada key={b.texto} boton={b} sinEscena={sinEscena} principal={i === 0} />)}</div>
       </div>
       <dl className="portada-franja" aria-label="Verified results at a glance">{FRANJA_PORTADA.map(t => <div key={t.icono}>

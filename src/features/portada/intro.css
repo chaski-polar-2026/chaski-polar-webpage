@@ -47,9 +47,15 @@
 /* Título con una palabra en contorno y la otra rellena, para el estilo de letra de la portada anterior. */
 .portada .portada-intro h1 { font-weight: 700; }
 .portada .portada-titulo-contorno { color: transparent; -webkit-text-stroke: 1.6px #eaf3f5; paint-order: stroke fill; }
-.portada .portada-titulo-solido { color: #8fe3f2; text-shadow: 0 0 22px rgba(99, 205, 232, .35); }
+.portada .portada-titulo-solido { color: #8fe3f2; background: linear-gradient(100deg, #7fd8ea 0%, #e6fcff 48%, #7fd8ea 100%); background-size: 240% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 14px rgba(99, 205, 232, .4)); animation: titulo-brillo 7s ease-in-out infinite; }
 @media (max-width: 640px) { .portada .portada-titulo-contorno { -webkit-text-stroke-width: 1.2px; } }
 @supports not (-webkit-text-stroke: 1px #000) { .portada .portada-titulo-contorno { color: #eaf3f5; } }
 .portada .portada-intro h1 { white-space: nowrap; }
 .portada .portada-intro h1 > span { display: inline; }
-.portada .portada-titulo-solido { margin-left: .26em; }
+.portada .portada-titulo-solido { margin-left: .2em; }
+.portada .portada-titulo-contorno { animation: titulo-contorno 5s ease-in-out infinite alternate; }
+@keyframes titulo-brillo { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes titulo-contorno { from { -webkit-text-stroke-color: #eaf3f5; filter: drop-shadow(0 0 0 rgba(143, 227, 242, 0)); } to { -webkit-text-stroke-color: #bfeaf5; filter: drop-shadow(0 0 10px rgba(143, 227, 242, .35)); } }
+@media (prefers-reduced-motion: reduce) { .portada .portada-titulo-solido, .portada .portada-titulo-contorno { animation: none; } }
+/* En pantallas bajas el aviso de desplazamiento se encimaba con los botones. */
+@media (max-height: 780px) { .portada .portada-ventana:has(.portada-intro.activa) .portada-pista { display: none; } }
