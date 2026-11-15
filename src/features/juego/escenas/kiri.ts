@@ -13,15 +13,20 @@ import { crearFondoKiriVoxel, crearPersonajeVoxel } from "../motor/voxel";
 const ALTURA_NADO = 4;
 const LIMITE = 28;
 const VELOCIDAD = 7;
-// Persecución original: 9 unidades/s. Se reduce un 25 % sin cambiar la ronda ni las colisiones.
 const VELOCIDAD_PERSECUCION_PINGUINO = 6.75;
+const VELOCIDAD_INMERSION = 5;
+const ALTURA_ENTRADA = 17; // superficie del hielo voxel: y = 15.2
+const ALTURA_AGUA = 11;
+// Un factor mayor reduce el tiempo entre apariciones; el máximo es el tamaño del grupo.
+const FACTOR_APARICION_PINGUINOS = 1.5;
+const INTERVALO_APARICION = 6;
 
 export interface AvisosKiri {
   comio(total: number): void;
   golpe(): void;
 }
 
-interface Pinguino { p: Personaje; voxel: THREE.InstancedMesh; ang: number; estado: "ronda" | "ataque"; dur: number }
+interface Pinguino { p: Personaje; voxel: THREE.InstancedMesh; estado: "espera" | "inmersion" | "ataque" | "salida"; dur: number; entrada: THREE.Vector3 }
 
 /** Crea la escena. "pausa" devuelve true mientras hay un diálogo abierto */
 export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => boolean): (motor: Motor) => Escena {
@@ -43,9 +48,11 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
 
     const dibujoPinguino = sprite("pinguino", dibujarPinguino), dibujoFito = sprite("fito", dibujarFito);
     const pinguinos: Pinguino[] = Array.from({ length: 3 }, (_, i) => {
-      const p = crearPersonaje(escena, dibujoPinguino, { ancho: 2.4, alto: 2.4, suelo: 0 });
+      const p = crearPersonaje(escena, dibujoPinguino, { ancho: 2.4, alto: 2.4 });
       p.sprite.visible = false;
-      return { p, voxel: crearPersonajeVoxel(escena, dibujoPinguino, 0.035, 1), ang: i * 2.1, estado: "ronda" as const, dur: 0 };
+      const voxel = crearPersonajeVoxel(escena, dibujoPinguino, 0.035, 1);
+      voxel.visible = false;
+      return { p, voxel, estado: "espera" as const, dur: i * 2, entrada: new THREE.Vector3() };
     });
     const colocar = (f: Personaje) => { const a = azar(0, Math.PI * 2), d = azar(3, 22); f.posicion.set(Math.cos(a) * d, azar(2, 9), Math.sin(a) * d); };
     const fitos = Array.from({ length: 14 }, () => {
@@ -57,7 +64,7 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
     });
 
     const vel = new THREE.Vector3(), mov = new THREE.Vector3(), quieto = new THREE.Vector3(), hacia = new THREE.Vector3();
-    let comidos = 0, aturdido = 0;
+    let comidos = 0, aturdido = 0, siguienteAtaque = INTERVALO_APARICION / FACTOR_APARICION_PINGUINOS;
 
     return {
       actualizar(dt, t) {
@@ -85,24 +92,43 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
           f.animar(t, quieto, seguidor.derecha, 1);
           if (!detenido && f.posicion.distanceTo(kiri.posicion) < 1.6) { sonar("comer"); comidos++; avisos.comio(comidos); colocar(f); }
         }
-        // pingüinos: dan vueltas y de vez en cuando se lanzan sobre Kiri
+        // Los pingüinos entran escalonados por las aberturas iluminadas del hielo.
+        if (!detenido) {
+          siguienteAtaque -= dt;
+          const disponibles = pinguinos.filter(u => u.estado === "espera");
+          if (siguienteAtaque <= 0 && disponibles.length > 0) {
+            const u = disponibles[Math.floor(Math.random() * disponibles.length)]!;
+            if (Math.random() < 0.5) u.entrada.set(azar(4, 8), ALTURA_ENTRADA, azar(-5, 5));
+            else u.entrada.set(azar(-5, 5), ALTURA_ENTRADA, azar(-9, -7));
+            u.p.posicion.copy(u.entrada);
+            u.voxel.visible = true;
+            u.estado = "inmersion";
+            u.dur = 0;
+            siguienteAtaque = azar(INTERVALO_APARICION * 0.8, INTERVALO_APARICION * 1.2) / FACTOR_APARICION_PINGUINOS;
+          }
+        }
         for (const u of pinguinos) {
-          if (u.estado === "ronda" || detenido) {
-            u.ang += dt * 0.5;
-            u.p.posicion.set(Math.cos(u.ang) * 14, 9 + Math.sin(t + u.ang) * 0.6, Math.sin(u.ang) * 14);
-            if (!detenido && Math.random() < dt / 6) { u.estado = "ataque"; u.dur = 0; }
-          } else {
+          if (!detenido && u.estado === "inmersion") {
+            u.p.posicion.y = Math.max(ALTURA_AGUA, u.p.posicion.y - VELOCIDAD_INMERSION * dt);
+            if (u.p.posicion.y <= ALTURA_AGUA) { u.estado = "ataque"; u.dur = 0; }
+          } else if (!detenido && u.estado === "ataque") {
             u.dur += dt;
             hacia.subVectors(kiri.posicion, u.p.posicion).normalize();
             u.p.posicion.addScaledVector(hacia, dt * VELOCIDAD_PERSECUCION_PINGUINO);
             if (aturdido <= 0 && u.p.posicion.distanceTo(kiri.posicion) < 1.5) {
-              aturdido = 1.5; comidos = Math.max(0, comidos - 2); sonar("golpe");
-              avisos.comio(comidos); avisos.golpe(); u.estado = "ronda";
+              aturdido = 1.5; comidos = Math.max(0, comidos - 1); sonar("golpe");
+              avisos.comio(comidos); avisos.golpe(); u.estado = "salida";
             }
-            if (u.dur > 3) u.estado = "ronda";
+            if (u.dur > 3) u.estado = "salida";
+          } else if (!detenido && u.estado === "salida") {
+            hacia.subVectors(u.entrada, u.p.posicion);
+            const distancia = hacia.length();
+            if (distancia <= VELOCIDAD_INMERSION * dt) {
+              u.p.posicion.copy(u.entrada); u.estado = "espera"; u.voxel.visible = false;
+            } else u.p.posicion.addScaledVector(hacia, VELOCIDAD_INMERSION * dt / distancia);
           }
+          if (u.estado === "espera") continue;
           u.p.animar(t, quieto, seguidor.derecha, 1);
-          u.p.sprite.material.rotation = Math.sin(t * 6 + u.ang) * 0.1;
           u.voxel.position.copy(u.p.posicion);
         }
 
