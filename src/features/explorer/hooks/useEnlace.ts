@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { claveMes } from '../../../lib/formato'
 import { useExplorer } from '../ExplorerContext'
 import { MAP_STYLES } from '../lib/estado'
+import { APARTADOS } from '../lib/regiones'
 import { esPeru } from '../lib/modelo'
 import { VARIABLES } from '../lib/variables'
 import { useExplorerStore, type GlobeView } from '../store'
@@ -28,9 +29,11 @@ export function useEnlace() {
     if (vista) st.setView(vista)
     const estilo = MAP_STYLES.find((x) => x === p.get('estilo'))
     if (estilo) st.setMapStyle(estilo)
+    const area = APARTADOS.find(a => a.id === (p.get('area') ?? p.get('section')))
+    if (area) { st.setSection(area.id); st.setSidebarTab(area.id === 'anchoveta' ? 'biologia' : 'parametro'); st.flyTo(area.pov, 0) }
     const zona = p.get('zona'), paso = Number(p.get('paso'))
     if (p.get('tema') === 'nino2026') { st.setSection('humboldt'); acciones.nino2026() }
-    else if (modelo.esZona(zona)) { st.setSection(esPeru(zona) ? 'humboldt' : 'austral'); acciones.irAZona(zona) }
+    else if (modelo.esZona(zona)) { st.setSection(area?.id ?? (esPeru(zona) ? 'humboldt' : 'austral')); acciones.irAZona(zona) }
     else if (Number.isInteger(paso) && paso > 0) acciones.paso(paso - 1)
   }, [modelo, acciones])
 
@@ -47,6 +50,7 @@ export function useEnlace() {
         if (s.panel.tipo === 'zona') p.set('zona', s.panel.z)
         if (s.panel.tipo === 'recorrido') p.set('paso', String(s.panel.paso + 1))
         if (s.panel.tipo === 'nino2026') p.set('tema', 'nino2026')
+        p.set('area', s.section)
         p.set('vista', s.view)
         if (s.view !== 'illustrated') p.set('estilo', s.mapStyle)
         history.replaceState(history.state, '', `#${p.toString()}`)

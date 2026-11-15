@@ -1,8 +1,8 @@
 import { InsigniaNino } from '../../../nino/RelacionesNino'
 import { Lectura, Guia } from '../../../lectura/PanelLectura'
-import { useMemo } from 'react'
-import { media, pendiente } from '../../../../lib/estadistica'
-import { etiquetaMes, fmtR, nf, signo } from '../../../../lib/formato'
+import { useTendenciaZona } from '../../hooks/useTendenciaZona'
+import { media } from '../../../../lib/estadistica'
+import { etiquetaMes, fmtR, nf } from '../../../../lib/formato'
 import { useExplorer } from '../../ExplorerContext'
 import { useAcciones } from '../../hooks/useAcciones'
 import { esPeru, ZONA_REY_JORGE } from '../../lib/modelo'
@@ -23,18 +23,7 @@ export default function Zona({ z, nota }: { z: IdZona; nota?: NotaHistoria }) {
   const v = variablePorId(variable)
   const p = modelo.zona(z)
 
-  const serie = useMemo(() => modelo.serieZona(z, v).slice(modelo.i0, modelo.ultimo + 1), [modelo, z, v])
-
-  const tendencia = useMemo(() => {
-    const anios: number[] = [], vals: (number | null)[] = []
-    for (let y = 1998; y <= modelo.mes(modelo.ultimoObservado).anio; y++) {
-      const t = serie.filter((_, k) => modelo.mes(modelo.i0 + k).anio === y)
-      if (t.filter((q) => q != null).length >= 6) { anios.push(y); vals.push(media(t)) }
-    }
-    const pend = pendiente(anios, vals), m = media(vals)
-    if (pend == null) return '—'
-    return v.modo === 'log' ? `${signo(pend)}${nf(1).format(Math.abs(((pend * 10) / (m || 1)) * 100))} %` : `${signo(pend)}${nf(v.dec).format(Math.abs(pend * 10))} ${v.unidad}`
-  }, [modelo, serie, v])
+  const { serie, tendencia } = useTendenciaZona(modelo, z, v)
 
   const x = modelo.valorZona(z, v, i), a = modelo.anomaliaTxt(z, v, i)
   const invierno = x == null && !esPeru(z) && /clorofila|turbidez/.test(v.id) && [4, 5, 6, 7].includes(modelo.mes(i).mes)

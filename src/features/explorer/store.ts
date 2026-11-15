@@ -11,6 +11,12 @@ export type GlobeView = 'illustrated' | 'detailed' | 'satellite'
 type CameraRequest = { pov: Pov; ms: number; id: number }
 
 type ExplorerState = {
+  zoneView: IdZona | null
+  zonePhase: 'globe' | 'zooming' | 'map' | 'returning'
+  zoneRequest: { z: IdZona | null; id: number } | null
+  openZone: (z: IdZona) => void
+  closeZone: () => void
+  setZonePhase: (phase: 'globe' | 'zooming' | 'map' | 'returning') => void
   variable: ExplorerVariable
   section: ExplorerSection
   sidebarTab: SidebarTab
@@ -37,10 +43,16 @@ type ExplorerState = {
 }
 
 export const useExplorerStore = create<ExplorerState>((set) => ({
-  variable: 'hielo',
-  section: 'austral',
+  zoneView: null,
+  zonePhase: 'globe',
+  zoneRequest: null,
+  openZone: (z) => set((s) => ({ zoneView: z, zonePhase: 'zooming', zoneRequest: { z, id: (s.zoneRequest?.id ?? 0) + 1 } })),
+  closeZone: () => set((s) => ({ zonePhase: 'returning', zoneRequest: { z: null, id: (s.zoneRequest?.id ?? 0) + 1 } })),
+  setZonePhase: (zonePhase) => set({ zonePhase, ...(zonePhase === 'globe' ? { zoneView: null } : {}) }),
+  variable: 'clorofila_mg_m3',
+  section: 'humboldt',
   sidebarTab: 'parametro',
-  view: 'illustrated',
+  view: 'detailed',
   month: 364, // mayo de 2023 (las series empiezan en enero de 1993)
   playing: false,
   panel: { tipo: 'general' },
@@ -49,12 +61,12 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   camera: null,
   monitorZone: null,
   setVariable: (variable) => set({ variable }),
-  setSection: (section) => set({ section }),
+  setSection: (section) => set({ section, zonePhase: 'globe', zoneView: null, zoneRequest: null }),
   setSidebarTab: (sidebarTab) => set({ sidebarTab }),
   setView: (view) => set({ view }),
   setMonth: (month) => set({ month }),
   setPlaying: (playing) => set({ playing }),
-  setPanel: (panel) => set({ panel }),
+  setPanel: (panel) => set({ panel, ...(panel.tipo !== 'zona' ? { zonePhase: 'globe' as const, zoneView: null, zoneRequest: null } : {}) }),
   setMapStyle: (mapStyle) => set({ mapStyle }),
   setComparison: (comparison) => set({ comparison }),
   flyTo: (pov, ms = 1500) => set((s) => ({ camera: { pov, ms, id: (s.camera?.id ?? 0) + 1 } })),
