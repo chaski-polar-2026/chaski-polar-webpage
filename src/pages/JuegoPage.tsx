@@ -42,10 +42,10 @@ type Pantalla =
   | { tipo: 'cardumen'; generacion: number; peces: number; estrategia: Estrategia['id']; intento: number }
 
 const AYUDA: Record<EscenaPrologo | 'cardumen', string> = {
-  lumi: 'W o Espacio: subir · S o C: bajar · A/D: a los lados',
-  kiri: 'WASD o flechas: nadar · Espacio/Q: subir · C/E: bajar',
-  nara: 'WASD o flechas: nadar',
-  cardumen: 'WASD: nadar · Espacio: subir · C: bajar · Shift: impulso · F: juntar',
+  lumi: 'W or Space: up · S or C: down · A/D: sideways',
+  kiri: 'WASD or arrows: swim · Space/Q: up · C/E: down',
+  nara: 'WASD or arrows: swim',
+  cardumen: 'WASD: swim · Space: up · C: down · Shift: boost · F: gather',
 }
 
 /** Juego: mundo 3D con personajes dibujados en 2D */
@@ -75,7 +75,7 @@ export default function JuegoPage() {
   const hitos = useRef(new Set<string>())
   const presentado = useRef(false)
 
-  useEffect(() => { document.title = 'Mar Peruano 360 · Juego' }, [])
+  useEffect(() => { document.title = 'Chaski Polar · Cardumen' }, [])
 
   // sonido: el navegador lo habilita recién con el primer gesto del jugador
   const [silencio, setSilencio] = useState(estaEnSilencio)
@@ -108,7 +108,7 @@ export default function JuegoPage() {
     // los dibujos de los personajes (PNG si existen) se cargan junto con los datos
     Promise.all([loadRuntimeData(), precargarSprites()])
       .then(([{ monitor }]) => { if (activo) setMar(crearMar(monitor)) })
-      .catch(() => { if (activo) setError('No se pudieron cargar los datos del mar.') })
+      .catch(() => { if (activo) setError('Could not load ocean data.') })
     return () => { activo = false }
   }, [])
 
@@ -165,7 +165,7 @@ export default function JuegoPage() {
         void dialogo.decir(introLumi(mar))
         motor.usar(escenaLumi(entrada, {
           estado: setEstadoLumi,
-          division: (n) => avisar(`¡Lumi se dividió! ${n} de ${DIVISIONES_META}`),
+          division: (n) => avisar(`Lumi divided! ${n} of ${DIVISIONES_META}`),
           terminado: () => terminar(finLumi),
         }, hayDialogo))
       } else if (escena === 'kiri') {
@@ -175,9 +175,9 @@ export default function JuegoPage() {
           comio: (n) => {
             setComidos(n)
             if (n >= META_KIRI) terminar(finKiri)
-            else if (n > 0 && n % 5 === 0) avisar(`¡Ñam! ${n}`)
+            else if (n > 0 && n % 5 === 0) avisar(`Yum! ${n}`)
           },
-          golpe: () => avisar('¡Pingüino!'),
+          golpe: () => avisar('Penguin!'),
         }, hayDialogo))
       } else {
         setEstadoNara(null)
@@ -185,7 +185,7 @@ export default function JuegoPage() {
         motor.usar(escenaNara(entrada, {
           estado: setEstadoNara,
           punto: (id) => void useDialogo.getState().decir(puntoNara[id]),
-          agotada: () => avisar('Nara está agotada: descansa un momento'),
+          agotada: () => avisar('Nara is exhausted: rest for a moment'),
           llego: () => terminar(finNara),
         }, hayDialogo))
       }
@@ -199,9 +199,9 @@ export default function JuegoPage() {
       motor.usar(escenaCardumen(mar, entrada, {
         aviso: avisar,
         mes: (k, m) => {
-          const nombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-          const nino = m.nino12 == null ? '' : `Niño 1+2: ${m.nino12 > 0 ? '+' : ''}${m.nino12.toFixed(1).replace('.', ',')} °C`
-          setCartel({ mes: `${nombres[k]} ${anio}`, detalle: [nino, m.temporada === 'veda' ? 'veda de pesca' : m.temporada === 'abierta' ? 'temporada de pesca' : ''].filter(Boolean).join(' · ') })
+          const nombres = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+          const nino = m.nino12 == null ? '' : `Niño 1+2: ${m.nino12 > 0 ? '+' : ''}${m.nino12.toFixed(1)} °C`
+          setCartel({ mes: `${nombres[k]} ${anio}`, detalle: [nino, m.temporada === 'veda' ? 'fishing ban' : m.temporada === 'abierta' ? 'fishing season' : ''].filter(Boolean).join(' · ') })
           clearTimeout(temporizadorCartel.current)
           temporizadorCartel.current = window.setTimeout(() => setCartel(null), 2200)
         },
@@ -239,19 +239,19 @@ export default function JuegoPage() {
     : null
   const ayuda = pantalla.tipo === 'cardumen' ? AYUDA.cardumen : pantalla.tipo === 'prologo' ? AYUDA[pantalla.escena] : ''
 
-  if (new URLSearchParams(location.search).has('sprites')) return <div className="juego bitacora"><GaleriaSprites /></div>
-  return <div className={`juego bitacora${dialogoAbierto ? ' bitacora-con-dialogo' : ''}`} ref={contenedor}
+  if (new URLSearchParams(location.search).has('sprites')) return <div className="juego bitacora" lang="en"><GaleriaSprites /></div>
+  return <div className={`juego bitacora${dialogoAbierto ? ' bitacora-con-dialogo' : ''}`} lang="en" ref={contenedor}
     data-modal={Boolean(informe || verFinal)} data-etapa={pantalla.tipo === 'prologo' ? pantalla.escena : pantalla.tipo}>
-    <canvas className="juego-lienzo" ref={lienzo} aria-label="Escena del juego" />
-    <nav className="bitacora-navegacion" aria-label="Navegación del juego">
-      <Link className="bitacora-nav-enlace" to="/">← Portada</Link>
-      {pantalla.tipo !== 'menu' && <button type="button" className="bitacora-nav-enlace" onClick={() => { setInforme(null); setVerFinal(false); setPantalla({ tipo: 'menu' }) }}>Menú</button>}
-      {ayuda && <details className="bitacora-controles"><summary title="Recordar controles">Controles</summary>
-        <p>{ayuda}<br />Ratón: arrastra para girar la cámara y usa la rueda para acercar. En pantalla táctil, usa la palanca y los botones.</p>
+    <canvas className="juego-lienzo" ref={lienzo} aria-label="Game scene" />
+    <nav className="bitacora-navegacion" aria-label="Game navigation">
+      <Link className="bitacora-nav-enlace" to="/">← Home</Link>
+      {pantalla.tipo !== 'menu' && <button type="button" className="bitacora-nav-enlace" onClick={() => { setInforme(null); setVerFinal(false); setPantalla({ tipo: 'menu' }) }}>Menu</button>}
+      {ayuda && <details className="bitacora-controles"><summary title="Review controls">Controls</summary>
+        <p>{ayuda}<br />Mouse: drag to rotate the camera and use the wheel to zoom. On a touchscreen, use the joystick and buttons.</p>
       </details>}
       <span className="bitacora-marca">Cardumen</span>
       <button type="button" className="bitacora-nav-enlace bitacora-nav-sonido" onClick={alternarSilencio} aria-pressed={!silencio}
-        >{silencio ? 'Sonido: no' : 'Sonido: sí'}</button>
+        >{silencio ? 'Sound: off' : 'Sound: on'}</button>
     </nav>
 
     {pantalla.tipo === 'menu' && mar && <MenuCardumen historia={() => prologo('lumi', true)} cardumen={empezarCampana}
@@ -261,18 +261,18 @@ export default function JuegoPage() {
     {pantalla.tipo === 'prologo' && pantalla.escena === 'kiri' && <HudKiri comidos={comidos} />}
     {pantalla.tipo === 'prologo' && pantalla.escena === 'nara' && <HudNara e={estadoNara} />}
     {pantalla.tipo === 'cardumen' && <HudCardumen entrada={entrada} mar={mar} compacto={compacto} alternar={() => setCompacto((x) => !x)} />}
-    {pantalla.tipo === 'prologo' && pantalla.escena === 'kiri' && <div className="bitacora-acciones kiri-vertical" aria-label="Controles de profundidad">
+    {pantalla.tipo === 'prologo' && pantalla.escena === 'kiri' && <div className="bitacora-acciones kiri-vertical" aria-label="Depth controls">
       {(['subir', 'bajar'] as const).map((accion) => <button key={accion} type="button" className="juego-caja bitacora-tactil"
         onPointerDown={(e) => { e.preventDefault(); e.currentTarget.setPointerCapture(e.pointerId); if (entrada) entrada.botones[accion] = true }}
-        onPointerUp={() => { if (entrada) entrada.botones[accion] = false }} onPointerCancel={() => { if (entrada) entrada.botones[accion] = false }} onLostPointerCapture={() => { if (entrada) entrada.botones[accion] = false }}>{accion === 'subir' ? '↑ Subir' : '↓ Bajar'}</button>)}
+        onPointerUp={() => { if (entrada) entrada.botones[accion] = false }} onPointerCancel={() => { if (entrada) entrada.botones[accion] = false }} onLostPointerCapture={() => { if (entrada) entrada.botones[accion] = false }}>{accion === 'subir' ? '↑ Up' : '↓ Down'}</button>)}
     </div>}
     {pantalla.tipo !== 'menu' && !dialogoAbierto && !informe && !verFinal && !pausado && <div className="visor-teclas" aria-hidden="true">
-      <span>CONTROLES</span><div className="visor-grupos">
+      <span>CONTROLS</span><div className="visor-grupos">
         {[ [['W', 'w'], ['A', 'a'], ['S', 's'], ['D', 'd']], [['↑', 'arrowup'], ['←', 'arrowleft'], ['↓', 'arrowdown'], ['→', 'arrowright']] ].map((grupo, i) => <div className="visor-cruz" key={i}>{grupo.map(([label, key], posicion) => <kbd key={key} className={`${posicion === 0 ? 'tecla-arriba ' : ''}${teclas.has(key) ? 'pulsada' : ''}`}>{label}</kbd>)}</div>)}
-        <div className="visor-acciones">{(pantalla.tipo === 'cardumen' || pantalla.escena === 'kiri' ? [['ESPACIO', ' '], ['Q', 'q'], ['C', 'c'], ['E', 'e'], ...(pantalla.tipo === 'cardumen' ? [['SHIFT', 'shift'], ['F', 'f']] : [])] : pantalla.escena === 'lumi' ? [['ESPACIO', ' '], ['C', 'c']] : []).map(([label, key]) => <kbd key={key} className={teclas.has(key) ? 'pulsada' : ''}>{label}</kbd>)}</div>
+        <div className="visor-acciones">{(pantalla.tipo === 'cardumen' || pantalla.escena === 'kiri' ? [['SPACE', ' '], ['Q', 'q'], ['C', 'c'], ['E', 'e'], ...(pantalla.tipo === 'cardumen' ? [['SHIFT', 'shift'], ['F', 'f']] : [])] : pantalla.escena === 'lumi' ? [['SPACE', ' '], ['C', 'c']] : []).map(([label, key]) => <kbd key={key} className={teclas.has(key) ? 'pulsada' : ''}>{label}</kbd>)}</div>
       </div>
     </div>}
-    {pausado && <div className="pausa-velo" role="dialog" aria-modal="true" aria-labelledby="pausa-titulo"><div className="pausa-panel juego-caja"><span>BITÁCORA · EN ESPERA</span><h2 id="pausa-titulo">Juego en pausa</h2><p>La expedición está detenida. Tómate un momento.</p><button autoFocus type="button" className="juego-caja principal" onClick={() => setPausado(false)}>Continuar <kbd>ESC</kbd></button></div></div>}
+    {pausado && <div className="pausa-velo" role="dialog" aria-modal="true" aria-labelledby="pausa-titulo"><div className="pausa-panel juego-caja"><span>LOGBOOK · ON HOLD</span><h2 id="pausa-titulo">Game paused</h2><p>The expedition is paused. Take a moment.</p><button autoFocus type="button" className="juego-caja principal" onClick={() => setPausado(false)}>Continue <kbd>ESC</kbd></button></div></div>}
 
     <div className={`juego-aviso${aviso ? ' visible' : ''}`} aria-live="assertive">{aviso}</div>
     {pantalla.tipo === 'cardumen' && cartel && <div className="juego-cartel" role="status"><b>{cartel.mes}</b>{cartel.detalle && <span>{cartel.detalle}</span>}</div>}
@@ -288,6 +288,6 @@ export default function JuegoPage() {
 
     {verFinal && <Final resultados={resultados} alRepetir={empezarCampana} alMenu={() => { setVerFinal(false); setPantalla({ tipo: 'menu' }) }} />}
 
-    {!mar && <div className="juego-estado" role="status">{error ?? 'Cargando el mar…'}</div>}
+    {!mar && <div className="juego-estado" role="status">{error ?? 'Loading the sea…'}</div>}
   </div>
 }

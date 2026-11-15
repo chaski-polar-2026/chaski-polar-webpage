@@ -59,10 +59,10 @@ export interface Estrategia {
 
 const BASE = { gasto: 1, gastoCalido: 1, comida: 1, depredadores: 1, oxigeno: 1, velocidad: 1 };
 export const ESTRATEGIAS: Record<Estrategia["id"], Estrategia> = {
-  ninguna: { id: "ninguna", nombre: "Sin estrategia", ventaja: "", costo: "", ...BASE },
-  profundo: { id: "profundo", nombre: "Nadador profundo", ventaja: "Aguanta mucho mejor la falta de oxígeno.", costo: "Gasta más energía todo el año.", ...BASE, gasto: 1.1, oxigeno: 0.3 },
-  costero: { id: "costero", nombre: "Migrador costero", ventaja: "Nada más rápido y aprovecha más cada mancha de comida.", costo: "Sufre mucho cuando el mar está cálido.", ...BASE, comida: 1.2, velocidad: 1.2, gastoCalido: 1.5 },
-  apretado: { id: "apretado", nombre: "Cardumen apretado", ventaja: "Se defiende mejor de aves y lobos marinos.", costo: "Los peces compiten más por la comida.", ...BASE, comida: 0.85, depredadores: 0.6 },
+  ninguna: { id: "ninguna", nombre: "No strategy", ventaja: "", costo: "", ...BASE },
+  profundo: { id: "profundo", nombre: "Deep swimmer", ventaja: "Handles low oxygen much better.", costo: "Uses more energy all year.", ...BASE, gasto: 1.1, oxigeno: 0.3 },
+  costero: { id: "costero", nombre: "Coastal migrant", ventaja: "Swims faster and gets more from each food patch.", costo: "Struggles when the sea is warm.", ...BASE, comida: 1.2, velocidad: 1.2, gastoCalido: 1.5 },
+  apretado: { id: "apretado", nombre: "Tight school", ventaja: "Better protected from birds and sea lions.", costo: "Fish compete more for food.", ...BASE, comida: 0.85, depredadores: 0.6 },
 };
 /** se considera mar cálido para la estrategia "costero" desde esta anomalía de temperatura (°C) */
 const MAR_CALIDO = 1;

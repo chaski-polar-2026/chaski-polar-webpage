@@ -42,7 +42,7 @@ const dibujarGaia = (): HTMLCanvasElement => lienzo((g) => {
   g.beginPath(); g.arc(129, 154, 12, 0.3, Math.PI - 0.3); g.stroke();
 });
 
-const NOMBRES: Record<Hablante, string> = { orbi: "ORBI", gaia: "Dra. Gaia", kiri: "Kiri" };
+const NOMBRES: Record<Hablante, string> = { orbi: "ORBI", gaia: "Dr. Gaia", kiri: "Kiri" };
 const DIBUJOS: Record<Hablante, () => HTMLCanvasElement> = { orbi: dibujarOrbi, gaia: dibujarGaia, kiri: dibujarKiri };
 const cache = new Map<Hablante, string>();
 

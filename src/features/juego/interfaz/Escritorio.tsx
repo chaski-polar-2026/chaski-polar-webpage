@@ -6,8 +6,8 @@ import Cabina, { IconoSello } from './Cabina'
 import GuiaEscritorio, { faltaGuiaEscritorio, recordarGuiaEscritorio, type ReferenciaGuia } from './GuiaEscritorio'
 import './cabina.css'
 
-const n0 = new Intl.NumberFormat('es-PE', { maximumFractionDigits: 0 })
-const n1 = new Intl.NumberFormat('es-PE', { maximumFractionDigits: 1, signDisplay: 'exceptZero' })
+const n0 = new Intl.NumberFormat('en', { maximumFractionDigits: 0 })
+const n1 = new Intl.NumberFormat('en', { maximumFractionDigits: 1, signDisplay: 'exceptZero' })
 const ELEGIBLES: Estrategia['id'][] = ['profundo', 'costero', 'apretado']
 
 type IdPapel = string
@@ -31,7 +31,7 @@ function Papel({ id, lugar, elegido, clase, titulo, children, alTomar, alMover, 
     arrastre.current = { x: e.clientX, y: e.clientY }
   }
   const soltar = (e: EventoPuntero<HTMLElement>) => { if (arrastre.current) alSoltar(id, e.clientX, e.clientY); arrastre.current = null }
-  return <article className={`papel${clase ? ` ${clase}` : ''}${elegido ? ' elegido' : ''}`} aria-label={`${titulo}${elegido ? ', seleccionado' : ''}`}
+  return <article className={`papel${clase ? ` ${clase}` : ''}${elegido ? ' elegido' : ''}`} aria-label={`${titulo}${elegido ? ', selected' : ''}`}
     tabIndex={0} data-papel={id} onKeyDown={(e) => {
       if (e.target !== e.currentTarget || (e.key !== 'Enter' && e.key !== ' ')) return
       e.preventDefault(); alTomar(id)
@@ -44,7 +44,7 @@ function Papel({ id, lugar, elegido, clase, titulo, children, alTomar, alMover, 
 
 function Sello({ texto, tipo }: { texto: string; tipo: Decision }) {
   const giro = useMemo(() => Math.round(Math.random() * 16 - 8), [])
-  return <div className={`sello sello-${tipo}`} style={{ ['--giro' as string]: `${giro}deg` }} aria-label={`Sellado: ${texto}`}><IconoSello pequeno />{texto}</div>
+  return <div className={`sello sello-${tipo}`} style={{ ['--giro' as string]: `${giro}deg` }} aria-label={`Stamped: ${texto}`}><IconoSello pequeno />{texto}</div>
 }
 
 /** Fin de año como en Papers, Please: papeles que se arrastran, se cruzan y se sellan */
@@ -118,60 +118,60 @@ export default function Escritorio({ turno, datos, siguiente, final, alSeguir, a
   const errores = turno.expedientes.length + 1 - aciertos
   const factor = Math.max(0.6, 1 + aciertos * EFECTO_ACIERTO + errores * EFECTO_ERROR)
   const citaciones = [
-    ...turno.expedientes.filter((e) => sellos[e.id] !== e.correcta).map((e) => ({ id: e.id, texto: `${e.titulo}: sellaste «${e.sellos[sellos[e.id] ?? 'si']}». ${e.explicacion}` })),
-    ...(bandeja !== turno.bandejaCorrecta ? [{ id: 'bandeja', texto: `Archivaste el año en «${BANDEJAS.find((b) => b.id === bandeja)?.texto}». Correspondía «${BANDEJAS.find((b) => b.id === turno.bandejaCorrecta)?.texto}».${turno.bandejaCorrecta === 'nino' ? ` El Niño 1+2 llegó a ${n1.format(turno.resumen.ninoMax ?? 0)} °C.` : ''}` }] : []),
+    ...turno.expedientes.filter((e) => sellos[e.id] !== e.correcta).map((e) => ({ id: e.id, texto: `${e.titulo}: you stamped “${e.sellos[sellos[e.id] ?? 'si']}”. ${e.explicacion}` })),
+    ...(bandeja !== turno.bandejaCorrecta ? [{ id: 'bandeja', texto: `You filed the year under “${BANDEJAS.find((b) => b.id === bandeja)?.texto}”. The correct category was “${BANDEJAS.find((b) => b.id === turno.bandejaCorrecta)?.texto}”.${turno.bandejaCorrecta === 'nino' ? ` Niño 1+2 reached ${n1.format(turno.resumen.ninoMax ?? 0)} °C.` : ''}` }] : []),
   ]
   const comidaCentro = Math.round(turno.resumen.alimentoCentro * 100)
 
   const papeles: Record<IdPapel, { titulo: string; clase?: string; cuerpo: ReactNode }> = {
-    manual: { titulo: 'Manual del analista', clase: 'manual', cuerpo: <>
-      <h3>Manual del analista</h3>
-      <ol>{turno.reglas.map((r, k) => <li key={r}>{k < turno.reglasNuevas && <span className="nuevo">NUEVO</span>}{r}</li>)}</ol>
+    manual: { titulo: 'Analyst’s manual', clase: 'manual', cuerpo: <>
+      <h3>Analyst’s manual</h3>
+      <ol>{turno.reglas.map((r, k) => <li key={r}>{k < turno.reglasNuevas && <span className="nuevo">NEW</span>}{r}</li>)}</ol>
     </> },
-    reporte: { titulo: 'Reporte satelital', clase: 'reporte', cuerpo: <>
-      <h3>Reporte satelital · {turno.anio}</h3>
-      <p className="membrete">ORBI · costa central (Chimbote y Callao)</p>
+    reporte: { titulo: 'Satellite report', clase: 'reporte', cuerpo: <>
+      <h3>Satellite report · {turno.anio}</h3>
+      <p className="membrete">ORBI · central coast (Chimbote and Callao)</p>
       <table>
-        <thead><tr><th scope="col">Mes</th><th scope="col">Comida</th><th scope="col">Niño 1+2</th></tr></thead>
+        <thead><tr><th scope="col">Month</th><th scope="col">Food</th><th scope="col">Niño 1+2</th></tr></thead>
         <tbody>{turno.reporte.map((f) => <tr key={f.mes}>
           <th scope="row">{f.mes}</th>
           <td><span className="barrita" style={{ width: `${Math.min(100, (f.comida ?? 0) * 50)}%` }} />{f.comida == null ? '—' : `${Math.round(f.comida * 100)} %`}</td>
           <td className={(f.nino ?? 0) >= 1 ? 'calido' : ''}>{f.nino == null ? '—' : `${n1.format(f.nino)} °C`}</td>
         </tr>)}</tbody>
       </table>
-      <p className="pie">Comida: clorofila satelital frente a lo normal del mes (100 % = normal).</p>
+      <p className="pie">Food: satellite chlorophyll compared with the monthly normal (100% = normal).</p>
     </> },
-    cardumen: { titulo: 'Informe del cardumen', clase: 'cardumen', cuerpo: <>
-      <h3>Informe del cardumen</h3>
+    cardumen: { titulo: 'School report', clase: 'cardumen', cuerpo: <>
+      <h3>School report</h3>
       <dl>
-        <dt>Cardumen inicial</dt><dd>{n0.format(datos.inicial)}</dd>
-        <dt>Hambre</dt><dd>−{n0.format(datos.perdidas.hambre)}</dd>
-        <dt>Depredadores</dt><dd>−{n0.format(datos.perdidas.depredadores)}</dd>
-        <dt>Flota</dt><dd>−{n0.format(datos.perdidas.flota)}</dd>
-        <dt>Sin oxígeno</dt><dd>−{n0.format(datos.perdidas.oxigeno)}</dd>
-        <dt className="total">Sobrevivientes</dt><dd className="total">{n0.format(datos.sobrevivientes)}</dd>
+        <dt>Initial school</dt><dd>{n0.format(datos.inicial)}</dd>
+        <dt>Hunger</dt><dd>−{n0.format(datos.perdidas.hambre)}</dd>
+        <dt>Predators</dt><dd>−{n0.format(datos.perdidas.depredadores)}</dd>
+        <dt>Fleet</dt><dd>−{n0.format(datos.perdidas.flota)}</dd>
+        <dt>Low oxygen</dt><dd>−{n0.format(datos.perdidas.oxigeno)}</dd>
+        <dt className="total">Survivors</dt><dd className="total">{n0.format(datos.sobrevivientes)}</dd>
       </dl>
     </> },
-    carpeta: { titulo: `Carpeta del año ${turno.anio}`, clase: `carpeta${bandeja ? ' archivada' : ''}`, cuerpo: <>
-      <h3>Carpeta {turno.anio}</h3>
-      <p>¿Qué explica este año? Arrastra la carpeta a una bandeja (o elígela y toca la bandeja).</p>
-      <p className="pie">Comida en la costa central: {comidaCentro} % de lo normal en promedio.</p>
-      {bandeja && <p className="etiqueta">Archivada en: <b>{BANDEJAS.find((b) => b.id === bandeja)?.texto}</b></p>}
+    carpeta: { titulo: `Folder for ${turno.anio}`, clase: `carpeta${bandeja ? ' archivada' : ''}`, cuerpo: <>
+      <h3>Folder {turno.anio}</h3>
+      <p>What explains this year? Drag the folder to a tray (or select it and tap a tray).</p>
+      <p className="pie">Central coast food: {comidaCentro}% of normal on average.</p>
+      {bandeja && <p className="etiqueta">Filed under: <b>{BANDEJAS.find((b) => b.id === bandeja)?.texto}</b></p>}
     </> },
     ...Object.fromEntries(turno.expedientes.map((e) => [e.id, { titulo: e.titulo, clase: `expediente ${e.tipo}`, cuerpo: <>
       <p className="membrete">{e.remitente}</p>
       <h3>{e.titulo}</h3>
       <p>{e.cuerpo}</p>
-      {sellos[e.id] ? <Sello key={sellos[e.id]} texto={e.sellos[sellos[e.id]!]} tipo={sellos[e.id]!} /> : <p className="pie">Pendiente de sello</p>}
+      {sellos[e.id] ? <Sello key={sellos[e.id]} texto={e.sellos[sellos[e.id]!]} tipo={sellos[e.id]!} /> : <p className="pie">Awaiting stamp</p>}
     </> }])),
-    ...(siguiente ? { plan: { titulo: 'Plan del cardumen', clase: 'plan', cuerpo: <>
-      <h3>Plan para {siguiente.anio}</h3>
-      <p>Marca una estrategia para la próxima generación y firma.</p>
+    ...(siguiente ? { plan: { titulo: 'School plan', clase: 'plan', cuerpo: <>
+      <h3>Plan for {siguiente.anio}</h3>
+      <p>Choose a strategy for the next generation and sign.</p>
       {ELEGIBLES.map((id) => <label key={id} className="opcion">
         <input type="radio" name="estrategia" checked={estrategia === id} onChange={() => { setEstrategia(id); setFirmado(false) }} />
         <span><b>{ESTRATEGIAS[id].nombre}</b> · {ESTRATEGIAS[id].ventaja} <i>{ESTRATEGIAS[id].costo}</i></span>
       </label>)}
-      {firmado ? <p className="firma">Anchi</p> : <button type="button" className="firmar" disabled={!estrategia} onClick={() => { setFirmado(true); siguientePaso(3, 4); sonar('boton') }}>Firmar</button>}
+      {firmado ? <p className="firma">Anchi</p> : <button type="button" className="firmar" disabled={!estrategia} onClick={() => { setFirmado(true); siguientePaso(3, 4); sonar('boton') }}>Sign</button>}
     </> } } : {}),
   }
 
@@ -179,52 +179,52 @@ export default function Escritorio({ turno, datos, siguiente, final, alSeguir, a
     return <div className="juego-escritorio cabina-escritorio" role="dialog" aria-modal="true" aria-labelledby="t-resultado">
       <div className="cabina-franja"><Cabina expediente={visita} revisados={turno.expedientes.length} total={turno.expedientes.length} entregado /></div>
       <div className="resultado papel" style={{ ['--giro' as string]: '-0.6deg' }}>
-        <h3 id="t-resultado">Resultado del turno · {turno.anio}</h3>
-        <p>Decisiones correctas: <b>{aciertos} de {turno.expedientes.length + 1}</b>.</p>
-        {citaciones.length === 0 ? <p>Sin citaciones. Buen trabajo, analista.</p> : citaciones.map((c) => <p key={c.id} className="citacion"><b>CITACIÓN</b> {c.texto}</p>)}
-        <p className="pie">Cada decisión correcta protege al cardumen siguiente (+{Math.round(EFECTO_ACIERTO * 100)} %); cada error lo perjudica ({Math.round(EFECTO_ERROR * 100)} %). Efecto ilustrativo.</p>
+        <h3 id="t-resultado">Shift results · {turno.anio}</h3>
+        <p>Correct decisions: <b>{aciertos} of {turno.expedientes.length + 1}</b>.</p>
+        {citaciones.length === 0 ? <p>No citations. Good work, analyst.</p> : citaciones.map((c) => <p key={c.id} className="citacion"><b>CITATION</b> {c.texto}</p>)}
+        <p className="pie">Each correct decision protects the next school (+{Math.round(EFECTO_ACIERTO * 100)}%); each error harms it ({Math.round(EFECTO_ERROR * 100)}%). Illustrative effect.</p>
         <div className="acciones">
           {siguiente && estrategia && <button type="button" className="juego-caja principal" onClick={() => alSeguir(ESTRATEGIAS[estrategia], factor)}>
-            Siguiente generación: {siguiente.anio} ({n0.format(Math.min(10000, siguiente.peces * factor))} peces) →</button>}
-          {final && <button type="button" className="juego-caja principal" onClick={alFinal}>Ver el final →</button>}
-          {!siguiente && !final && <button type="button" className="juego-caja principal" onClick={alMenu}>Volver al menú</button>}
-          <button type="button" className="juego-caja" onClick={alRepetir}>Repetir {turno.anio}</button>
-          <a className="juego-caja" href={`/explorer#mes=${turno.anio}-01&dato=chlorophyll&vista=satellite`}>Ver este año en el explorador</a>
+            Next generation: {siguiente.anio} ({n0.format(Math.min(10000, siguiente.peces * factor))} fish) →</button>}
+          {final && <button type="button" className="juego-caja principal" onClick={alFinal}>See the ending →</button>}
+          {!siguiente && !final && <button type="button" className="juego-caja principal" onClick={alMenu}>Back to menu</button>}
+          <button type="button" className="juego-caja" onClick={alRepetir}>Replay {turno.anio}</button>
+          <a className="juego-caja" href={`/explorer#mes=${turno.anio}-01&dato=chlorophyll&vista=satellite`}>View this year in the explorer</a>
         </div>
       </div>
     </div>
   }
 
-  return <div className="juego-escritorio cabina-escritorio" ref={escritorioRef} role="dialog" aria-modal="true" aria-label={`Escritorio del analista, año ${turno.anio}`}>
+  return <div className="juego-escritorio cabina-escritorio" ref={escritorioRef} role="dialog" aria-modal="true" aria-label={`Analyst’s desk, year ${turno.anio}`}>
     <header className="escritorio-cabecera">
-      <b>Escritorio del analista · {turno.anio}</b>
-      <span role="status">{pendientes > 0 ? `${pendientes} pendiente${pendientes > 1 ? 's' : ''}` : 'Todo revisado'}</span>
-      <button type="button" className="juego-caja cabina-ayuda" aria-controls="cabina-guia" aria-expanded={guia !== null} onClick={() => { setGuia(0); escritorioRef.current?.scrollTo({ top: 0, behavior: 'auto' }) }}>Cómo revisar</button>
-      <button type="button" className="juego-caja principal" disabled={pendientes > 0} onClick={() => { cerrarGuia(); setEntregado(true); sonar('exito') }}>Entregar</button>
+      <b>Analyst’s desk · {turno.anio}</b>
+      <span role="status">{pendientes > 0 ? `${pendientes} pending` : 'All reviewed'}</span>
+      <button type="button" className="juego-caja cabina-ayuda" aria-controls="cabina-guia" aria-expanded={guia !== null} onClick={() => { setGuia(0); escritorioRef.current?.scrollTo({ top: 0, behavior: 'auto' }) }}>How to review</button>
+      <button type="button" className="juego-caja principal" disabled={pendientes > 0} onClick={() => { cerrarGuia(); setEntregado(true); sonar('exito') }}>Submit</button>
     </header>
 
     <div className={`cabina-franja${guia !== null ? ' con-guia' : ''}`}>
       <Cabina expediente={visita} revisados={turno.expedientes.length - sinSello.length} total={turno.expedientes.length} />
       {guia !== null && <GuiaEscritorio paso={guia} hayPlan={!!siguiente} alPaso={setGuia} alCerrar={cerrarGuia} alMostrar={mostrarPapel} />}
     </div>
-    <p className="cabina-instruccion">Mesa de revisión <span>Selecciona un papel con clic o con Tab y Enter. Solo la carpeta del año se archiva en las bandejas.</span></p>
+    <p className="cabina-instruccion">Review desk <span>Select a paper by clicking or with Tab and Enter. Only the year folder is filed in the trays.</span></p>
     <div className="cabina-mesa" style={{ minHeight: Math.max(700, ...Object.values(lugares).map((l) => l.y + 440)) }}>
     {ids.filter((id) => !(id === 'carpeta' && bandeja)).map((id) => <Papel key={id} id={id} lugar={lugares[id]!} elegido={elegido === id} clase={papeles[id]!.clase} titulo={papeles[id]!.titulo}
       alTomar={tomar} alMover={mover} alSoltar={soltar}>{papeles[id]!.cuerpo}</Papel>)}
     </div>
 
-    <div className="escritorio-bandejas" ref={bandejasRef} aria-label="Bandejas para archivar la carpeta del año">
+    <div className="escritorio-bandejas" ref={bandejasRef} aria-label="Trays for the year folder">
       {BANDEJAS.map((b) => <button key={b.id} type="button" data-bandeja={b.id} className={`bandeja${bandeja === b.id ? ' llena' : ''}`}
         onClick={() => {
           if (elegido === 'carpeta' && !bandeja) archivar(b.id)
           else if (bandeja === b.id) { setBandeja(null); tomar('carpeta'); setLugares((l) => ({ ...l, carpeta: { ...l.carpeta!, x: 40, y: 90 } })) } // sacar la carpeta para cambiarla
         }} disabled={!(elegido === 'carpeta' && !bandeja) && bandeja !== b.id}
-        title={bandeja === b.id ? 'Toca para sacar la carpeta' : undefined}>{b.texto}{bandeja === b.id && <small>Carpeta {turno.anio}</small>}</button>)}
+        title={bandeja === b.id ? 'Tap to retrieve the folder' : undefined}>{b.texto}{bandeja === b.id && <small>Folder {turno.anio}</small>}</button>)}
     </div>
 
-    <div className="escritorio-sellos" aria-label="Sellos">
-      <span className="ayuda" role="status">{expElegido ? `Sellar: ${expElegido.titulo}` : 'Selecciona una solicitud, carta o nota para habilitar los sellos'}</span>
-      <button type="button" className="sello-boton verde" disabled={!expElegido} onClick={() => sellar('si')}><IconoSello /><span>{expElegido?.sellos.si ?? 'SÍ'}</span></button>
+    <div className="escritorio-sellos" aria-label="Stamps">
+      <span className="ayuda" role="status">{expElegido ? `Stamp: ${expElegido.titulo}` : 'Select a request, letter or report to enable the stamps'}</span>
+      <button type="button" className="sello-boton verde" disabled={!expElegido} onClick={() => sellar('si')}><IconoSello /><span>{expElegido?.sellos.si ?? 'YES'}</span></button>
       <button type="button" className="sello-boton rojo" disabled={!expElegido} onClick={() => sellar('no')}><IconoSello /><span>{expElegido?.sellos.no ?? 'NO'}</span></button>
     </div>
   </div>

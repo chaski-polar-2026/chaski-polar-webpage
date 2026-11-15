@@ -10,7 +10,7 @@ export function IconoSello({ pequeno = false }: { pequeno?: boolean }) {
 
 function Representante({ tipo }: { tipo: Expediente['tipo'] | undefined }) {
   const chaqueta = tipo === 'solicitud' ? '#697d70' : tipo === 'prensa' ? '#49647d' : '#3e7780'
-  return <svg viewBox="0 0 248 122" width={248} height={122} className="cabina-personaje" role="img" aria-label="Representante del puerto esperando frente a la ventanilla">
+  return <svg viewBox="0 0 248 122" width={248} height={122} className="cabina-personaje" role="img" aria-label="Port representative waiting at the counter">
     <g shapeRendering="crispEdges">
       <path fill="#153647" d="M0 0h248v122H0z" />
       <path fill="#315b66" d="M0 61h248v34H0z" />
@@ -42,16 +42,16 @@ function Representante({ tipo }: { tipo: Expediente['tipo'] | undefined }) {
 export default function Cabina({ expediente, revisados, total, entregado = false }: {
   expediente?: Expediente; revisados: number; total: number; entregado?: boolean
 }) {
-  const rol = expediente?.tipo === 'solicitud' ? 'Representante de la flota'
-    : expediente?.tipo === 'prensa' ? 'Mensajero de prensa' : 'Representante técnico'
-  return <section className="cabina-ventanilla" aria-label="Ventanilla de la cabina">
-    <div className="cabina-vista"><span className="cabina-placa">Cabina del puerto</span><Representante tipo={expediente?.tipo} /></div>
+  const rol = expediente?.tipo === 'solicitud' ? 'Fleet representative'
+    : expediente?.tipo === 'prensa' ? 'Press messenger' : 'Technical representative'
+  return <section className="cabina-ventanilla" aria-label="Port office counter">
+    <div className="cabina-vista"><span className="cabina-placa">Port office</span><Representante tipo={expediente?.tipo} /></div>
     <div className="cabina-visita">
-      <p className="cabina-rotulo">{entregado ? 'Revisión terminada' : 'En la ventanilla'}</p>
-      <h3>{entregado ? 'Documentos devueltos' : rol}</h3>
-      <p>{entregado ? 'El turno ha concluido. Ya puedes revisar tus decisiones.'
-        : expediente ? `${expediente.remitente} espera la revisión de «${expediente.titulo}».` : 'Los expedientes ya tienen sello. Falta cerrar el turno.'}</p>
-      <p className="cabina-estado" role="status">{revisados} de {total} expedientes sellados{!entregado && ' · Sin límite de tiempo'}</p>
+      <p className="cabina-rotulo">{entregado ? 'Review complete' : 'At the counter'}</p>
+      <h3>{entregado ? 'Documents returned' : rol}</h3>
+      <p>{entregado ? 'The shift is over. You can review your decisions.'
+        : expediente ? `${expediente.remitente} is waiting for “${expediente.titulo}” to be reviewed.` : 'All files are stamped. Finish the shift.'}</p>
+      <p className="cabina-estado" role="status">{revisados} of {total} files stamped{!entregado && ' · No time limit'}</p>
     </div>
   </section>
 }

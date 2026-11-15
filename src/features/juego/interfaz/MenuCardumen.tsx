@@ -4,9 +4,9 @@ import { anchovetaPixel, fitoPixel, naraPixel } from '../personajes/pixelart'
 import './presentacion.css'
 
 export const RITMOS = [
-  { valor: 1, nombre: 'Tranquilo', detalle: 'ritmo original' },
-  { valor: 15 / 7, nombre: 'Educativo', detalle: 'recomendado' },
-  { valor: 20, nombre: 'Rápido', detalle: 'recorrido corto' },
+  { valor: 1, nombre: 'Relaxed', detalle: 'original pace' },
+  { valor: 15 / 7, nombre: 'Educational', detalle: 'recommended' },
+  { valor: 20, nombre: 'Fast', detalle: 'short journey' },
 ] as const
 
 /** Carta ilustrada original: la cuadrícula y los dibujos comparten el mismo píxel. */
@@ -35,10 +35,10 @@ function CartaMarina() {
     for (const [x, y] of [[210, 188], [238, 181], [238, 202], [264, 192], [190, 208]]) g.drawImage(pez, x!, y!, 44, 20)
     g.drawImage(fitoPixel()[0]!, 58, 29, 32, 32)
     g.fillStyle = '#8cb9b5'; g.font = '9px monospace'
-    g.fillText('PACIFICO SUR', 17, 19); g.fillText('PERU', 309, 30); g.fillText('ANTARTIDA', 18, 223)
+    g.fillText('SOUTH PACIFIC', 17, 19); g.fillText('PERU', 309, 30); g.fillText('ANTARCTICA', 18, 223)
     g.fillStyle = '#dfbc79'; g.fillRect(274, 36, 4, 4)
   }, [])
-  return <canvas ref={ref} width={384} height={256} role="img" aria-label="Carta ilustrada del Pacífico: una ballena migra desde el hielo antártico hacia un cardumen frente al Perú" />
+  return <canvas ref={ref} width={384} height={256} role="img" aria-label="Illustrated Pacific chart: a whale migrates from Antarctic ice to a school off Peru" />
 }
 
 export default function MenuCardumen({ historia, cardumen, escena, rapidez, alCambiarRapidez }: {
@@ -47,38 +47,38 @@ export default function MenuCardumen({ historia, cardumen, escena, rapidez, alCa
 }) {
   return <div className="juego-menu menu-carta">
     <div className="menu-carta-interior">
-      <header className="menu-carta-marca"><span>MAR PERUANO 360</span><span>Bitácora de expedición</span></header>
+      <header className="menu-carta-marca"><span>Expedition logbook</span></header>
       <div className="menu-carta-principal">
         <section className="menu-carta-relato" aria-labelledby="titulo-cardumen">
-          <p className="menu-carta-numero">01 / DEL HIELO A LA COSTA</p>
-          <h1 id="titulo-cardumen">Cardumen<span>La saga de la anchoveta</span></h1>
-          <p className="menu-carta-descripcion">El mar cambia. Encuentra alimento, esquiva las redes y lleva a tu cardumen hasta la siguiente generación.</p>
+          <p className="menu-carta-numero">01 / FROM ICE TO COAST</p>
+          <h1 id="titulo-cardumen">Cardumen<span>The anchoveta saga</span></h1>
+          <p className="menu-carta-descripcion">The sea changes. Find food, dodge nets and lead your school to the next generation.</p>
           <div className="menu-carta-acciones">
-            <button type="button" className="juego-caja principal" onClick={historia}>Comenzar el viaje <span aria-hidden="true">→</span></button>
-            <button type="button" className="juego-caja" onClick={cardumen}>Ir al cardumen</button>
+            <button type="button" className="juego-caja principal" onClick={historia}>Start the journey <span aria-hidden="true">→</span></button>
+            <button type="button" className="juego-caja" onClick={cardumen}>Go to the anchoveta campaign</button>
           </div>
           <fieldset className="menu-carta-ritmo">
-            <legend>Ritmo de la expedición</legend>
+            <legend>Expedition pace</legend>
             {RITMOS.map((ritmo) => <label key={ritmo.valor}>
               <input type="radio" name="ritmo-cardumen" value={ritmo.valor} checked={rapidez === ritmo.valor} onChange={() => alCambiarRapidez(ritmo.valor)} />
               <span><b>{ritmo.nombre}</b><small>{ritmo.detalle}</small></span>
             </label>)}
           </fieldset>
-          <p className="menu-carta-datos">Seis años del mar peruano · Condiciones basadas en datos satelitales</p>
+          <p className="menu-carta-datos">Six years in the Peruvian sea · Conditions based on satellite data</p>
         </section>
-        <figure className="menu-carta-mapa"><CartaMarina /><figcaption>Dos mares. Una historia de vida.</figcaption></figure>
+        <figure className="menu-carta-mapa"><CartaMarina /><figcaption>Two seas. One story of life.</figcaption></figure>
       </div>
-      <ul className="menu-carta-reparto" aria-label="Etapas de la historia">
+      <ul className="menu-carta-reparto" aria-label="Story stages">
         {protagonistas().map((p, i) => <li key={p.nombre}>
           <img src={p.src} alt="" width={96} height={64} />
           <div><small>0{i + 1}</small><b>{p.nombre}</b><span>{p.que}</span></div>
         </li>)}
       </ul>
-      <footer className="menu-carta-pie"><span>Explorar una escena</span><nav aria-label="Escenas del prólogo">
+      <footer className="menu-carta-pie"><span>Explore a scene</span><nav aria-label="Prologue scenes">
         <button type="button" onClick={() => escena('lumi')}>Lumi</button>
         <button type="button" onClick={() => escena('kiri')}>Kiri</button>
         <button type="button" onClick={() => escena('nara')}>Nara</button>
-        <a href="/juego?sprites=1">Cuaderno del Pacífico ↗</a>
+        <a href="/juego?sprites=1">Pacific notebook ↗</a>
       </nav></footer>
     </div>
   </div>

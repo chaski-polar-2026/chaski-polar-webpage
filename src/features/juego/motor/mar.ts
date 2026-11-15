@@ -16,7 +16,7 @@ export type ZonaMar = (typeof ZONAS_PERU)[number] | (typeof ZONAS_ANTARTIDA)[num
 
 export const NOMBRE_ZONA: Record<ZonaMar, string> = {
   paita: "Paita", chimbote: "Chimbote", callao: "Callao", pisco: "Pisco", ilo: "Ilo",
-  peninsula_antartica: "Península Antártica", rey_jorge: "Isla Rey Jorge",
+  peninsula_antartica: "Antarctic Peninsula", rey_jorge: "King George Island",
 };
 
 /** Cambio porcentual del fitoplancton por cada °C sobre lo normal (cálido) o bajo lo normal (frío) */

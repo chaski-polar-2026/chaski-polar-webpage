@@ -9,9 +9,9 @@ let cache: Protagonista[] | null = null;
 
 export function protagonistas(): Protagonista[] {
   cache ??= [
-    { nombre: "Lumi", que: "fitoplancton", src: sprite("lumi", dibujarLumi).toDataURL("image/png") },
+    { nombre: "Lumi", que: "phytoplankton", src: sprite("lumi", dibujarLumi).toDataURL("image/png") },
     { nombre: "Kiri", que: "krill", src: sprite("kiri", dibujarKiri).toDataURL("image/png") },
-    { nombre: "Nara", que: "ballena jorobada", src: sprite("nara", dibujarNara).toDataURL("image/png") },
+    { nombre: "Nara", que: "humpback whale", src: sprite("nara", dibujarNara).toDataURL("image/png") },
     { nombre: "Anchi", que: "anchoveta", src: sprite("anchi", dibujarAnchi).toDataURL("image/png") },
   ];
   return cache;
