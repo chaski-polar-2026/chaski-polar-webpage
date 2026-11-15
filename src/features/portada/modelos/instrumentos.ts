@@ -91,6 +91,8 @@ export function crearSateliteObservacion() {
   barra([0, 0.6, 0], [0, 1.24, 0], 0.025, plata)
   pieza(new THREE.SphereGeometry(0.06, 10, 8), oro, 0, 1.24)
   for (const x of [-0.4, 0.4]) barra([x, 0.55, -0.4], [x, 1.35, -0.4], 0.015, plata)
+  // Oscurecimiento moderado: los materiales son propios de este satélite (no se comparten con la boya).
+  for (const m of [oro, plata, azul, oscuro, lente, parabola]) m.color.multiplyScalar(0.6)
   return terminar()
 }
 

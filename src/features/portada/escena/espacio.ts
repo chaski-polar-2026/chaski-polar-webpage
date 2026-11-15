@@ -75,7 +75,7 @@ export function crearEspacio(escena: THREE.Scene, C: Calidad): Capa & { globo: T
   tierra.position.set(0, Y_ESPACIO, -28);
   tierra.rotation.set(INCLINACION, GIRO_INICIAL, 0);
   const satelite = crearSateliteObservacion();
-  satelite.scale.setScalar(0.55);
+  satelite.scale.setScalar(0.42);
   const movimiento = matchMedia('(prefers-reduced-motion: reduce)');
   const estrellas = crearEstrellas();
   grupo.add(tierra, satelite, estrellas);
