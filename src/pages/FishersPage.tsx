@@ -8,6 +8,7 @@ import { CargarAlVer } from '../components/ui/CargarAlVer'
 
 const PerspectivaTemperatura = lazy(() => import('../features/prediccion/PerspectivaTemperatura'))
 const PescadoresSection = lazy(() => import('../features/pescadores/PescadoresSection'))
+const GraficosPescadores = lazy(() => import('../features/pescadores/GraficosPescadores'))
 
 export default function FishersPage() {
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function FishersPage() {
         <p>A sea-temperature outlook that has been tested on past years, and documented context for each species. This page does not forecast catches or fish locations, and it is not guidance on sea safety.</p>
       </section>
       <CargarAlVer id="temperature-outlook" alto={160}><PerspectivaTemperatura /></CargarAlVer>
+      <CargarAlVer id="fishers-charts" alto={160}><GraficosPescadores /></CargarAlVer>
       <CargarAlVer id="species" alto={160}><PescadoresSection /></CargarAlVer>
       <footer className="pie">Chaski Polar · Species information comes from cited public sources, mostly IMARPE. The relationships shown here are associations, not proof of causation.</footer>
     </main>

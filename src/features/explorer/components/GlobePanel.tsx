@@ -358,7 +358,7 @@ export default function GlobePanel() {
       <TimelinePanel />
     </div>
     <aside className="relato" id="relato" aria-label="What the globe shows">
-      <div className="relato-orientacion"><span>Explore the selected view below</span><a href="/research">Research <span aria-hidden="true">→</span></a></div>
+      <div className="relato-orientacion"><span>Explore the selected view below</span><a href="/research">Research <span aria-hidden="true">→</span></a><a href="/fishers">For fishers <span aria-hidden="true">→</span></a></div>
       <div aria-live="polite"><Relato /></div>
     </aside>
     <div className={`velo-entrada${veloAbierto ? ' abierto' : ''}`} aria-hidden="true" />

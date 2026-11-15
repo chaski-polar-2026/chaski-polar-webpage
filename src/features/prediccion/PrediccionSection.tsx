@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, ComposedChart, Legend, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import '../tendencias/tendencias.css'
+import InfoTip from '../../components/ui/InfoTip'
 import './prediccion.css'
 
 type Horizonte = { zona: string; h: number; habilidad: number; habilidad_persistencia: number; r: number; n: number }
@@ -46,7 +47,7 @@ export default function PrediccionSection() {
     <section className="seccion prediccion" id="prediction" aria-labelledby="t-prediccion">
       <p className="puente-kicker">How far ahead can we see?</p>
       <h2 id="t-prediccion">Can we anticipate chlorophyll?</h2>
-      <p className="nota">We tested a simple model that predicts the chlorophyll anomaly of a month from El Niño 1+2 and from last month&apos;s chlorophyll. To be fair, each year from 2010 to 2025 was predicted using only data from before that year.</p>
+      <p className="nota">We tested a simple model that predicts the chlorophyll anomaly<InfoTip term="Anomaly">Difference from what is normal for that month.</InfoTip> of a month from El Niño 1+2<InfoTip term="El Niño 1+2">Sea temperature in the coastal area off Peru and Ecuador.</InfoTip> and from last month&apos;s chlorophyll. To be fair, each year from 2010 to 2025 was predicted using only data from before that year.</p>
 
       <h3>Skill over doing nothing, by months ahead</h3>
       <p className="tend-nota">A positive value means the model made smaller errors than simply predicting a normal month. Higher is better.</p>

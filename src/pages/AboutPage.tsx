@@ -21,7 +21,7 @@ export default function AboutPage() {
         <h1 id="about-title">About and methods</h1>
         <p>What this project is, what it tests, where the data come from and what it cannot say.</p>
         <nav className="research-nav" aria-label="About sections">
-          <a href="#what">What it is</a><a href="#question">The question</a><a href="#data">Data</a><a href="#methods">Methods</a><a href="#limits">Limits</a><a href="#ai">Use of AI</a><a href="#games">Games</a><a href="#credits">Credits</a>
+          <a href="#what">What it is</a><a href="#question">The question</a><a href="#who">Who it is for</a><a href="#data">Data</a><a href="#methods">Methods</a><a href="#limits">Limits</a><a href="#ai">Use of AI</a><a href="#games">Games</a><a href="#credits">Credits</a>
         </nav>
       </section>
 
@@ -35,6 +35,16 @@ export default function AboutPage() {
         <h2 id="t-question">The question we test</h2>
         <p><strong>Is the Southern Ocean Connected to Peru&apos;s Upwelling System? Testing Trends and Long-Lag Associations, 1998–2025.</strong> On the site this appears as “Is the change real? Ocean trends off Peru, tested.”</p>
         <p>Main findings: sea level off Peru rises (+3.0 cm per decade from satellite altimetry, 95% interval 2.2–3.7). Several other trends change sign or lose significance when the start year changes. No robust Antarctic–Peru link was detected with these data. All results are associations, not proof of causation.</p>
+      </section>
+
+      <section className="seccion pescadores" id="who" aria-labelledby="t-who">
+        <h2 id="t-who">Who it is for</h2>
+        <ul className="about-lista">
+          <li><strong>Universities and research centres</strong> that want to understand how the Southern Ocean and the Peruvian sea relate. The tool gives a transparent baseline of what 28 years of satellite and reanalysis data can and cannot show, with every test, null result and method documented so it can be repeated and extended.</li>
+          <li><strong>Students and teachers</strong> who need a worked example of how to test a trend and why a trend can disappear when the start year changes.</li>
+          <li><strong>Analysts and citizen scientists</strong> who want open tables and a method they can reproduce.</li>
+          <li><strong>Coastal and fishing communities</strong> as an informational audience: a tested sea-temperature outlook and documented context for each species. It is not a catch forecast or safety guidance. See <a href="/fishers">For fishers</a>.</li>
+        </ul>
       </section>
 
       <section className="seccion pescadores" id="data" aria-labelledby="t-data">

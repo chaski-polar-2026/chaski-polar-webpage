@@ -17,3 +17,12 @@
 .boton-datos { padding: 10px 22px; border: 1px solid var(--cp-cyan, #8fe3f2); background: rgba(7, 30, 51, .6); color: #eaf3f5; font: 700 14px var(--cp-hud, system-ui); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; clip-path: var(--cp-cut, none); transition: background-color 180ms; }
 .boton-datos:hover { background: rgba(99, 205, 232, .22); }
 .boton-datos:focus-visible { outline: 2px solid #8fe3f2; outline-offset: 2px; }
+
+.pesc-grafico { margin: 10px 0 18px; padding: 10px 8px 4px; border: 1px solid rgba(143, 227, 242, .22); border-radius: 8px; background: rgba(7, 30, 51, .45); }
+.pesc-prof { display: block; max-width: 720px; height: auto; }
+.pescadores h3 { margin: 22px 0 6px; font-size: 1.05rem; }
+
+.pesc-mapa { margin: 10px 0 18px; max-width: 460px; }
+.pesc-mapa svg { display: block; border: 1px solid rgba(143, 227, 242, .22); border-radius: 8px; }
+.pesc-mapa figcaption { margin-top: 6px; font-size: .82rem; line-height: 1.4; opacity: .8; }
+.pesc-icono { width: 46px; height: 28px; flex: none; fill: #63cde8; fill-opacity: .85; margin-right: 4px; }

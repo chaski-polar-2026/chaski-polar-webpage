@@ -47,7 +47,7 @@ export default function Header() {
             <img src={LOGO} alt="Chaski Polar" width={144} height={40} decoding="async" />
           </picture>
         </Link>
-        <div className="titulo-barra hidden truncate font-display text-[1.05rem] font-normal text-ice-300 lg:block" role="heading" aria-level={1}>
+        <div className="titulo-barra hidden truncate font-display text-[1.05rem] font-normal text-ice-300 lg:block" role={pathname === "/explorer" ? "heading" : undefined} aria-level={pathname === "/explorer" ? 1 : undefined}>
           Is the change real? Ocean trends off Peru, tested
         </div>
       </div>

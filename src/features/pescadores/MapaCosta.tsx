@@ -1,0 +1,55 @@
+import datos from '../prediccion/perspectiva_acierto.json'
+import './pescadores.css'
+
+/* Mapa esquemático de la costa peruana (línea de costa simplificada; no está a escala). */
+const COSTA: [number, number][] = [
+  [-80.45, -3.55], [-81.25, -4.25], [-81.11, -5.09], [-81.17, -5.8], [-80.95, -5.95], [-80.2, -6.6], [-79.93, -6.84],
+  [-79.4, -7.7], [-78.97, -8.22], [-78.59, -9.07], [-78.4, -9.45], [-78.17, -10.1], [-77.8, -10.75], [-77.62, -11.1],
+  [-77.15, -12.05], [-76.5, -13.03], [-76.2, -13.71], [-76.3, -13.85], [-75.17, -15.35], [-74.25, -15.85],
+  [-72.7, -16.6], [-72.0, -17.02], [-71.34, -17.64], [-70.6, -18.2], [-70.37, -18.35],
+]
+const ZONAS = [
+  { id: 'paita', nombre: 'Paita', lon: -81.11, lat: -5.09 },
+  { id: 'chimbote', nombre: 'Chimbote', lon: -78.59, lat: -9.07 },
+  { id: 'callao', nombre: 'Callao', lon: -77.15, lat: -12.05 },
+  { id: 'pisco', nombre: 'Pisco', lon: -76.2, lat: -13.71 },
+  { id: 'ilo', nombre: 'Ilo', lon: -71.34, lat: -17.64 },
+]
+const K = 26, LON0 = -86, LAT0 = -3, W = 420, H = 410
+const px = (lon: number) => (lon - LON0) * K
+const py = (lat: number) => (LAT0 - lat) * K
+
+/** Dónde están las zonas costeras del panel, con la mejora del pronóstico de temperatura a 1 mes. */
+export default function MapaCosta() {
+  const mejora = (z: string) => {
+    const f = datos.results.find((r) => r.variable === 'SST' && r.model === 'nino' && r.zone === z && r.horizon_months === 1)
+    return f ? `${f.mae_improvement >= 0 ? '+' : '−'}${Math.abs(f.mae_improvement * 100).toFixed(0)}%` : ''
+  }
+  const linea = COSTA.map(([lo, la]) => `${px(lo).toFixed(1)},${py(la).toFixed(1)}`).join(' ')
+  const tierra = `${linea} ${W},${py(-18.35)} ${W},${py(-3.55)}`
+  return (
+    <figure className="pesc-mapa">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Schematic map of the Peruvian coast with the five coastal zones used in this page: Paita, Chimbote, Callao, Pisco and Ilo, from north to south. The Humboldt Current flows north along the coast." width="100%">
+        <defs>
+          <linearGradient id="mar-costa" x1="0" x2="1"><stop offset="0" stopColor="#0a3350" /><stop offset="1" stopColor="#0c2c4a" /></linearGradient>
+          <marker id="flecha" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#8fe3f2" /></marker>
+        </defs>
+        <rect width={W} height={H} fill="url(#mar-costa)" rx="8" />
+        <polygon points={tierra} fill="#b9a077" fillOpacity="0.85" />
+        <polyline points={linea} fill="none" stroke="#eaf3f5" strokeOpacity="0.7" strokeWidth="1.5" />
+        <path d={`M ${px(-85.2)} ${py(-14)} L ${px(-85.2)} ${py(-7.5)}`} stroke="#8fe3f2" strokeWidth="2" strokeDasharray="5 4" markerEnd="url(#flecha)" fill="none" />
+        <text x={px(-85.5)} y={py(-10.8)} fill="#8fe3f2" fontSize="11" transform={`rotate(-90 ${px(-85.5)} ${py(-10.8)})`} textAnchor="middle">Humboldt Current, flowing north</text>
+        <text x={W - 10} y={py(-9)} fill="#4a3d27" fontSize="12" textAnchor="end" fontWeight="600">PERU</text>
+        <text x={W - 10} y={14} fill="#a3bccb" fontSize="10" textAnchor="end">N ↑</text>
+        {ZONAS.map((z) => (
+          <g key={z.id}>
+            <circle cx={px(z.lon)} cy={py(z.lat)} r="6" fill="#63cde8" stroke="#071e33" strokeWidth="2" />
+            <text x={px(z.lon) - 12} y={py(z.lat) + 4} textAnchor="end" fill="#eaf3f5" fontSize="13" fontWeight="600">{z.nombre}</text>
+            <text x={px(z.lon) - 12} y={py(z.lat) + 18} textAnchor="end" fill="#8fe3f2" fontSize="11">{mejora(z.id)} at 1 month</text>
+          </g>
+        ))}
+      </svg>
+      <figcaption>Schematic map: the coast is simplified and not to scale. The figure under each zone is how much smaller the one-month temperature outlook errors were than predicting a normal month, 2010–2025.</figcaption>
+    </figure>
+  )
+}

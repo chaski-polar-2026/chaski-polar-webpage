@@ -6,6 +6,7 @@ import { useData } from '../../contexts/DataContext'
 import { promediosAnuales, sensibilidadInicio, tendencia, type Estacion } from '../../lib/tendencias'
 import { leerRonda, mesesRonda, sinExtremos, VARIABLES_RONDA, type Ronda, type VariableRonda } from './ronda'
 import './tendencias.css'
+import InfoTip from '../../components/ui/InfoTip'
 
 type Variable = 'chl' | 'sst' | VariableRonda
 type Fuente = 'occci' | 'modis' | 'crw'
@@ -196,7 +197,7 @@ export default function TendenciasSection() {
     <section className="seccion tendencias" id="trends" aria-labelledby="t-tendencias" aria-busy={esRonda && estadoRonda === 'loading'}>
       <p className="puente-kicker">Be a trend detective</p>
       <h2 id="t-tendencias">Is the change real? Test a trend yourself</h2>
-      <p className="nota">Pick a variable, a place and a period. The panel draws the yearly averages and runs the Mann-Kendall test, which asks whether the values tend to rise or fall consistently. A p-value below 0.05 is the usual standard for a significant trend.</p>
+      <p className="nota">Pick a variable, a place and a period. The panel draws the yearly averages and runs the Mann-Kendall test<InfoTip term="Mann–Kendall">A test for whether a series tends to rise or fall.</InfoTip>, which asks whether the values tend to rise or fall consistently. A p-value below 0.05 is the usual standard for a significant trend.</p>
       <div className="tend-modos" role="group" aria-label="Exploration mode">
         <button className="btn" aria-pressed={!guiado} onClick={() => setGuiado(false)}>Explore freely</button>
         <button className="btn" aria-pressed={guiado} onClick={() => { setGuiado(true); setPaso(0) }}>Guide me with questions</button>
