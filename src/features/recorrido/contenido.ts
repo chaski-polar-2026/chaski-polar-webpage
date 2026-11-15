@@ -48,7 +48,7 @@ export const PASOS = [
   {
     "selector": "#globo",
     "titulo": "The globe",
-    "texto": "Each point is a zone. Drag to rotate; tap a zone to see its data."
+    "texto": "Start with the Peruvian coast in Detailed view. Drag to rotate; tap a zone to enter its map and read its data."
   },
   {
     "selector": ".timeline-legend",

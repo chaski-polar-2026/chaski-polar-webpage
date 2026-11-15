@@ -46,9 +46,7 @@ const ANILLO_BASE: Anillo = { ...BASE_MACHU_PICCHU, r: 2.6 }
 
 /** La altitud hace que el globo llene el espacio libre (cámara de 50° vertical) */
 function encuadreInicial(w: number, h: number): Pov {
-  const fraccion = Math.min(1, (0.9 * (w || 800)) / (h || 500))
-  const ang = Math.atan(fraccion * Math.tan((25 * Math.PI) / 180))
-  return { ...VISTA_INICIAL, altitude: Math.max(1.05, Math.min(3, 1 / Math.sin(ang) - 1)) }
+  return { ...VISTA_INICIAL, altitude: w < h ? 1.1 : VISTA_INICIAL.altitude }
 }
 
 const desdeEtiqueta = (ev: Event | undefined): boolean => ev?.target instanceof Element && ev.target.closest('.etq') != null
@@ -154,7 +152,7 @@ export default function GlobePanel() {
       const punto = e.querySelector('i')
       if (punto) punto.style.background = modelo.colorZona(m.z, v, month, 1)
       e.classList.toggle('activa', m.z === zonaActiva(panel))
-      e.setAttribute('aria-label', `${modelo.zona(m.z).nombre}: ver sus datos`)
+      e.setAttribute('aria-label', `${modelo.zona(m.z).nombre}: open zone view`)
     }
   })
 
@@ -203,8 +201,8 @@ export default function GlobePanel() {
     g.renderer().setPixelRatio(Math.min(devicePixelRatio || 1, 2))
     const inicio = useExplorerStore.getState().panel.tipo === 'general'
     if (giroPortada != null) g.pointOfView(puntoDeVistaDesdeGiro(giroPortada), 0)
-    else if (inicio && !menosMovimiento) g.pointOfView({ lat: -66, lng: -60, altitude: 1.4 }, 0)
-    if (inicio) setTimeout(() => g.pointOfView(encuadreInicial(contenedor.current?.clientWidth ?? 0, contenedor.current?.clientHeight ?? 0), menosMovimiento ? 0 : giroPortada != null ? 3200 : 4200), 900)
+    if (inicio) g.pointOfView(useExplorerStore.getState().camera?.pov ?? encuadreInicial(contenedor.current?.clientWidth ?? 0, contenedor.current?.clientHeight ?? 0), 0)
+    else if (useExplorerStore.getState().camera) g.pointOfView(useExplorerStore.getState().camera!.pov, 0)
     // el mapa pesa unos 3 MB: se pide cuando el globo ya está en pantalla
     setTimeout(pedirMapa, 300)
   }, [giroPortada, pedirMapa])

@@ -37,10 +37,10 @@ type ExplorerState = {
 }
 
 export const useExplorerStore = create<ExplorerState>((set) => ({
-  variable: 'hielo',
-  section: 'austral',
+  variable: 'clorofila_mg_m3',
+  section: 'humboldt',
   sidebarTab: 'parametro',
-  view: 'illustrated',
+  view: 'detailed',
   month: 364, // mayo de 2023 (las series empiezan en enero de 1993)
   playing: false,
   panel: { tipo: 'general' },

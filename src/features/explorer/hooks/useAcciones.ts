@@ -9,8 +9,8 @@ import { variablePorId } from '../lib/variables'
 import { useExplorerStore } from '../store'
 import { REGIONES } from '../lib/mapa'
 
-/** Encuadre que muestra a la vez la costa del Perú y la Península Antártica */
-export const VISTA_INICIAL: Pov = { lat: -37, lng: -73, altitude: 1.7 }
+/** Encuadre inicial de la costa peruana. */
+export const VISTA_INICIAL: Pov = { lat: -12, lng: -80, altitude: 0.95 }
 
 /** Acciones de navegación del explorador: cambian el estado y mueven la cámara */
 export function useAcciones() {
