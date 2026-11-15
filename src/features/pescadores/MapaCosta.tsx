@@ -38,7 +38,7 @@ export default function MapaCosta({ resaltar, compacto = false }: { resaltar?: s
         <text x={W - 10} y={py(-9)} fill="#4a3d27" fontSize="12" textAnchor="end" fontWeight="600">PERU</text>
         <text x={W - 10} y={14} fill="#a3bccb" fontSize="16" textAnchor="end">N ↑</text>
         {ZONAS.map((z) => (
-          <g key={z.id} opacity={resaltar && resaltar !== z.id ? 0.55 : 1}>
+          <g key={z.id} opacity={1}>
             {resaltar === z.id && <circle cx={px(z.lon)} cy={py(z.lat)} r="14" fill="none" stroke="#8fe3f2" strokeWidth="2" strokeOpacity="0.8" />}
             <circle cx={px(z.lon)} cy={py(z.lat)} r={resaltar === z.id ? 8 : 6} fill={resaltar && resaltar !== z.id ? "#4a7a92" : "#63cde8"} stroke="#071e33" strokeWidth="2" />
             <text x={px(z.lon) - 12} y={py(z.lat) + 4} textAnchor="end" fill="#eaf3f5" fontSize="20" fontWeight="600">{z.nombre}</text>
@@ -50,4 +50,5 @@ export default function MapaCosta({ resaltar, compacto = false }: { resaltar?: s
     </figure>
   )
 }
+
 
