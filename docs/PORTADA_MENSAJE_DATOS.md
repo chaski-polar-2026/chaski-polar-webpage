@@ -4,7 +4,7 @@ The opening reuses the existing 3D scene and the evidence recorded in [PORTADA_I
 
 The title is below the opening globe. Its scale and height alone change while the first text is visible; between scroll progress 0.03 and 0.04 the globe smoothly returns to its original framing. Camera, `TRAMOS`, 1700svh journey length, underwater scene and game code are unchanged. The original depth rail/HUD and panel fade controller remain in use. The primary button still enters `/explorer` through its existing transition; the secondary link remains `/juego`.
 
-The subtitle is kept literally as supplied: “Ids off Peru, tested.” The support line names six ocean variables and checks against El Nino; no missing words were inferred from the truncated request.
+The subtitle is “Is the change real? Ocean trends off Peru, tested.” The support line names six ocean variables and checks against El Nino.
 
 ## Shared records, not a second calculation
 

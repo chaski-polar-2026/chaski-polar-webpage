@@ -25,7 +25,7 @@ export const SECCIONES: readonly Seccion[] = [
   {
     de: 0, a: 0.03, principal: true,
     titulo: "CHASKI POLAR",
-    texto: "Ids off Peru, tested.",
+    texto: "Is the change real? Ocean trends off Peru, tested.",
     apoyo: "We test six ocean variables against El Niño and show which trends hold up.",
     botones: [{ texto: "Enter the explorer", accion: "entrar" }, { texto: "Play Cardumen", href: "/juego" }],
   },
