@@ -13,7 +13,7 @@ export const FAQ = [
   ],
   [
     "What do the colors mean?",
-    "For temperature, colors show the difference from the usual level for that zone and month. Chlorophyll colors show the amount of pigment, not the difference from normal. Check the legend for the selected measure."
+    "For temperature, turbidity, wind, salinity, sea level, sea ice and the SAM index, colors show how far the value is from the usual level: blue is below and red is above. For chlorophyll, currents, nutrients and oxygen, colors show the amount itself. The legend tells you which one applies."
   ],
   [
     "Is this a forecast?",
@@ -49,7 +49,7 @@ export const PASOS = [
   {
     "selector": ".timeline-legend",
     "titulo": "The colors",
-    "texto": "For temperature, blue is below the usual level for that month and red is above. Chlorophyll colors show the amount of pigment, not the difference from normal. Check the legend for the selected measure."
+    "texto": "For temperature, wind, salinity, sea level and sea ice, blue is below the usual level and red is above. For chlorophyll, currents, nutrients and oxygen, colors show the amount itself. Check the legend for the selected measure."
   },
   {
     "selector": ".timeline-panel",
