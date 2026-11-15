@@ -52,7 +52,7 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
   const ancho = 5.2 * 26, alto = 6.6 * 26
   const x0 = px(z.lon) - ancho * 0.62, y0 = py(z.lat) - alto / 2
   const costa = COSTA.map(([lo, la]) => `${px(lo).toFixed(1)},${py(la).toFixed(1)}`).join(' ')
-  const tierra = `${costa} ${px(LON0 + 30)},${py(-18.35)} ${px(LON0 + 30)},${py(-3.55)}`
+  const tierra = `${costa} ${px(LON0 + 30)},${py(-18.35)} ${px(LON0 + 30)},${py(-3.2)}`
   // Fitoplancton: más puntos cuanto mayor la clorofila (escala logarítmica suave)
   const n = chl == null ? 0 : Math.max(5, Math.min(36, Math.round(8 + 30 * Math.log10(Math.max(chl, 0.05) / 0.3 + 1))))
   const puntos = Array.from({ length: n }, (_, i) => ({ x: px(z.lon) - 18 - pseudo(i) * 90, y: py(z.lat) - 60 + pseudo(i + 50) * 120, r: 2 + pseudo(i + 100) * 2.6 }))

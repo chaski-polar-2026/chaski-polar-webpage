@@ -1,13 +1,9 @@
 ﻿
+import costaPeru from './costaPeru.json'
 import './pescadores.css'
 
-/* Mapa esquemático de la costa peruana (línea de costa simplificada; no está a escala). */
-export const COSTA: [number, number][] = [
-  [-80.45, -3.55], [-81.25, -4.25], [-81.11, -5.09], [-81.17, -5.8], [-80.95, -5.95], [-80.2, -6.6], [-79.93, -6.84],
-  [-79.4, -7.7], [-78.97, -8.22], [-78.59, -9.07], [-78.4, -9.45], [-78.17, -10.1], [-77.8, -10.75], [-77.62, -11.1],
-  [-77.15, -12.05], [-76.5, -13.03], [-76.2, -13.71], [-76.3, -13.85], [-75.17, -15.35], [-74.25, -15.85],
-  [-72.7, -16.6], [-72.0, -17.02], [-71.34, -17.64], [-70.6, -18.2], [-70.37, -18.35],
-]
+/* Línea de costa real del Perú (Natural Earth, dominio público), simplificada a unos 150 puntos [lon, lat]. */
+export const COSTA = costaPeru as [number, number][]
 export const ZONAS = [
   { id: 'paita', nombre: 'Paita', lon: -81.11, lat: -5.09 },
   { id: 'chimbote', nombre: 'Chimbote', lon: -78.59, lat: -9.07 },
@@ -22,7 +18,7 @@ export const py = (lat: number) => (LAT0 - lat) * K
 /** Dónde están las zonas costeras del panel, con la mejora del pronóstico de temperatura a 1 mes. */
 export default function MapaCosta({ resaltar, compacto = false }: { resaltar?: string; compacto?: boolean }) {
   const linea = COSTA.map(([lo, la]) => `${px(lo).toFixed(1)},${py(la).toFixed(1)}`).join(' ')
-  const tierra = `${linea} ${W},${py(-18.35)} ${W},${py(-3.55)}`
+  const tierra = `${linea} ${W},${py(-18.35)} ${W},${py(-3.2)}`
   return (
     <figure className={compacto ? "pesc-mapa pesc-mapa--compacto" : "pesc-mapa"}>
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Schematic map of the Peruvian coast with the five coastal zones used in this page: Paita, Chimbote, Callao, Pisco and Ilo, from north to south. The Humboldt Current flows north along the coast." width="100%">
@@ -46,7 +42,7 @@ export default function MapaCosta({ resaltar, compacto = false }: { resaltar?: s
           </g>
         ))}
       </svg>
-      {!compacto && <figcaption>Schematic map: the coast is simplified and not to scale. The ring marks your selected zone. The arrow shows the Humboldt Current flowing north.</figcaption>}
+      {!compacto && <figcaption>Schematic map: the coastline is simplified (source: Natural Earth) and zone points are approximate. The ring marks your selected zone. The arrow shows the Humboldt Current flowing north.</figcaption>}
     </figure>
   )
 }
