@@ -1,3 +1,4 @@
+import { IconoVariable } from '../guias/GuiasInvestigacion'
 import './pescadores.css'
 
 /* Guías ilustradas esquemáticas para lectores no especialistas. Son dibujos simplificados, no a escala. */
@@ -62,11 +63,11 @@ const PASOS = [
   { n: 3, titulo: 'Check the species', texto: 'Each card shows what has been documented for that species. It is context, not a prediction.' },
 ]
 const VARIABLES = [
-  { nombre: 'Temperature', texto: 'How warm the sea surface is', color: '#f08a4b' },
-  { nombre: 'Chlorophyll', texto: 'How much plankton the water holds', color: '#3fc28c' },
-  { nombre: 'Sea level', texto: 'Height of the sea surface', color: '#63cde8' },
-  { nombre: 'Oxygen', texto: 'How much oxygen is in the water', color: '#9fe0f2' },
-  { nombre: 'Sea ice', texto: 'Ice floating around Antarctica', color: '#eaf3f5' },
+  { nombre: 'Temperature', texto: 'How warm the sea surface is', color: '#f08a4b', tipo: 'temperature' },
+  { nombre: 'Chlorophyll', texto: 'How much plankton the water holds', color: '#3fc28c', tipo: 'chlorophyll' },
+  { nombre: 'Sea level', texto: 'Height of the sea surface', color: '#63cde8', tipo: 'sealevel' },
+  { nombre: 'Oxygen', texto: 'How much oxygen is in the water', color: '#9fe0f2', tipo: 'oxygen' },
+  { nombre: 'Sea ice', texto: 'Ice floating around Antarctica', color: '#eaf3f5', tipo: 'seaice' },
 ]
 
 /** Pasos de uso, diagramas explicativos y leyenda de variables para la página de pescadores. */
@@ -93,7 +94,7 @@ export default function GuiasPescadores() {
       <section className="seccion pescadores" id="legend" aria-labelledby="t-leyenda">
         <h2 id="t-leyenda">What the variables and colours mean</h2>
         <ul className="pesc-variables">
-          {VARIABLES.map((v) => <li key={v.nombre}><span className="pesc-punto" style={{ background: v.color }} aria-hidden="true" /><div><strong>{v.nombre}</strong><span>{v.texto}</span></div></li>)}
+          {VARIABLES.map((v) => <li key={v.nombre}><IconoVariable tipo={v.tipo as "temperature" | "chlorophyll" | "sealevel" | "oxygen" | "seaice"} /><div><strong>{v.nombre}</strong><span>{v.texto}</span></div></li>)}
         </ul>
         <div className="pesc-escala" role="img" aria-label="Colour scale from blue, colder or lower than normal, through light, normal, to orange or red, warmer or higher than normal.">
           <span>Colder or lower than normal</span><i aria-hidden="true" /><span>Warmer or higher than normal</span>

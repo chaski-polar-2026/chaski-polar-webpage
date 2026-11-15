@@ -4,6 +4,8 @@ import '../estilos.css'
 import '../features/research/research.css'
 import '../features/pescadores/pescadores.css'
 import AppShell from '../layouts/AppShell'
+import { PipelineDiagrama } from '../features/guias/GuiasInvestigacion'
+import '../features/guias/guias.css'
 
 const PENDIENTE = 'To be confirmed by the team.'
 
@@ -30,6 +32,8 @@ export default function AboutPage() {
         <p>Chaski Polar is an open web tool and an analysis repository. You pick a variable, a region and a period, and the tool shows the yearly series, the rate of change per decade with a 95% interval and a significance test. It then shows how much the answer depends on the start year, on the data source and on the strong El Niño years 1998, 2016 and 2023.</p>
         <p>The variables are chlorophyll-a, sea surface temperature, sea level, temperature and oxygen at 100–200 m, and Antarctic sea-ice extent. Two games, a scroll-driven landing page and a 3D globe make the same evidence easier to read for non-specialists.</p>
       </section>
+
+      <section className="seccion guias" id="how" aria-labelledby="t-how"><h2 id="t-how">How it works, in five steps</h2><PipelineDiagrama /></section>
 
       <section className="seccion pescadores" id="question" aria-labelledby="t-question">
         <h2 id="t-question">The question we test</h2>

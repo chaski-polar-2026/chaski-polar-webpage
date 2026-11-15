@@ -21,6 +21,7 @@ const TendenciasSection = lazy(() => import('../features/tendencias/TendenciasSe
 const MapaTendencias = lazy(() => import('../features/tendencias/MapaTendencias'))
 const PrediccionSection = lazy(() => import('../features/prediccion/PrediccionSection'))
 const PerspectivaTemperatura = lazy(() => import('../features/prediccion/PerspectivaTemperatura'))
+const GuiasInvestigacion = lazy(() => import('../features/guias/GuiasInvestigacion'))
 
 import '../features/research/research.css'
 
@@ -90,6 +91,7 @@ function Research() {
                 <p><strong>What our tests found.</strong> In more than 1,000 tests at monthly and yearly scales (Antarctic sea ice, the SAM index, and Antarctic and South Pacific temperatures against chlorophyll, temperature and nutrients off Peru), none showed a robust link once El Niño was taken into account. The ocean pathways act over decades and do not tell us how much of Peru's upwelled nitrate is Antarctic in origin. A slow link is possible, but 28 years of satellite and reanalysis data cannot test it.</p>
               </div>
             </details>
+            <CargarAlVer id="how-to-read" alto={160}><GuiasInvestigacion /></CargarAlVer>
             <CargarAlVer id="hallazgos" alto={160}><InsightsSection /></CargarAlVer>
             <CargarAlVer id="eventos-nino" alto={160}><EventosNinoSection /></CargarAlVer>
             <CargarAlVer id={/^#nino-link-(sst|seaLevel|deepTemperature|deepOxygen|oxygen|phosphate|chlorophyll)$/.test(location.hash) ? location.hash.slice(1) : "physical-chain"} alto={160}><PhysicalChainSection /></CargarAlVer>

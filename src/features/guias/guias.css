@@ -1,0 +1,13 @@
+.guias h2 { margin: 4px 0 10px; }
+.guias h3 { margin: 20px 0 8px; font-size: 1.05rem; }
+.guia-ico { width: 30px; height: 30px; flex: none; }
+.guia-pipeline { list-style: none; margin: 10px 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; counter-reset: paso; }
+.guia-pipeline li { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 14px; border: 1px solid rgba(143, 227, 242, .28); border-radius: 8px; background: rgba(7, 30, 51, .55); font-size: .88rem; line-height: 1.4; }
+.guia-pipeline li strong { font-size: .95rem; }
+.guia-pipeline li > span:last-child { opacity: .85; }
+.guia-pipeline li + li::before { content: "→"; position: absolute; left: -11px; top: 14px; color: #8fe3f2; font-size: 1.1rem; }
+.guia-pipeline-ico { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(143, 227, 242, .12); }
+.guia-figura { margin: 8px 0 14px; max-width: 560px; }
+.guia-figura svg { display: block; border: 1px solid rgba(143, 227, 242, .22); border-radius: 8px; }
+.guia-figura figcaption { margin-top: 8px; font-size: .88rem; line-height: 1.45; opacity: .85; }
+@media (max-width: 700px) { .guia-pipeline li + li::before { display: none; } }
