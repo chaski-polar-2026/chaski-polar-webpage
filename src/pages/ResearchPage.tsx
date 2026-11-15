@@ -20,6 +20,7 @@ const PhysicalChainSection = lazy(() => import('../features/physical-chain/Physi
 const TendenciasSection = lazy(() => import('../features/tendencias/TendenciasSection'))
 const MapaTendencias = lazy(() => import('../features/tendencias/MapaTendencias'))
 const PrediccionSection = lazy(() => import('../features/prediccion/PrediccionSection'))
+const PerspectivaTemperatura = lazy(() => import('../features/prediccion/PerspectivaTemperatura'))
 
 import '../features/research/research.css'
 
@@ -96,6 +97,7 @@ function Research() {
             <CargarAlVer id="trends" alto={160}><TendenciasSection /></CargarAlVer>
             <CargarAlVer id="trend-map" alto={160}><MapaTendencias /></CargarAlVer>
             <CargarAlVer id="prediction" alto={160}><PrediccionSection /></CargarAlVer>
+            <CargarAlVer id="temperature-outlook" alto={160}><PerspectivaTemperatura /></CargarAlVer>
             <section className="seccion">
               <div className="llamada">
                 <div>

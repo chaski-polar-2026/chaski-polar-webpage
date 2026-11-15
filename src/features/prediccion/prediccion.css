@@ -1,2 +1,9 @@
 .prediccion h2 { margin: 4px 0 10px; }
 .prediccion h3 { margin: 22px 0 6px; font-size: 1.05rem; }
+
+.perspectiva-tabla { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .95rem; }
+.perspectiva-tabla th, .perspectiva-tabla td { padding: 8px 10px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, .15); vertical-align: top; }
+.perspectiva-tabla td small { display: block; opacity: .75; font-size: .78rem; }
+.perspectiva-tabla td[data-claro="true"] { font-weight: 600; }
+.perspectiva-tabla td[data-claro="false"] { opacity: .8; }
+.tabla-scroll { overflow-x: auto; }
