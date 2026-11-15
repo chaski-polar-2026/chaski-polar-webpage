@@ -38,7 +38,14 @@
 @keyframes entrar-zona { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: scale(1); } }
 @keyframes salir-zona { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.04); } }
 .zona-mapa { margin: 0; min-width: 0; }
-.zona-mapa svg { display: block; width: 100%; }
+.zona-mapa svg { display: block; width: 100%; overflow: hidden; border-radius: 8px; }
+.zona-mapa .zm-flecha { animation: zm-fluir 3.2s linear infinite; }
+.zona-mapa .zm-anillo { transform-box: fill-box; transform-origin: 50% 50%; animation: zm-pulso 2.6s ease-out infinite; }
+@keyframes zm-fluir { to { stroke-dashoffset: -9; } }
+@keyframes zm-pulso { 0% { transform: scale(.8); opacity: .9; } 100% { transform: scale(1.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .zona-mapa .zm-flecha, .zona-mapa .zm-anillo { animation: none; }
+}
 .zona-mapa figcaption, .vista-zona-nota { color: #c0d3df; opacity: 1; font-size: .8rem; line-height: 1.5; }
 .zona-mapa figcaption { margin-top: 8px; }
 .zona-region { margin: 3px 0 0; font-size: .85rem; color: #c0d3df; }

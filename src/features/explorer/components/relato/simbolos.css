@@ -1,0 +1,16 @@
+.titulo-con-icono { display: flex; align-items: center; gap: 10px; }
+.titulo-con-icono .guia-ico { width: 30px; height: 30px; flex: none; }
+.fila-zona .flecha { margin-left: 6px; font-size: .8rem; line-height: 1; }
+.fila-zona .flecha.sube { color: #f08a4b; }
+.fila-zona .flecha.baja { color: #63cde8; }
+.leyenda-simbolos { margin: 12px 0 4px; border: 1px solid rgba(143, 227, 242, .3); border-radius: 8px; background: rgba(7, 30, 51, .5); }
+.leyenda-simbolos summary { padding: 9px 12px; cursor: pointer; font: 700 .8rem var(--cp-hud, system-ui); letter-spacing: .08em; text-transform: uppercase; color: #8fe3f2; }
+.leyenda-simbolos summary:focus-visible { outline: 2px solid #8fe3f2; outline-offset: -2px; }
+.leyenda-simbolos ul { list-style: none; margin: 0; padding: 0 12px 10px; display: grid; gap: 7px; font-size: .85rem; line-height: 1.35; }
+.leyenda-simbolos li { display: flex; align-items: center; gap: 10px; }
+.leyenda-simbolos .sim { flex: none; width: 22px; text-align: center; font-size: .9rem; }
+.leyenda-simbolos .sim.sube { color: #f08a4b; }
+.leyenda-simbolos .sim.baja { color: #63cde8; }
+.leyenda-simbolos .punto-ej { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(90deg, #2a74c9, #cfe3ee, #f08a4b); }
+.leyenda-simbolos .anillo-ej { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #8fe3f2; }
+.leyenda-simbolos .flecha-ej { color: #8fe3f2; letter-spacing: -2px; }

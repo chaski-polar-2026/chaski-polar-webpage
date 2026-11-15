@@ -8,8 +8,12 @@ import { esPeru } from '../../lib/modelo'
 import { variablePorId } from '../../lib/variables'
 import { useExplorerStore } from '../../store'
 import { ChipsEventos } from './comun'
+import { IconoVariable } from '../../../guias/GuiasInvestigacion'
+import './simbolos.css'
 
 /** Resumen de todas las zonas en el mes elegido */
+const ICONO_VARIABLE: Record<string, 'temperature' | 'chlorophyll' | 'sealevel' | 'oxygen' | 'seaice'> = { clorofila_mg_m3: 'chlorophyll', temperatura_superficial_C: 'temperature', nivel_mar_anomalia_m: 'sealevel', oxigeno_disuelto: 'oxygen', hielo: 'seaice' }
+
 export default function General() {
   const { modelo, mapa, mapaEstado } = useExplorer()
   const acciones = useAcciones()
@@ -37,7 +41,7 @@ export default function General() {
   }
 
   return <>
-    <h2 id="variable-actual">{v.nombre}</h2>
+    <h2 id="variable-actual" className="titulo-con-icono">{ICONO_VARIABLE[v.id] && <IconoVariable tipo={ICONO_VARIABLE[v.id]!} />}<span>{v.nombre}</span></h2>
     <Guia variable={v} />
     {section === 'humboldt' && <InsigniaNino variable={v.id} />}
     <h3>Select a zone · {mes}</h3>
@@ -45,7 +49,18 @@ export default function General() {
       <span className="punto" style={{ background: modelo.colorZona(f.z, v, i, 1) }} />
       <span>{modelo.zona(f.z).nombre}<small>{modelo.zona(f.z).region}</small></span>
       <span className="valor">{f.a ? f.a.corto : 'no data'}</span>
+      {f.a && ['log', 'dif', 'directo', 'indice'].includes(v.modo) && Number.isFinite(f.a.valor) && f.a.valor !== 0 && <span className={'flecha ' + (f.a.valor > 0 ? 'sube' : 'baja')} role="img" aria-label={f.a.valor > 0 ? 'above normal' : 'below normal'} title={f.a.valor > 0 ? 'Above normal for this month' : 'Below normal for this month'}>{f.a.valor > 0 ? '▲' : '▼'}</span>}
     </button></li>)}</ul>
+    <details className="leyenda-simbolos">
+      <summary>What the symbols mean</summary>
+      <ul>
+        <li><span className="sim sube" aria-hidden="true">▲</span>Above normal for that month</li>
+        <li><span className="sim baja" aria-hidden="true">▼</span>Below normal for that month</li>
+        <li><span className="sim" aria-hidden="true"><span className="punto-ej" /></span>Zone dot: its colour shows the value for the selected variable, from blue (lower) to orange (higher)</li>
+        <li><span className="sim" aria-hidden="true"><span className="anillo-ej" /></span>Ring: the zone you selected</li>
+        <li><span className="sim flecha-ej" aria-hidden="true">- - ›</span>Dashed arrow: the Humboldt Current, flowing north</li>
+      </ul>
+    </details>
     <details className="datos-detalle">
     <summary>Parameter and source</summary>
     <p>{notaMapa}</p>
