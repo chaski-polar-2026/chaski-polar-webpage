@@ -1,0 +1,13 @@
+.recorrido-controles { display:flex; gap:8px; padding:12px 16px; justify-content:flex-end; }
+.recorrido-controles button,.recorrido-tarjeta button { background:#0c2c4a; color:#eaf3f5; border:1px solid #24507a; border-radius:6px; padding:10px 16px; min-height:44px; cursor:pointer; }
+.recorrido-dialogo { position:fixed; inset:0; width:100%; height:100dvh; max-width:none; max-height:none; margin:0; padding:0; border:0; background:transparent; color:#eaf3f5; pointer-events:none; }
+.recorrido-dialogo::backdrop { background:transparent; }
+.recorrido-marco { position:fixed; border:2px solid #8fe3f2; border-radius:6px; pointer-events:none; }
+.recorrido-tarjeta { position:absolute; bottom:16px; right:16px; width:min(440px,calc(100% - 32px)); max-height:calc(100dvh - 32px); overflow:auto; padding:20px; background:#071e33; border:1px solid #24507a; border-radius:6px; pointer-events:auto; font-size:16px; line-height:1.5; }
+.recorrido-tarjeta h2 { font-size:24px; margin:8px 0; color:#8fe3f2; }
+.recorrido-tarjeta p { margin:12px 0; }
+.recorrido-botones { display:flex; gap:8px; flex-wrap:wrap; }
+.recorrido-tarjeta button:disabled { opacity:.5; cursor:default; }
+.recorrido-tarjeta details { border-top:1px solid #24507a; padding:12px 0; }
+.recorrido-tarjeta summary { cursor:pointer; }
+.recorrido-tarjeta :focus-visible,.recorrido-controles :focus-visible { outline:2px solid #8fe3f2; outline-offset:3px; }
