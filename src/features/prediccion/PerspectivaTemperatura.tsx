@@ -27,6 +27,7 @@ export default function PerspectivaTemperatura() {
         </table>
       </div>
       <p className="tend-nota">A positive value means smaller errors than a normal month; the range is a 95% interval. One month ahead the model is clearly better in every zone. At two and three months the gain shrinks and in some zones it is not clear.</p>
+      <p className="tend-nota"><strong>Try it yourself.</strong> In <a href="/extra-game/juego.html">From Ice to Anchovy</a>, a small pixel-art game, you read ocean signals and guess whether Peruvian fishing rose or fell each year. It shows associations, not proven causes, and it is separate from the temperature outlook above.</p>
       <p className="tend-nota"><strong>Limits.</strong> {datos.warning} This is an outlook for sea temperature only. It is not a forecast of fish or fishing.</p>
     </section>
   )
