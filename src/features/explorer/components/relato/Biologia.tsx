@@ -6,6 +6,7 @@ import { esPeru, ZONA_CHIMBOTE } from '../../lib/modelo'
 import type { IdZona } from '../../lib/tipos'
 import especies from '../../data/especies.json'
 import fuentes from '../../data/fuentes-especies.json'
+import { ICONOS_PEZ } from '../../../pescadores/iconosPez'
 import './peces.css'
 
 type Fuente = { source_id: string; page_or_table: string; short_quote: string }
@@ -51,7 +52,7 @@ export default function Biologia({ zona }: { zona?: IdZona }) {
       const distancia = referencia && dato != null ? Math.max(referencia.min - dato, 0, dato - referencia.max) : null
       const enlace = referencia ? (fuentes as Record<string, string>)[referencia.fuente.source_id] : null
       return <article key={pez.id}>
-        <div className="pez-titulo"><h3>{pez.common_name_es}</h3><i>{pez.scientific_name_accepted}</i></div>
+        <div className="pez-titulo">{ICONOS_PEZ[pez.group]}<h3>{pez.common_name_es}</h3><i>{pez.scientific_name_accepted}</i></div>
         {referencia && dato != null ? <div className="pez-factor">
           <div><b>Surface temperature</b><span>{dato.toFixed(2)} °C</span></div>
           <div className="pez-banda" aria-hidden="true"><span /><b style={{ left: `${Math.max(0, Math.min(100, ((dato - referencia.min) / (referencia.max - referencia.min) * 50) + 25))}%` }} /></div>

@@ -22,6 +22,7 @@ import RecorridoAyuda from '../../recorrido/RecorridoAyuda'
 import RegionesPanel from './RegionesPanel'
 import Relato from './relato/Relato'
 import { TimelinePanel } from './TimelinePanel'
+import TarjetaMapa from './TarjetaMapa'
 
 type Lado = 'der' | 'izq' | 'der-arriba' | 'der-abajo'
 type Marca = { z: string; lat: number; lng: number; texto: string; lado?: Lado; forma?: 'punto' | 'base' | 'rio' | 'grupo'; soloCerca?: number; soloLejos?: number }
@@ -343,6 +344,7 @@ export default function GlobePanel() {
           onTileClick={(_t, ev, c) => { if (!desdeEtiqueta(ev)) { interaccion(); acciones.clicMar(c.lat, c.lng) } }}
         />}
       </div>
+      <TarjetaMapa />
       <div className="globe-toolbar">
         <GlobeViewToggle value={view} onChange={(x) => { interaccion(); setView(x) }} />
         <RecorridoAyuda />

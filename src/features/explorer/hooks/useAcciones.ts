@@ -25,7 +25,7 @@ export function useAcciones() {
 
     const irAZona = (z: IdZona, nota?: NotaHistoria) => {
       const p = modelo.zona(z), peru = esPeru(z)
-      st().flyTo({ lat: p.lat + (peru ? -3 : 4), lng: p.lon + (peru ? -4 : 0), altitude: z === 'antartida_peninsula' ? 1.15 : peru ? 0.95 : 1.0 }, 1600)
+      st().flyTo({ lat: p.lat + (peru ? -1.2 : 4), lng: p.lon + (peru ? -1.6 : 0), altitude: z === 'antartida_peninsula' ? 1.15 : peru ? 0.42 : 1.0 }, 1600)
       st().setPanel(nota ? { tipo: 'zona', z, nota } : { tipo: 'zona', z })
     }
 

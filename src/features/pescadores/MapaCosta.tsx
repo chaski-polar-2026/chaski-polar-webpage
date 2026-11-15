@@ -20,7 +20,7 @@ const px = (lon: number) => (lon - LON0) * K
 const py = (lat: number) => (LAT0 - lat) * K
 
 /** Dónde están las zonas costeras del panel, con la mejora del pronóstico de temperatura a 1 mes. */
-export default function MapaCosta() {
+export default function MapaCosta({ resaltar, compacto = false }: { resaltar?: string; compacto?: boolean }) {
   const mejora = (z: string) => {
     const f = datos.results.find((r) => r.variable === 'SST' && r.model === 'nino' && r.zone === z && r.horizon_months === 1)
     return f ? `${f.mae_improvement >= 0 ? '+' : '−'}${Math.abs(f.mae_improvement * 100).toFixed(0)}%` : ''
@@ -28,7 +28,7 @@ export default function MapaCosta() {
   const linea = COSTA.map(([lo, la]) => `${px(lo).toFixed(1)},${py(la).toFixed(1)}`).join(' ')
   const tierra = `${linea} ${W},${py(-18.35)} ${W},${py(-3.55)}`
   return (
-    <figure className="pesc-mapa">
+    <figure className={compacto ? "pesc-mapa pesc-mapa--compacto" : "pesc-mapa"}>
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Schematic map of the Peruvian coast with the five coastal zones used in this page: Paita, Chimbote, Callao, Pisco and Ilo, from north to south. The Humboldt Current flows north along the coast." width="100%">
         <defs>
           <linearGradient id="mar-costa" x1="0" x2="1"><stop offset="0" stopColor="#0a3350" /><stop offset="1" stopColor="#0c2c4a" /></linearGradient>
@@ -42,14 +42,15 @@ export default function MapaCosta() {
         <text x={W - 10} y={py(-9)} fill="#4a3d27" fontSize="12" textAnchor="end" fontWeight="600">PERU</text>
         <text x={W - 10} y={14} fill="#a3bccb" fontSize="10" textAnchor="end">N ↑</text>
         {ZONAS.map((z) => (
-          <g key={z.id}>
-            <circle cx={px(z.lon)} cy={py(z.lat)} r="6" fill="#63cde8" stroke="#071e33" strokeWidth="2" />
+          <g key={z.id} opacity={resaltar && resaltar !== z.id ? 0.55 : 1}>
+            {resaltar === z.id && <circle cx={px(z.lon)} cy={py(z.lat)} r="14" fill="none" stroke="#8fe3f2" strokeWidth="2" strokeOpacity="0.8" />}
+            <circle cx={px(z.lon)} cy={py(z.lat)} r={resaltar === z.id ? 8 : 6} fill={resaltar && resaltar !== z.id ? "#4a7a92" : "#63cde8"} stroke="#071e33" strokeWidth="2" />
             <text x={px(z.lon) - 12} y={py(z.lat) + 4} textAnchor="end" fill="#eaf3f5" fontSize="13" fontWeight="600">{z.nombre}</text>
             <text x={px(z.lon) - 12} y={py(z.lat) + 18} textAnchor="end" fill="#8fe3f2" fontSize="11">{mejora(z.id)} at 1 month</text>
           </g>
         ))}
       </svg>
-      <figcaption>Schematic map: the coast is simplified and not to scale. The figure under each zone is how much smaller the one-month temperature outlook errors were than predicting a normal month, 2010–2025.</figcaption>
+      {!compacto && <figcaption>Schematic map: the coast is simplified and not to scale. The figure under each zone is how much smaller the one-month temperature outlook errors were than predicting a normal month, 2010–2025.</figcaption>}
     </figure>
   )
 }

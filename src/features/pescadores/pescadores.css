@@ -26,3 +26,6 @@
 .pesc-mapa svg { display: block; border: 1px solid rgba(143, 227, 242, .22); border-radius: 8px; }
 .pesc-mapa figcaption { margin-top: 6px; font-size: .82rem; line-height: 1.4; opacity: .8; }
 .pesc-icono { width: 46px; height: 28px; flex: none; fill: #63cde8; fill-opacity: .85; margin-right: 4px; }
+
+.pesc-mapa--compacto { margin: 0; max-width: none; }
+.pesc-mapa--compacto svg { border-radius: 6px; }
