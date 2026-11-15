@@ -4,3 +4,14 @@
 .guia-variable summary:focus-visible { outline:2px solid #8fe3f2; outline-offset:4px; }
 .guia-variable dt { font-weight:600; margin-top:8px; }
 .guia-variable dd { margin:0; }
+.lectura-simple { border-left:3px solid #63cde8; animation:lectura-entra .35s ease-out both; }
+.lectura-simple strong { color:#8fe3f2; font:600 12px/1.2 var(--hud, system-ui); letter-spacing:.12em; text-transform:uppercase; }
+.guia-variable { transition:border-color .2s, background-color .2s; }
+.guia-variable:hover, .guia-variable[open] { border-color:#63cde8; }
+.guia-variable summary { list-style:none; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.guia-variable summary::-webkit-details-marker { display:none; }
+.guia-variable summary::after { content:""; flex:none; width:8px; height:8px; border-right:2px solid #8fe3f2; border-bottom:2px solid #8fe3f2; transform:rotate(45deg); transition:transform .25s ease; }
+.guia-variable[open] summary::after { transform:rotate(-135deg); }
+.guia-variable[open] > :not(summary) { animation:lectura-entra .3s ease-out both; }
+@keyframes lectura-entra { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce) { .lectura-simple, .guia-variable[open] > :not(summary) { animation:none; } .guia-variable summary::after { transition:none; } }

@@ -62,7 +62,6 @@ export default function Zona({ z, nota }: { z: IdZona; nota?: NotaHistoria }) {
     <div className="grafico" aria-label={`Monthly ${v.nombre} in ${p.nombre}`}>
       <SerieMensual modelo={modelo} serie={serie} color={v.escala === 'rampa' ? '#3fc28c' : '#63cde8'} mesActual={i} alElegirMes={acciones.fijarMes} decimales={v.dec} />
     </div>
-    <Lectura modelo={modelo} zona={z} variable={v} mes={i} />
     <details className="datos-detalle"><summary>Parameter and source</summary><p className="nota">{v.fuente} · {v.periodo} · {v.cobertura}.</p></details>
     {modelo.claveMonitor(z) && <div className="acciones-relato" style={{ marginTop: 10 }}><a className="btn" href="/research#physical-chain">Physical conditions</a></div>}
     <h3>Other parameters</h3>

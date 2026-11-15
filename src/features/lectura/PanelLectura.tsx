@@ -3,7 +3,7 @@ import type { IdZona } from '../explorer/lib/tipos'
 import type { Variable } from '../explorer/lib/variables'
 import { leer } from './lectura'
 import './lectura.css'
-export function Frase({ texto }: { texto: string }) { return <div className="lectura-simple"><strong>Read this as</strong><p>{texto}</p></div> }
+export function Frase({ texto }: { texto: string }) { return <div className="lectura-simple" key={texto}><strong>Read this as</strong><p>{texto}</p></div> }
 export function Lectura({ modelo, zona, variable: v, mes }: { modelo: Modelo; zona: IdZona; variable: Variable; mes: number }) {
  const x = modelo.esEscenario(mes) ? null : modelo.valorZona(zona, v, mes)
  const tipo = v.id === 'temperatura_superficial_C' ? 'temperatura' : v.id === 'clorofila_mg_m3' ? 'clorofila' : undefined

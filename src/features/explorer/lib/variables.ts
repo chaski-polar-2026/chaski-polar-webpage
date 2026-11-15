@@ -81,7 +81,7 @@ export const VARIABLES: readonly Variable[] = [
   { id: "salinidad_psu", clave: "salinity", nombre: "Salinity", corto: "salinity", unidad: "PSU", dec: 2, modo: "dif", rango: 0.35, escala: "diverge", periodo: "2010–2026", cobertura: "Peru and Antarctica", secciones: ["austral", "humboldt"],
     lecturaCambio: "A rise means saltier water; a fall means less salty water.",
     lecturaLimite: "Surface values only. A single value does not identify a water mass.",
-    que: "How salty surface water is.",
+    que: "How salty surface water is. It changes with rainfall, rivers, melting ice and the arrival of other water masses.",
     fuente: "Surface salinity from the SMOS satellite (since 2010)." },
   { id: "nivel_mar_anomalia_m", clave: "sea level", nombre: "Sea level", corto: "sea level", unidad: "cm", dec: 1, modo: "directo", rango: 0.12, escala: "diverge", factor: 100, periodo: "2012–2018", cobertura: "Peru and Antarctica", secciones: ["humboldt"],
     lecturaCambio: "A rise means a higher sea level relative to the product reference; a fall means a lower level.",
