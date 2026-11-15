@@ -1,0 +1,23 @@
+/* Shared visual vocabulary, sampled from the existing homepage and data charts.
+   Prefixed names leave the homepage and game appearance untouched. */
+:root {
+  --cp-space: #02040a;
+  --cp-ocean: #071e33;
+  --cp-ocean-raised: #0c2c4a;
+  --cp-line: #24507a;
+  --cp-ice: #eaf3f5;
+  --cp-muted: #c0d3df;
+  --cp-cyan: #8fe3f2;
+  --cp-hud: "Rajdhani", "Arial Narrow", system-ui, sans-serif;
+  --cp-radius: 6px;
+  --cp-cut: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  --cp-shadow: 0 8px 20px rgb(2 4 10 / .22);
+  --cp-duration: 180ms;
+  --cp-ease: cubic-bezier(.2, .8, .2, 1);
+  --cp-temperature: #f08a4b;
+  --cp-chlorophyll: #3fc28c;
+  --cp-sealevel: #63cde8;
+  --cp-oxygen: #9fe0f2;
+  --cp-seaice: #eaf3f5;
+  --cp-nino: #f08a4b;
+}
