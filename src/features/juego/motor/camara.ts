@@ -1,6 +1,6 @@
 /* Cámara en tercera persona que acompaña al personaje (como en los juegos de nado 3D):
    - sube y baja junto con él, suavizada, para que el cambio de profundidad se note;
-   - con el ratón se puede girar (arrastrar) y acercar (rueda); al soltar, vuelve sola detrás del personaje;
+   - sigue la dirección del movimiento; el arrastre manual tiene prioridad temporal;
    - al subir o bajar se inclina un poco hacia donde va, para anticipar lo que hay arriba o abajo. */
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -15,7 +15,9 @@ export interface Seguidor {
 }
 
 export interface OpcionesSeguidor {
-  /** órbita completa sin recentrado automático */
+  /** Mantiene el encuadre original, sin órbita ni giro automático. */
+  orientacionFija?: boolean;
+  /** permite órbita vertical completa */
   libre?: boolean;
   distancia?: number;
   /** cuánto se puede girar a cada lado (radianes) */
@@ -33,20 +35,21 @@ const SUAVIZADO_ALTURA = 6; // cuán rápido sigue la cámara los cambios de pro
 
 export function crearSeguidor(camara: THREE.PerspectiveCamera, elemento: HTMLElement, inicio: THREE.Vector3, opciones: OpcionesSeguidor = {}): Seguidor {
   const distancia = opciones.distancia ?? 14;
-  const giro = opciones.giro ?? 1.2;
   const inclinacion = opciones.inclinacion ?? 1.2;
   const porVertical = opciones.inclinacionVertical ?? 0.05;
   const [polarMin, polarMax] = opciones.libre ? [0, Math.PI] : opciones.inclinacionLimites ?? [0.75, 1.5];
   camara.position.copy(inicio).add(new THREE.Vector3(0, distancia * Math.cos(inclinacion), distancia * Math.sin(inclinacion)));
   const controles = new OrbitControls(camara, elemento);
+  controles.enabled = !opciones.orientacionFija;
   controles.enablePan = false;
   controles.enableDamping = true;
   controles.minDistance = distancia * 0.45;
   controles.maxDistance = distancia * 1.45;
   controles.minPolarAngle = polarMin;
   controles.maxPolarAngle = polarMax;
-  controles.minAzimuthAngle = opciones.libre ? -Infinity : -giro;
-  controles.maxAzimuthAngle = opciones.libre ? Infinity : giro;
+  // El seguimiento puede dar una vuelta completa; limitar el ángulo global lo impediría.
+  controles.minAzimuthAngle = -Infinity;
+  controles.maxAzimuthAngle = Infinity;
   controles.target.copy(inicio);
 
   // mientras el jugador arrastra, la cámara es suya; al soltar, vuelve detrás del personaje
@@ -57,7 +60,7 @@ export function crearSeguidor(camara: THREE.PerspectiveCamera, elemento: HTMLEle
   controles.addEventListener("end", terminar);
 
   const anterior = inicio.clone(), delta = new THREE.Vector3(), arriba = new THREE.Vector3(0, 1, 0);
-  const adelante = new THREE.Vector3(), derecha = new THREE.Vector3();
+  const adelante = new THREE.Vector3(0, 0, -1), derecha = new THREE.Vector3(1, 0, 0);
   const desplazamiento = new THREE.Vector3(), esfera = new THREE.Spherical();
   let alturaSuave = inicio.y, antes = performance.now() / 1000;
 
@@ -77,12 +80,14 @@ export function crearSeguidor(camara: THREE.PerspectiveCamera, elemento: HTMLEle
       camara.position.add(delta);
       controles.target.add(delta);
 
-      // volver detrás del personaje e inclinarse según suba o baje
-      if (!opciones.libre && !arrastrando && ahora - ultimoToque > ESPERA_RECENTRAR) {
+      // Girar detrás del desplazamiento real, sin interferir con la órbita manual.
+      if (!opciones.orientacionFija && !arrastrando && ahora - ultimoToque > ESPERA_RECENTRAR && delta.x * delta.x + delta.z * delta.z > 0.000001) {
         desplazamiento.subVectors(camara.position, controles.target);
         esfera.setFromVector3(desplazamiento);
         const k = Math.min(1, dt * 1.5);
-        esfera.theta += (0 - esfera.theta) * k;
+        const anguloObjetivo = Math.atan2(-delta.x, -delta.z);
+        const diferencia = Math.atan2(Math.sin(anguloObjetivo - esfera.theta), Math.cos(anguloObjetivo - esfera.theta));
+        esfera.theta += diferencia * k;
         const phiObjetivo = THREE.MathUtils.clamp(inclinacion + vy * porVertical, polarMin, polarMax);
         esfera.phi += (phiObjetivo - esfera.phi) * k;
         camara.position.copy(controles.target).add(desplazamiento.setFromSpherical(esfera));
