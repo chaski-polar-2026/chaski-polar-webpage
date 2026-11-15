@@ -2,7 +2,8 @@
 .recorrido-controles button,.recorrido-tarjeta button { background:#0c2c4a; color:#eaf3f5; border:1px solid #24507a; border-radius:6px; padding:10px 16px; min-height:44px; cursor:pointer; }
 .recorrido-dialogo { position:fixed; inset:0; width:100%; height:100dvh; max-width:none; max-height:none; margin:0; padding:0; border:0; background:transparent; color:#eaf3f5; pointer-events:none; }
 .recorrido-dialogo::backdrop { background:transparent; }
-.recorrido-marco { position:fixed; border:2px solid #8fe3f2; border-radius:6px; pointer-events:none; }
+.recorrido-dialogo-ayuda::backdrop { background:rgba(0, 10, 20, .72); }
+.recorrido-marco { position:fixed; box-sizing:border-box; border:2px solid #8fe3f2; border-radius:6px; box-shadow:0 0 0 100vmax rgba(0, 10, 20, .72); pointer-events:none; }
 .recorrido-tarjeta { position:absolute; bottom:16px; right:16px; width:min(440px,calc(100% - 32px)); max-height:calc(100dvh - 32px); overflow:auto; padding:20px; background:#071e33; border:1px solid #24507a; border-radius:6px; pointer-events:auto; font-size:16px; line-height:1.5; }
 .recorrido-tarjeta h2 { font-size:24px; margin:8px 0; color:#8fe3f2; }
 .recorrido-tarjeta p { margin:12px 0; }
@@ -11,3 +12,7 @@
 .recorrido-tarjeta details { border-top:1px solid #24507a; padding:12px 0; }
 .recorrido-tarjeta summary { cursor:pointer; }
 .recorrido-tarjeta :focus-visible,.recorrido-controles :focus-visible { outline:2px solid #8fe3f2; outline-offset:3px; }
+@media (max-width: 900px) {
+  .recorrido-controles { gap: 4px; }
+  .recorrido-controles button { padding: 6px 8px; font-size: .76rem; }
+}

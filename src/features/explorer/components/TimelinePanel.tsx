@@ -14,7 +14,7 @@ export function TimelinePanel() {
   const acciones = useAcciones()
   const { section, variable, month, playing, setVariable, setMonth, setPlaying } = useExplorerStore()
   const v = variablePorId(variable)
-  const opciones = variablesDeSeccion(section)
+  const opciones = variablesDeSeccion(section === 'anchoveta' ? 'humboldt' : section)
   const { i0, ultimo } = modelo
   const eventos = useMemo(() => modelo.eventosNino(), [modelo])
 
@@ -50,9 +50,7 @@ export function TimelinePanel() {
           {opciones.map((x) => <option key={x.id} value={x.id}>{x.nombre} · {x.unidad}</option>)}
           {(NO_DISPONIBLE[section] ?? []).map((n) => <option key={n} disabled>{n} · not available</option>)}
         </select></label>
-        : <p className="timeline-unavailable">{section === 'anchoveta'
-          ? 'Anchoveta data is shown in the side panel, separate from the environmental variables.'
-          : `Not available for this area yet: ${(NO_DISPONIBLE[section] ?? []).join(', ').toLowerCase()}.`}</p>}
+        : <p className="timeline-unavailable">{`Not available for this area yet: ${(NO_DISPONIBLE[section] ?? []).join(', ').toLowerCase()}.`}</p>}
       <strong className="timeline-date">{etiquetaMes(modelo.mes(month))}</strong>
     </div>
     {opciones.length > 0 && <div className="timeline-controls">
@@ -60,7 +58,7 @@ export function TimelinePanel() {
       <div className="timeline-track">
         <div className="timeline-events" role="group" aria-label="Jump to an El Niño event">{eventos.map((e, k) =>
           <button key={e.anio} type="button" style={{ left: posicion(e.i), transform: desplazamiento(k) }} aria-current={month === e.i} title={`${e.nombre} (pico en ${mesLargo(modelo.mes(e.i))})`}
-            onClick={() => { setPlaying(false); if (e.anio === 2026) { acciones.nino2026(); return } if (!v.mapa) setVariable('temperatura_superficial_C'); setMonth(e.i) }}>{e.anio}</button>)}
+            onClick={() => { setPlaying(false); setMonth(e.i); if (e.anio === 2026 && section !== 'anchoveta') { acciones.nino2026(); return } if (!v.mapa) setVariable('temperatura_superficial_C') }}>{e.anio}</button>)}
         </div>
         <div className="timeline-chart"><ResponsiveContainer width="100%" height="100%"><BarChart data={serie} margin={{ top: 14, right: 0, bottom: 0, left: 0 }} barCategoryGap={0}>
           <XAxis dataKey="month" hide />

@@ -37,7 +37,7 @@ export default function General() {
   }
 
   return <>
-    <h2>{v.nombre}</h2>
+    <h2 id="variable-actual">{v.nombre}</h2>
     <Guia variable={v} />
     {section === 'humboldt' && <InsigniaNino variable={v.id} />}
     <h3>Select a zone · {mes}</h3>

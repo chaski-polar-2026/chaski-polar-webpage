@@ -1,9 +1,13 @@
-.research-page { padding-top: 96px; }
-.research-intro { max-width: 1240px; margin: 0 auto; padding: 44px 28px 48px; }
+.research-page { padding-top: 56px; }
+.research-page .puente-explorador { min-height: 0; padding: 48px clamp(20px, 6vw, 80px) 40px; }
+.research-page .puente-hilo { height: 44px; }
+.research-page .seccion { padding: clamp(32px, 5vw, 56px) clamp(20px, 4vw, 48px); }
+.research-page .seccion .seccion { padding: 16px 0; }
+.research-intro { max-width: 1180px; margin: 0 auto; padding: 36px clamp(20px, 4vw, 48px) 28px; }
 .research-eyebrow { color: var(--frio); font-size: .75rem; letter-spacing: .14em; }
 .research-intro h1 { max-width: 820px; margin: 12px 0 16px; font: 400 clamp(2.1rem, 5vw, 4rem)/1.1 var(--serif); color: var(--hielo); }
 .research-intro > p:not(.research-eyebrow) { max-width: 760px; color: var(--niebla); }
-.research-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 32px; }
+.research-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 24px; }
 .research-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; background: var(--panel-medio); border-radius: 6px; color: var(--hielo); text-decoration: none; }
 .research-nav a:hover { background: var(--hielo); color: var(--abismo); }
 .research-results { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
@@ -14,10 +18,20 @@
 .research-results p { color: var(--niebla); font-size: .95rem; line-height: 1.65; }
 .research-results a { margin-top: auto; padding-top: 14px; min-height: 44px; color: var(--frio); }
 .research-limit { font-size: .85rem; margin-top: 20px; }
-.research-question > summary { min-height: 44px; cursor: pointer; color: var(--frio); font-size: 1.1rem; }
+.research-page .research-question { display: block; padding-top: 8px; padding-bottom: 8px; }
+.research-question > summary { min-height: 44px; padding: 10px 0; cursor: pointer; color: var(--frio); font-size: 1.1rem; border-bottom: 1px solid var(--linea); }
+.research-question[open] > blockquote { margin: 16px 0; }
+.research-question .cuerpo { max-width: 80ch; }
+.research-page #anchoveta-response > h2 { margin-top: 0; }
 @media (max-width: 760px) {
-  .research-page { padding-top: 72px; }
-  .research-intro { padding: 28px 20px; }
-  .research-results { grid-template-columns: 1fr; }
-  .research-results article { padding: 20px; }
+  .research-page { padding-top: 52px; }
+  .research-page .puente-explorador { min-height: 0; padding: 32px 20px; gap: 20px; }
+  .research-page .puente-hilo { height: 28px; }
+  .research-intro { padding: 28px 20px 20px; }
+  .research-results { grid-template-columns: 1fr; gap: 10px; }
+  .research-results article { padding: 16px; }
+  .research-results h2 { margin: 10px 0 6px; }
+  .research-results p { margin: 6px 0; }
+  .research-nav { gap: 6px; }
+  .research-nav a { padding: 8px 10px; font-size: .85rem; }
 }

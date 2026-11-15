@@ -3,8 +3,12 @@ import { FAQ, PASOS } from './contenido'
 import './recorrido.css'
 const CLAVE = 'chaski-polar-guide-v1'
 function objetivo(i: number) {
- const el = document.querySelector<HTMLElement>(PASOS[i]!.selector)
- return el && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden' ? el : null
+ for (const selector of PASOS[i]!.selector.split(',')) {
+  const visible = [...document.querySelectorAll<HTMLElement>(selector.trim())]
+   .find(el => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden')
+  if (visible) return visible
+ }
+ return null
 }
 export default function RecorridoAyuda() {
  const [paso, setPaso] = useState<number | null>(null)
@@ -49,7 +53,7 @@ export default function RecorridoAyuda() {
   el.scrollIntoView({block:'center', behavior:'instant'})
   const posicionar = () => {
    const r = el.getBoundingClientRect(), m = marco.current
-   if (m) Object.assign(m.style, {left:`${Math.max(2,r.left)}px`,top:`${Math.max(2,r.top)}px`,width:`${Math.min(r.width,innerWidth-4)}px`,height:`${Math.max(0,Math.min(r.bottom,innerHeight)-Math.max(2,r.top))}px`})
+   if (m) Object.assign(m.style, {left:`${Math.max(0,r.left)}px`,top:`${Math.max(0,r.top)}px`,width:`${Math.max(0,Math.min(r.right,innerWidth)-Math.max(0,r.left))}px`,height:`${Math.max(0,Math.min(r.bottom,innerHeight)-Math.max(0,r.top))}px`})
   }
   posicionar()
   const observer = new ResizeObserver(posicionar); observer.observe(el)
@@ -58,7 +62,7 @@ export default function RecorridoAyuda() {
  }, [paso])
  return <>
   <nav className="recorrido-controles" aria-label="Explorer help"><button ref={guia} onClick={abrir}>Guide</button><button ref={help} onClick={() => setAyuda(true)}>Help</button></nav>
-  <dialog className="recorrido-dialogo" ref={dialogo} aria-labelledby="recorrido-titulo" onCancel={e => {e.preventDefault();cerrar()}} onKeyDown={e => {
+  <dialog className={`recorrido-dialogo${ayuda ? ' recorrido-dialogo-ayuda' : ''}`} ref={dialogo} aria-labelledby="recorrido-titulo" onCancel={e => {e.preventDefault();cerrar()}} onKeyDown={e => {
    if (paso != null && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {e.preventDefault();mover(e.key === 'ArrowRight' ? 1 : -1)}
    if(e.key === 'Tab') {
     const nodes = [...tarjeta.current!.querySelectorAll<HTMLElement>('button:not(:disabled),summary')]
