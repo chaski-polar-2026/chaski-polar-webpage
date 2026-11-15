@@ -28,20 +28,62 @@ function normalesOlas(): THREE.CanvasTexture {
   return t;
 }
 
-/** Costa: cerros desérticos a lo lejos (la costa peruana es árida) */
-function crearCerros(): THREE.Mesh {
-  const g = new THREE.PlaneGeometry(900, 70, 300, 30);
+/** Costa: playa con espuma y aguas someras, y cerros desérticos con estratos (la costa peruana es árida) */
+function crearCosta(): { obj: THREE.Group; actualizar: (t: number, quieto: boolean) => void } {
+  const ANCHO = 900, FONDO = 70, ORILLA = 29.3;
+  const g = new THREE.PlaneGeometry(ANCHO, FONDO, 300, 70);
   g.rotateX(-Math.PI / 2);
   const p = g.getAttribute("position");
+  const color = new Float32Array(p.count * 3);
+  const mojada = new THREE.Color(0x6f6048), seca = new THREE.Color(0xdcc89e), ocre = new THREE.Color(0xc9a77c);
+  const pardo = new THREE.Color(0x8f6e4d), gris = new THREE.Color(0x706458), c = new THREE.Color();
   for (let i = 0; i < p.count; i++) {
-    const x = p.getX(i), z = p.getZ(i), borde = Math.min(1, (35 - z) / 70);
-    p.setY(i, Math.max(0, fbm(x * 0.012 + 3, z * 0.03, 5) * 38 * borde - 4));
+    const x = p.getX(i), z = p.getZ(i), zf = 35 - z; // distancia al borde del mar
+    const cerros = Math.max(0, fbm(x * 0.012 + 3, z * 0.03, 5) * 40 - 4) * THREE.MathUtils.smoothstep(zf, 12, 46);
+    const playa = -0.8 + 0.14 * Math.min(zf, 10) + fbm(x * 0.05, z * 0.2, 3) * 0.25 * THREE.MathUtils.smoothstep(zf, 4, 10);
+    const y = playa + cerros;
+    p.setY(i, y);
+    if (y < 0.25) c.copy(mojada);
+    else if (cerros < 0.4) c.copy(mojada).lerp(seca, THREE.MathUtils.smoothstep(y, 0.2, 0.75));
+    else {
+      const t = Math.min(1, cerros / 38), banda = Math.sin(cerros * 1.15 + fbm(x * 0.02, z * 0.08, 3) * 6) * 0.5 + 0.5;
+      c.copy(seca).lerp(ocre, THREE.MathUtils.smoothstep(cerros, 0.4, 3));
+      c.lerp(pardo, THREE.MathUtils.smoothstep(t, 0.25, 0.7)).lerp(gris, THREE.MathUtils.smoothstep(t, 0.7, 1));
+      c.multiplyScalar(0.86 + 0.14 * banda + (fbm(x * 0.15, z * 0.15, 3) - 0.5) * 0.12);
+    }
+    c.multiplyScalar(1.45); color[i * 3] = c.r; color[i * 3 + 1] = c.g; color[i * 3 + 2] = c.b;
   }
+  g.setAttribute("color", new THREE.BufferAttribute(color, 3));
   g.computeVertexNormals();
-  const cerros = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0xc9a77c, roughness: 1 }));
-  cerros.position.set(140, -0.4, -260);
-  cerros.rotation.y = -0.35;
-  return cerros;
+  const suelo = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, emissive: 0x4a3c2a, emissiveIntensity: 0.9 }));
+
+  // Aguas someras: turquesa junto a la orilla que se funde con el mar
+  const somera = lienzo(4, 128), sx = contexto(somera), grad = sx.createLinearGradient(0, 0, 0, 128);
+  grad.addColorStop(0, "rgba(120,220,200,0.9)"); grad.addColorStop(0.35, "rgba(60,170,185,0.45)"); grad.addColorStop(1, "rgba(20,100,140,0)");
+  sx.fillStyle = grad; sx.fillRect(0, 0, 4, 128);
+  const gs = new THREE.PlaneGeometry(ANCHO, 26); gs.rotateX(-Math.PI / 2);
+  const someras = new THREE.Mesh(gs, new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(somera), transparent: true, opacity: 0.8, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }));
+  someras.position.set(0, 0.02, ORILLA + 12);
+
+  // Espuma: línea irregular que avanza y retrocede en la orilla
+  const lienzoEspuma = lienzo(512, 64), ex = contexto(lienzoEspuma);
+  for (let x = 0; x < 512; x++) {
+    const borde = 20 + fbm(x * 0.03, 1, 4) * 26, ancho = 3 + fbm(x * 0.05, 9, 3) * 10;
+    const gr = ex.createLinearGradient(0, borde - ancho, 0, borde + 4);
+    gr.addColorStop(0, "rgba(255,255,255,0)"); gr.addColorStop(0.7, `rgba(255,255,255,${0.35 + fbm(x * 0.08, 5, 2) * 0.5})`); gr.addColorStop(1, "rgba(255,255,255,0)");
+    ex.fillStyle = gr; ex.fillRect(x, borde - ancho, 1, ancho + 4);
+  }
+  const texEspuma = new THREE.CanvasTexture(lienzoEspuma);
+  texEspuma.wrapS = THREE.RepeatWrapping; texEspuma.repeat.set(5, 1);
+  const ge = new THREE.PlaneGeometry(ANCHO, 5); ge.rotateX(-Math.PI / 2);
+  const espuma = new THREE.Mesh(ge, new THREE.MeshBasicMaterial({ map: texEspuma, transparent: true, opacity: 0.8, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -3 }));
+  espuma.position.set(0, 0.04, ORILLA);
+
+  const obj = new THREE.Group();
+  obj.add(suelo, someras, espuma);
+  obj.position.set(140, 0, -260);
+  obj.rotation.y = -0.35;
+  return { obj, actualizar: (t, quieto) => { espuma.position.z = ORILLA + (quieto ? 0 : Math.sin(t * 0.7) * 0.9); } };
 }
 
 /** Bolichera: casco azul con franja roja, cabina blanca, mástil, pluma, red y panga */
@@ -131,10 +173,11 @@ export function crearSuperficie(escena: THREE.Scene, C: Calidad): Capa {
 
   const agua = new Water(new THREE.PlaneGeometry(3000, 3000), {
     textureWidth: C.agua, textureHeight: C.agua, waterNormals: normalesOlas(), sunDirection: DIR_SOL.clone(),
-    sunColor: 0xffd9a8, waterColor: 0x062b3a, distortionScale: 3.6, fog: true, alpha: 1,
+    sunColor: 0xffd9a8, waterColor: 0x062b3a, distortionScale: 1.8, fog: true, alpha: 1,
   });
   agua.rotation.x = -Math.PI / 2;
   const tiempoAgua = agua.material.uniforms.time!;
+  agua.material.uniforms.size!.value = 0.35; // olas más finas, sin manchas grandes
 
   let barco = crearBolichera();
   const boya = crearBoyaOceanografica();
@@ -143,7 +186,8 @@ export function crearSuperficie(escena: THREE.Scene, C: Calidad): Capa {
   boya.rotation.y = -0.4;
   grupo.add(boya);
   let aves = Array.from({ length: C.aves }, crearAve);
-  grupo.add(agua, crearCerros(), barco, ...aves.map((a) => a.ave));
+  const costa = crearCosta();
+  grupo.add(agua, costa.obj, barco, ...aves.map((a) => a.ave));
   escena.add(grupo);
 
   // La costa entra a través de la neblina mientras la cámara desciende.
@@ -204,6 +248,7 @@ export function crearSuperficie(escena: THREE.Scene, C: Calidad): Capa {
       const debajo = y < 0;
       agua.visible = !debajo;
       tiempoAgua.value = t * 0.6;
+      costa.actualizar(t, movimientoBoya.matches);
       const tiempoBoya = movimientoBoya.matches ? 0 : t;
       boya.position.x = -Math.min(5, Math.max(1, 7 * innerWidth / innerHeight - 1.2));
       boya.position.y = Math.sin(tiempoBoya * 1.05 + 1) * 0.09;
