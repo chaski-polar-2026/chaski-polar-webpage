@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
 import especies from '../explorer/data/especies.json'
 import fuentes from '../explorer/data/fuentes-especies.json'
+import { iconoPez } from './iconosPez'
 import './pescadores.css'
 
 type Profundidad = { min: number | null; max: number | null; label: string; source: Record<string, { source_id: string }[]> }
@@ -9,12 +9,11 @@ type Pez = {
   habitat_summary?: string; season_note?: string; el_nino_response_note?: string; temperature_note?: string
   flags?: string; recorded_depth?: Profundidad
 }
-const ICONOS: Record<string, ReactNode> = {
-  'pelagic fish': <svg className="pesc-icono" viewBox="0 0 56 32" aria-hidden="true"><path d="M3 16C13 3 31 3 42 16 31 29 13 29 3 16Z" /><path d="M42 16 54 5v22Z" /></svg>,
-  'demersal fish': <svg className="pesc-icono" viewBox="0 0 56 32" aria-hidden="true"><path d="M3 18C12 8 34 8 45 18 34 28 12 28 3 18Z" /><path d="M45 18 55 11v14Z" /><path d="M14 11 26 4l9 7Z" /></svg>,
-  mollusc: <svg className="pesc-icono" viewBox="0 0 56 32" aria-hidden="true"><path d="M28 29 9 15A22 22 0 0 1 47 15Z" /></svg>,
-}
 const GRUPOS: Record<string, string> = { 'pelagic fish': 'Pelagic fish', 'demersal fish': 'Bottom-living fish', mollusc: 'Molluscs' }
+const FOTOS: Record<string, { src: string; alt: string; autor: string; pagina: string }> = {
+  perico: { src: '/assets/especies/perico.webp', alt: 'A mahi-mahi (Coryphaena hippurus) on a white background', autor: 'Hugues Evano (IFREMER)', pagina: 'https://commons.wikimedia.org/wiki/File:Coryph%C3%A8ne_commune_(Coryphaena_hippurus)_(Ifremer_00763-87546).jpg' },
+  bonito: { src: '/assets/especies/bonito.webp', alt: 'Four Pacific bonito (Sarda chiliensis) lying on a boat deck', autor: 'nmoorhatch (iNaturalist)', pagina: 'https://commons.wikimedia.org/wiki/File:Sarda_chiliensis_61671693.jpg' },
+}
 const lista = especies as unknown as Pez[]
 const enlaceFuente = (id: string) => (fuentes as Record<string, string>)[id]
 const profundidad = (p?: Profundidad) => {
@@ -39,8 +38,9 @@ export default function PescadoresSection() {
             const ids = idsFuente(e.recorded_depth)
             return (
               <article key={e.id} className="pesc-ficha">
-                <header>{ICONOS[e.group]}<h3>{e.common_name_es}</h3><i>{e.scientific_name_accepted}</i><span className="pesc-grupo">{GRUPOS[e.group] ?? e.group}</span></header>
+                <header>{iconoPez(e.id, e.group)}<h3>{e.common_name_es}</h3><i>{e.scientific_name_accepted}</i><span className="pesc-grupo">{GRUPOS[e.group] ?? e.group}</span></header>
                 {e.habitat_summary && <p>{e.habitat_summary}</p>}
+                {FOTOS[e.id] && <figure className="pesc-foto"><img src={FOTOS[e.id]!.src} alt={FOTOS[e.id]!.alt} width={640} height={480} loading="lazy" /><figcaption>Photo: <a href={FOTOS[e.id]!.pagina} target="_blank" rel="noreferrer">{FOTOS[e.id]!.autor}</a>, CC BY 4.0, via Wikimedia Commons</figcaption></figure>}
                 <dl>
                   {prof && <><dt>Recorded depth</dt><dd>{prof}{ids.map((id) => enlaceFuente(id) && <a key={id} className="pesc-fuente" href={enlaceFuente(id)} target="_blank" rel="noreferrer"> [{id}]</a>)}</dd></>}
                   {e.season_note && <><dt>Season</dt><dd>{e.season_note}</dd></>}

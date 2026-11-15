@@ -29,3 +29,29 @@
 
 .pesc-mapa--compacto { margin: 0; max-width: none; }
 .pesc-mapa--compacto svg { border-radius: 6px; }
+
+.pesc-ilus { width: 96px; height: 46px; flex: none; color: #63cde8; margin-right: 6px; }
+.pez-titulo .pesc-ilus { width: 72px; height: 34px; }
+
+.pesc-pasos-guia { list-style: none; margin: 14px 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.pesc-pasos-guia li { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 1px solid rgba(143, 227, 242, .28); border-radius: 8px; background: rgba(7, 30, 51, .55); }
+.pesc-pasos-guia p { margin: 4px 0 0; font-size: .92rem; line-height: 1.45; }
+.pesc-paso-n { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #8fe3f2; color: #071e33; font: 700 16px var(--cp-hud, system-ui); }
+.pesc-diagramas { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 14px; }
+.pesc-diagramas figure { margin: 0; }
+.pesc-diagramas svg { display: block; border: 1px solid rgba(143, 227, 242, .22); border-radius: 8px; }
+.pesc-diagramas figcaption { margin-top: 8px; font-size: .88rem; line-height: 1.45; opacity: .85; }
+.pesc-variables { list-style: none; margin: 12px 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.pesc-variables li { display: flex; gap: 10px; align-items: center; }
+.pesc-variables strong { display: block; }
+.pesc-variables span:not(.pesc-punto) { font-size: .85rem; opacity: .8; }
+.pesc-punto { flex: none; width: 14px; height: 14px; border-radius: 50%; }
+.pesc-escala { display: flex; align-items: center; gap: 10px; margin: 14px 0 8px; font-size: .85rem; }
+.pesc-escala i { flex: 1; max-width: 280px; height: 12px; border-radius: 6px; background: linear-gradient(90deg, #2a74c9, #cfe3ee, #f08a4b); }
+
+.pesc-foto { margin: 8px 0 4px; }
+.pesc-foto img { display: block; width: 100%; height: auto; border-radius: 6px; }
+.pesc-foto figcaption { margin-top: 4px; font-size: .72rem; opacity: .75; }
+
+.pesc-ficha header > .pesc-ilus { flex: 0 0 100%; width: 100%; max-width: 120px; height: 54px; margin: 0 0 4px; }
+.pesc-ficha header > h3 { margin-right: 4px; }
