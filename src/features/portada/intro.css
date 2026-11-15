@@ -43,3 +43,13 @@
   .portada .portada-franja > div { padding-block: 8px; }
   .portada .portada-ventana:has(.portada-intro.activa) .portada-pista { display: none; }
 }
+
+/* Título con una palabra en contorno y la otra rellena, para el estilo de letra de la portada anterior. */
+.portada .portada-intro h1 { font-weight: 700; }
+.portada .portada-titulo-contorno { color: transparent; -webkit-text-stroke: 1.6px #eaf3f5; paint-order: stroke fill; }
+.portada .portada-titulo-solido { color: #8fe3f2; text-shadow: 0 0 22px rgba(99, 205, 232, .35); }
+@media (max-width: 640px) { .portada .portada-titulo-contorno { -webkit-text-stroke-width: 1.2px; } }
+@supports not (-webkit-text-stroke: 1px #000) { .portada .portada-titulo-contorno { color: #eaf3f5; } }
+.portada .portada-intro h1 { white-space: nowrap; }
+.portada .portada-intro h1 > span { display: inline; }
+.portada .portada-titulo-solido { margin-left: .26em; }
