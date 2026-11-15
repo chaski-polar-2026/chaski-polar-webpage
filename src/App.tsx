@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 const PortadaPage = lazy(() => import('./pages/PortadaPage'))
 const ResearchPage = lazy(() => import('./pages/ResearchPage'))
 const FishersPage = lazy(() => import('./pages/FishersPage'))
+const AboutPage = lazy(() => import('./pages/AboutPage'))
 const HomePage = lazy(() => import('./pages/HomePage'))
 const JuegoPage = lazy(() => import('./pages/JuegoPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
@@ -18,6 +19,7 @@ function AppRoutes() {
         <Route path="/explorer" element={<HomePage />} />
         <Route path="/research" element={<ResearchPage />} />
         <Route path="/fishers" element={<FishersPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/modelos-portada" element={<ModelosPortadaPage />} />
         <Route path="/juego" element={<JuegoPage />} />
         <Route path="*" element={<NotFoundPage />} />

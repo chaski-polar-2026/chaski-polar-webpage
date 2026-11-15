@@ -12,6 +12,7 @@ const PescadoresSection = lazy(() => import('../features/pescadores/PescadoresSe
 export default function FishersPage() {
   useEffect(() => {
     document.title = 'Chaski Polar · For artisanal fishers'
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "A tested sea-temperature outlook and documented species context for artisanal fishers. Not a catch forecast.")
     document.documentElement.lang = 'en'
     if (!location.hash) window.scrollTo(0, 0)
   }, [])

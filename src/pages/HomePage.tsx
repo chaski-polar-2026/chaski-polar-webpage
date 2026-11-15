@@ -17,6 +17,7 @@ export default function HomePage() {
   const researchAnchors = ['#hallazgos', '#eventos-nino', '#physical-chain', '#cruceros', '#trends', '#trend-map', '#prediction', '#fuentes', '#method', '#trend-glossary']
   useEffect(() => {
     document.title = 'Chaski Polar · Explorer'
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "Explore chlorophyll, temperature, sea level, oxygen and sea ice on an interactive globe.")
     const previous = document.documentElement.lang
     document.documentElement.lang = 'en'
     return () => { document.documentElement.lang = previous }

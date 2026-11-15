@@ -27,6 +27,7 @@ import '../features/research/research.css'
 export default function ResearchPage() {
   useEffect(() => {
     document.title = 'Chaski Polar · Research'
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "Ocean trends off Peru, tested: trends, El Niño, robustness checks and sources.")
     document.documentElement.lang = 'en'
     if (!location.hash) window.scrollTo(0, 0)
   }, [])

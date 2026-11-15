@@ -12,3 +12,8 @@
 .pesc-fuente { font-size: .8rem; }
 .pesc-pendiente { opacity: .75; font-size: .82rem !important; }
 .pesc-pasos { margin: 14px 0; padding-left: 1.2rem; display: grid; gap: 10px; line-height: 1.5; }
+
+.about-lista { margin: 10px 0; padding-left: 1.2rem; display: grid; gap: 8px; line-height: 1.5; }
+.boton-datos { padding: 10px 22px; border: 1px solid var(--cp-cyan, #8fe3f2); background: rgba(7, 30, 51, .6); color: #eaf3f5; font: 700 14px var(--cp-hud, system-ui); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; clip-path: var(--cp-cut, none); transition: background-color 180ms; }
+.boton-datos:hover { background: rgba(99, 205, 232, .22); }
+.boton-datos:focus-visible { outline: 2px solid #8fe3f2; outline-offset: 2px; }
