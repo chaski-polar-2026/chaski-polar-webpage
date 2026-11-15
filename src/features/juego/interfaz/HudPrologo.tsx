@@ -13,7 +13,7 @@ export function HudLumi({ e }: { e: EstadoLumi | null }) {
     <div className="bitacora-recurso"><span>Light</span><Medidor valor={e.luz} tono="ambar" etiqueta="Available light" /></div>
     <div className="bitacora-recurso"><span>Nutrients</span><Medidor valor={e.nutrientes} tono="hielo" etiqueta="Lumi’s nutrients" /></div>
     <div className="bitacora-recurso"><span>Growth</span><Medidor valor={e.crecimiento} etiqueta="Lumi’s growth" /></div>
-    {(e.nutrientes <= 0 || e.bajoHielo) && <p className="bitacora-alerta" role="status">{e.nutrientes <= 0 ? 'Dive to find the blue sparks.' : 'Find an opening: the ice blocks the light.'}</p>}
+    {(e.nutrientes <= 0 || e.bajoHielo) && <p className="bitacora-alerta" role="status">{e.nutrientes <= 0 ? 'Find blue or green nutrient tokens.' : 'Find an opening: the ice blocks the light.'}</p>}
   </section>
 }
 

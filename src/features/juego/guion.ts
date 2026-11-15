@@ -28,7 +28,7 @@ export function introLumi(mar: Mar): Linea[] {
     { quien: "orbi", texto: "Hello, I’m ORBI, a satellite. From up here I measure the color of the sea: where there is phytoplankton, the sea looks greener." },
     ...(dato ? [{ quien: "orbi" as const, texto: `${dato} It is spring and the sea ice is beginning to open.` }] : []),
     { quien: "gaia", texto: "Lumi is a diatom, a type of phytoplankton. To grow, she needs light from above and nutrients rising from below." },
-    { quien: "gaia", texto: "Find the blue sparks and return to the light. Little sunlight reaches beneath the ice. When you are full, you will divide. W moves up, S moves down, and A and D move sideways." },
+    { quien: "gaia", texto: "Collect the blue and green nutrient tokens and return to the light. The tokens are illustrative. Little sunlight reaches beneath the ice. When you are full, you will divide. Use WASD to swim, Space or Q to rise, and C or E to dive." },
   ];
 }
 

@@ -42,7 +42,7 @@ type Pantalla =
   | { tipo: 'cardumen'; generacion: number; peces: number; estrategia: Estrategia['id']; intento: number }
 
 const AYUDA: Record<EscenaPrologo | 'cardumen', string> = {
-  lumi: 'W or Space: up · S or C: down · A/D: sideways',
+  lumi: 'WASD or arrows: swim · Space/Q: rise · C/E: dive',
   kiri: 'WASD or arrows: swim · Space/Q: up · C/E: down',
   nara: 'WASD or arrows: swim',
   cardumen: 'WASD: swim · Space: up · C: down · Shift: boost · F: gather',
@@ -261,7 +261,7 @@ export default function JuegoPage() {
     {pantalla.tipo === 'prologo' && pantalla.escena === 'kiri' && <HudKiri comidos={comidos} />}
     {pantalla.tipo === 'prologo' && pantalla.escena === 'nara' && <HudNara e={estadoNara} />}
     {pantalla.tipo === 'cardumen' && <HudCardumen entrada={entrada} mar={mar} compacto={compacto} alternar={() => setCompacto((x) => !x)} />}
-    {pantalla.tipo === 'prologo' && pantalla.escena === 'kiri' && <div className="bitacora-acciones kiri-vertical" aria-label="Depth controls">
+    {pantalla.tipo === 'prologo' && (pantalla.escena === 'kiri' || pantalla.escena === 'lumi') && <div className="bitacora-acciones kiri-vertical" aria-label="Depth controls">
       {(['subir', 'bajar'] as const).map((accion) => <button key={accion} type="button" className="juego-caja bitacora-tactil"
         onPointerDown={(e) => { e.preventDefault(); e.currentTarget.setPointerCapture(e.pointerId); if (entrada) entrada.botones[accion] = true }}
         onPointerUp={() => { if (entrada) entrada.botones[accion] = false }} onPointerCancel={() => { if (entrada) entrada.botones[accion] = false }} onLostPointerCapture={() => { if (entrada) entrada.botones[accion] = false }}>{accion === 'subir' ? '↑ Up' : '↓ Down'}</button>)}
@@ -269,7 +269,7 @@ export default function JuegoPage() {
     {pantalla.tipo !== 'menu' && !dialogoAbierto && !informe && !verFinal && !pausado && <div className="visor-teclas" aria-hidden="true">
       <span>CONTROLS</span><div className="visor-grupos">
         {[ [['W', 'w'], ['A', 'a'], ['S', 's'], ['D', 'd']], [['↑', 'arrowup'], ['←', 'arrowleft'], ['↓', 'arrowdown'], ['→', 'arrowright']] ].map((grupo, i) => <div className="visor-cruz" key={i}>{grupo.map(([label, key], posicion) => <kbd key={key} className={`${posicion === 0 ? 'tecla-arriba ' : ''}${teclas.has(key) ? 'pulsada' : ''}`}>{label}</kbd>)}</div>)}
-        <div className="visor-acciones">{(pantalla.tipo === 'cardumen' || pantalla.escena === 'kiri' ? [['SPACE', ' '], ['Q', 'q'], ['C', 'c'], ['E', 'e'], ...(pantalla.tipo === 'cardumen' ? [['SHIFT', 'shift'], ['F', 'f']] : [])] : pantalla.escena === 'lumi' ? [['SPACE', ' '], ['C', 'c']] : []).map(([label, key]) => <kbd key={key} className={teclas.has(key) ? 'pulsada' : ''}>{label}</kbd>)}</div>
+        <div className="visor-acciones">{(pantalla.tipo === 'cardumen' || pantalla.escena === 'kiri' || pantalla.escena === 'lumi' ? [['SPACE', ' '], ['Q', 'q'], ['C', 'c'], ['E', 'e'], ...(pantalla.tipo === 'cardumen' ? [['SHIFT', 'shift'], ['F', 'f']] : [])] : []).map(([label, key]) => <kbd key={key} className={teclas.has(key) ? 'pulsada' : ''}>{label}</kbd>)}</div>
       </div>
     </div>}
     {pausado && <div className="pausa-velo" role="dialog" aria-modal="true" aria-labelledby="pausa-titulo"><div className="pausa-panel juego-caja"><span>LOGBOOK · ON HOLD</span><h2 id="pausa-titulo">Game paused</h2><p>The expedition is paused. Take a moment.</p><button autoFocus type="button" className="juego-caja principal" onClick={() => setPausado(false)}>Continue <kbd>ESC</kbd></button></div></div>}
