@@ -1,3 +1,4 @@
+import { Guia } from '../../../lectura/PanelLectura'
 import { mesLargo } from '../../../../lib/formato'
 import { useExplorer } from '../../ExplorerContext'
 import { useAcciones } from '../../hooks/useAcciones'
@@ -36,7 +37,7 @@ export default function General() {
 
   return <>
     <h2>{v.nombre}</h2>
-    <p>{v.que}</p>
+    <Guia variable={v} />
     <h3>Select a zone · {mes}</h3>
     <ul className="lista-zonas">{filas.map((f) => <li key={f.z}><button className="fila-zona" type="button" onClick={() => acciones.irAZona(f.z)}>
       <span className="punto" style={{ background: modelo.colorZona(f.z, v, i, 1) }} />
