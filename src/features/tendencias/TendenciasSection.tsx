@@ -1,3 +1,5 @@
+import { crearEvidencia } from './evidencia'
+import { Robustez, FichaEvidencia } from './FichaEvidencia'
 import { useEffect, useMemo, useState, useRef } from 'react'
 import { CartesianGrid, ComposedChart, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { useData } from '../../contexts/DataContext'
@@ -149,6 +151,10 @@ export default function TendenciasSection() {
   const fi = Math.min(ultimo, Math.max(fin, ini))
   const puntos = useMemo(() => todos.filter((p) => p.x >= ini && p.x <= fi), [todos, ini, fi])
   const res = useMemo(() => tendencia(puntos), [puntos])
+  const nombreZona = tieneZonas ? zonasDisponibles.find(z => z.id === zonaActiva)!.nombre : alcance
+  const cobertura = mensual.length ? `${mensual[0]!.mes} to ${mensual.at(-1)!.mes}` : 'Not available'
+  const tipoDatos = serieRonda?.tipo === 'reanalysis' ? 'Reanalysis' : serieRonda?.tipo === 'observation-based reconstruction' ? 'Reconstruction from observations' : 'Satellite product'
+  const evidencia = useMemo(() => crearEvidencia(anuales, {variable:nombreVariable,zone:nombreZona,unit:unidad,source:fuenteTexto,dataType:tipoDatos,coverage:cobertura,start:ini,end:fi,season:estacion,seasonLabel:ESTACIONES[estacion],exclude:excluirExtremos}), [anuales,nombreVariable,nombreZona,unidad,fuenteTexto,tipoDatos,cobertura,ini,fi,estacion,excluirExtremos])
   const puedeComparar = variable === 'chl' && fuentesDisponibles.length === 2
   const otraFuente: Fuente = fuenteActiva === 'occci' ? 'modis' : 'occci'
   const otros = useMemo(() => {
@@ -268,6 +274,7 @@ export default function TendenciasSection() {
         </dl>
         {!significativa && <p className="tend-nota">The evidence is insufficient to establish a consistent trend in this period. This does not prove that no change exists.</p>}
 
+        <Robustez e={evidencia} />
         <p className="tend-nota">{variable === 'chl' ? 'Green' : 'Orange'}: yearly mean · Dashed white: Sen trend line. {ini}–{fi}, {unidad}.</p>
         <div className="tend-grafico" role="group" aria-label={`Yearly averages of ${nombreVariable} with the trend line`}>
           <ResponsiveContainer width="100%" height={300}>
@@ -282,7 +289,8 @@ export default function TendenciasSection() {
             </ComposedChart>
           </ResponsiveContainer>
         </div>
-        <details className="tend-data-table"><summary>View yearly values as a table</summary><div className="tabla-envoltura"><table><caption>{fuenteTexto} · {unidad}</caption><thead><tr><th scope="col">Year</th><th scope="col">Yearly mean</th><th scope="col">Sen line</th>{comparar && puedeComparar && <th scope="col">{FUENTES[otraFuente]}</th>}</tr></thead><tbody>{datosGrafico.map((p) => <tr key={p.x}><th scope="row">{p.x}</th><td>{nf(dec).format(p.valor)}</td><td>{p.sen == null ? 'Not available' : nf(dec).format(p.sen)}</td>{comparar && puedeComparar && <td>{p.otra == null ? 'Not available' : nf(dec).format(p.otra)}</td>}</tr>)}</tbody></table></div></details>
+        <details className="tend-data-table"><summary>View chart values</summary><div className="tabla-envoltura"><table><caption>{fuenteTexto} · {unidad}</caption><thead><tr><th scope="col">Year</th><th scope="col">Yearly mean</th><th scope="col">Unit</th><th scope="col">Sen line</th>{comparar && puedeComparar && <th scope="col">{FUENTES[otraFuente]}</th>}</tr></thead><tbody>{datosGrafico.map((p) => <tr key={p.x}><th scope="row">{p.x}</th><td>{p.valor}</td><td>{unidad}</td><td>{p.sen == null ? 'Not available' : nf(dec).format(p.sen)}</td>{comparar && puedeComparar && <td>{p.otra == null ? 'Not available' : nf(dec).format(p.otra)}</td>}</tr>)}</tbody></table></div></details>
+        <FichaEvidencia e={evidencia} />
         {comparar && puedeComparar && <div className="tend-comparacion">
           <p>Solid green: {FUENTES[fuenteActiva]}. Dotted blue: {FUENTES[otraFuente]}. Dashed white: selected source’s Sen line. Tests below use only shared years; the chart retains all available yearly means.</p>
           <div className="tend-estadisticas">{[[fuenteActiva, resComun], [otraFuente, resOtra]].map(([f, r]) => {
@@ -327,6 +335,7 @@ export default function TendenciasSection() {
           <details className="tend-data-table tend-sens-tabla"><summary>View period sensitivity as a table</summary><div className="tabla-envoltura"><table><caption>Start year sensitivity · ending in {fi}{excluirExtremos ? ' · extreme El Niño years excluded' : ''}</caption><thead><tr><th scope="col">From</th><th scope="col">Years</th><th scope="col">Sen slope / decade</th><th scope="col">p-value</th></tr></thead><tbody>{sens.map((s) => <tr key={s.inicio}><th scope="row">{s.inicio}</th><td>{s.n}</td><td>{nf(dec).format(s.pendiente * 10)} {unidad}</td><td>{textoP(s.p)}</td></tr>)}</tbody></table></div></details>
         </div>}
       </>)}
+      {datosListos && res === null && <><Robustez e={evidencia} /><FichaEvidencia e={evidencia} /></>}
       <p className="monitor-aviso"><strong>How to read it:</strong> the test uses yearly averages (a year counts only with enough months of data) and looks for a consistent rise or fall, not a straight line. The trend is the Theil–Sen slope. Records differ in length, so a result can change with the period or a different data product. Source: {fuenteTexto}.</p>
       <p className="tend-nota">Whole-year averages require at least 6 valid months; seasonal averages require 3 of 4 months. December belongs to its calendar year. These exploratory tests assume independent yearly observations and are not corrected for multiple comparisons. The regression t-test assumes independent, normally distributed residuals. Neither test establishes causation.</p>
       <details className="tend-fuentes"><summary>Data sources for this panel</summary><dl>

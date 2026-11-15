@@ -1,0 +1,11 @@
+.tendencias .evidencia-robustez,.tendencias .evidencia-ficha { margin:20px 0; padding:16px; border:1px solid #24507a; border-radius:6px; background:#071e33; color:#eaf3f5; min-width:0; }
+.tendencias .evidencia-tabla { overflow-x:auto; max-width:100%; }
+.tendencias .evidencia-tabla table { width:100%; border-collapse:collapse; font-size:13px; }
+.tendencias .evidencia-tabla th,.tendencias .evidencia-tabla td { padding:10px; text-align:left; border-bottom:1px solid #24507a; overflow-wrap:anywhere; min-width:90px; }
+.tendencias .evidencia-tabla small {display:block;}
+.tendencias .evidencia-ficha dl>div { margin:12px 0; }
+.tendencias .evidencia-ficha dt { font-weight:600; color:#8fe3f2; }
+.tendencias .evidencia-ficha dd { margin:0; overflow-wrap:anywhere; }
+.tendencias .evidencia-descargas { display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; }
+.tendencias .evidencia-ficha summary { cursor:pointer; }
+.tendencias .evidencia-tabla:focus-visible,.tendencias .evidencia-ficha :focus-visible { outline:2px solid #8fe3f2; outline-offset:3px; }
