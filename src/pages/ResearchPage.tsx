@@ -10,6 +10,7 @@ import { ExplorerProvider } from '../features/explorer/ExplorerContext'
 import { CargarAlVer } from '../components/ui/CargarAlVer'
 import FuentesSection from '../features/fuentes/FuentesSection'
 import AppShell from '../layouts/AppShell'
+import BiologiaResearch from '../features/explorer/components/relato/BiologiaResearch'
 
 // las secciones con gráficos se descargan cuando el usuario se acerca a ellas
 const InsightsSection = lazy(() => import('../features/insights/InsightsSection'))
@@ -55,7 +56,7 @@ function Research() {
               <h1 id="research-title">What the ocean records reveal</h1>
               <p>El Niño, phytoplankton and a changing sea. Explore what the evidence supports—and where it remains uncertain.</p>
               <nav className="research-nav" aria-label="Research sections">
-                <a href="#hallazgos">Findings</a><a href="#trends">Test a trend</a><a href="#cruceros">Anchoveta surveys</a><a href="#fuentes">Sources &amp; methods</a>
+                <a href="#hallazgos">Findings</a><a href="#trends">Test a trend</a><a href="#anchoveta-response">Anchoveta response</a><a href="#cruceros">Anchoveta surveys</a><a href="#fuentes">Sources &amp; methods</a>
               </nav>
               <div className="research-results">
                 <article><span>01 · SUPPORTED ASSOCIATION</span><h2>El Niño and Peru’s phytoplankton</h2><p>Warmer Niño 1+2 conditions are associated with lower modeled phytoplankton carbon and lower satellite chlorophyll in Chimbote and Callao.</p><a href="#hallazgos">Explore the evidence →</a></article>
@@ -90,6 +91,7 @@ function Research() {
             <CargarAlVer id="hallazgos" alto={2600}><InsightsSection /></CargarAlVer>
             <CargarAlVer id="eventos-nino" alto={760}><EventosNinoSection /></CargarAlVer>
             <CargarAlVer id={/^#nino-link-(sst|seaLevel|deepTemperature|deepOxygen|oxygen|phosphate|chlorophyll)$/.test(location.hash) ? location.hash.slice(1) : "physical-chain"} alto={1100}><PhysicalChainSection /></CargarAlVer>
+            <section className="seccion" id="anchoveta-response"><BiologiaResearch /></section>
             <CargarAlVer id="cruceros" alto={820}><CrucerosSection /></CargarAlVer>
             <CargarAlVer id="trends" alto={1100}><TendenciasSection /></CargarAlVer>
             <CargarAlVer id="trend-map" alto={900}><MapaTendencias /></CargarAlVer>

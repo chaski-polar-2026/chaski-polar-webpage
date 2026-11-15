@@ -38,7 +38,7 @@ export default function Relato() {
       <button type="button" role="tab" id="tab-datos" aria-selected={tab === 'datos'} aria-controls="panel-datos" tabIndex={tab === 'datos' ? 0 : -1} onClick={() => { if (panel.tipo === 'comparar') setPanel({ tipo: 'general' }); setTab('datos') }} onKeyDown={(e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); setTab('comparar'); document.getElementById('tab-comparar')?.focus() } }}>Data</button>
       <button type="button" role="tab" id="tab-comparar" aria-selected={tab === 'comparar'} aria-controls="panel-comparar" tabIndex={tab === 'comparar' ? 0 : -1} onClick={() => setTab('comparar')} onKeyDown={(e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); if (panel.tipo === 'comparar') setPanel({ tipo: 'general' }); setTab('datos'); document.getElementById('tab-datos')?.focus() } }}>Compare</button>
     </div>
-    <div id="panel-datos" role="tabpanel" aria-labelledby="tab-datos" hidden={tab !== 'datos'}>{tab === 'datos' && (section === 'anchoveta' ? <div className="relato-contenido" key={`biologia-${clave}`}><Biologia zona={zona} /></div> : <div className="relato-contenido" key={clave}>{vista}</div>)}</div>
+    <div id="panel-datos" role="tabpanel" aria-labelledby="tab-datos" hidden={tab !== 'datos'}>{tab === 'datos' && (section === 'anchoveta' ? <div className="relato-contenido"><Biologia zona={zona} /></div> : <div className="relato-contenido" key={clave}>{vista}</div>)}</div>
     <div id="panel-comparar" role="tabpanel" aria-labelledby="tab-comparar" hidden={tab !== 'comparar'}><ComparacionPesca /></div>
   </>
 }

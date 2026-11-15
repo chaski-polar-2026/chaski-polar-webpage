@@ -1,4 +1,6 @@
 import { useExplorer } from '../../ExplorerContext'
+import { useState } from 'react'
+import { useAcciones } from '../../hooks/useAcciones'
 import { useExplorerStore } from '../../store'
 import { esPeru, ZONA_CHIMBOTE } from '../../lib/modelo'
 import type { IdZona } from '../../lib/tipos'
@@ -23,21 +25,34 @@ export function rangosPeces(mes: number) {
 
 export default function Biologia({ zona }: { zona?: IdZona }) {
   const { modelo } = useExplorer()
+  const acciones = useAcciones()
+  const [especie, setEspecie] = useState('all')
   const month = useExplorerStore(s => s.month)
   const monitorZone = useExplorerStore(s => s.monitorZone)
-  const setZone = useExplorerStore(s => s.setMonitorZone)
   const z = zona && esPeru(zona) ? zona : monitorZone && esPeru(monitorZone) ? monitorZone : ZONA_CHIMBOTE
   const fecha = modelo.mes(month)
+  const peces = rangosPeces(fecha.mes).map(pez => {
+    const distancias = pez.rangos.map(r => {
+      const valor = modelo.valorSerie(z, r.variable, month)
+      if (valor == null || !Number.isFinite(valor)) return null
+      return Math.max(r.min - valor, 0, valor - r.max) / (r.max - r.min)
+    })
+    const distancia = distancias.length && distancias.every(d => d != null)
+      ? distancias.reduce<number>((suma, d) => suma + (d ?? 0), 0) / distancias.length : null
+    return { ...pez, distancia }
+  }).sort((a, b) => a.distancia == null ? (b.distancia == null ? 0 : 1) : b.distancia == null ? -1 : a.distancia - b.distancia)
   return <section className="peces-panel">
     <h2>Fish biological response</h2>
-    <p>Humboldt fish · conditions at the selected timeline month</p>
-    <label>Coastal zone <select value={z} onChange={e => setZone(e.target.value as IdZona)} disabled={!!zona && esPeru(zona)}>
+    <label>Coastal zone <select value={z} onChange={e => acciones.irAZona(e.target.value as IdZona)}>
       {modelo.ids.filter(esPeru).map(id => <option key={id} value={id}>{modelo.zona(id).nombre}</option>)}
     </select></label>
     <p><strong>{new Date(Date.UTC(fecha.anio, fecha.mes, 1)).toLocaleDateString('en', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</strong> · {modelo.zona(z).nombre}</p>
-    <p className="nota">Each band shows a reference range and the selected value. Within range means compatible, not a catch forecast. All fish are shown without ranking.</p>
-    <div className="peces-lista">{rangosPeces(fecha.mes).map(pez => <article key={pez.nombre}>
-      <h3>{pez.nombre}</h3><i>{pez.ciencia}</i>
+    <p className="nota">Choose a zone here or click a coastal location on the globe. Use the timeline to explore another month.</p>
+    <p className="nota">Fish are ordered by average distance outside their available reference ranges, scaled by each range's width. Values inside a range tie; fish with missing measurements or ranges appear last. Ranges differ by species, so this is a rough comparison, not a catch forecast.</p>
+    <label>Fish <select value={especie} onChange={e => setEspecie(e.target.value)}><option value="all">All fish</option>{peces.map(pez => <option key={pez.nombre} value={pez.nombre}>{pez.nombre}</option>)}</select></label>
+    {/* TODO: remove with reference ranges on publishing — el filtro anterior se retiró de la interfaz. */}
+    <div className="peces-lista">{peces.filter(pez => especie === 'all' || pez.nombre === especie).map(pez => <article key={pez.nombre}>
+      <div className="pez-titulo"><h3>{pez.nombre}</h3><i>{pez.ciencia}</i></div>
       {pez.rangos.map(r => {
         const dato = modelo.valorSerie(z, r.variable, month)
         const x = dato != null && Number.isFinite(dato) ? dato : null
