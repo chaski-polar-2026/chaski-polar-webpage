@@ -56,6 +56,7 @@ export default function MenuCardumen({ historia, cardumen, escena, rapidez, alCa
           <div className="menu-carta-acciones">
             <button type="button" className="juego-caja principal" onClick={historia}>Start the journey <span aria-hidden="true">→</span></button>
             <button type="button" className="juego-caja" onClick={cardumen}>Go to the anchoveta campaign</button>
+            <a className="juego-caja" href="/extra-game/juego.html">Extra game: From Ice to Anchovy <span aria-hidden="true">↗</span></a>
           </div>
           <fieldset className="menu-carta-ritmo">
             <legend>Expedition pace</legend>

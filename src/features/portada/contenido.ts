@@ -67,7 +67,7 @@ export const SECCIONES: readonly Seccion[] = [
     de: 0.85, a: 1.05,
     titulo: "200 m · The seafloor",
     texto: "What changes, where, and how much? Explore the satellite record and test whether a trend is significant.",
-    botones: [{ texto: "Enter the explorer →", accion: "entrar" }, { texto: "Play Cardumen", href: "/juego" }],
+    botones: [{ texto: "Enter the explorer →", accion: "entrar" }, { texto: "Play Cardumen", href: "/juego" }, { texto: "Extra game", href: "/extra-game/juego.html" }],
   },
 ];
 
