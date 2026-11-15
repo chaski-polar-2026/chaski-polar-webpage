@@ -95,7 +95,7 @@ export default function AboutPage() {
 
       <section className="seccion pescadores" id="games" aria-labelledby="t-games">
         <h2 id="t-games">Games</h2>
-        <p>The main game, <a href="/juego">Cardumen: the anchoveta saga</a>, is built for this project. The extra game, <a href="/extra-game/juego.html">From Ice to Anchovy</a>, is a small pixel-art game that was made before the event and adapted to English and to this site. It shows associations, not proven causes.</p>
+        <p>The main game, <a href="/juego">Cardumen: the anchoveta saga</a>, is built for this project. The extra game, <a href="/extra-game/juego.html">From Ice to Anchovy</a>, is a small pixel-art game, adapted to English and integrated into this site for the event. It shows associations, not proven causes.</p>
       </section>
 
       <section className="seccion pescadores" id="credits" aria-labelledby="t-credits">
