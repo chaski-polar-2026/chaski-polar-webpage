@@ -15,10 +15,10 @@ const guardar = () => { try { localStorage.setItem(CLAVE, '1') } catch { /* sin 
 /** Panel translúcido con el propósito del explorador: sale la primera visita y se cierra con un clic. */
 export default function Proposito() {
   const [abierto, setAbierto] = useState(() => !leer())
-  const cerrar = () => { guardar(); setAbierto(false) }
+  const cerrar = () => { guardar(); setAbierto(false); window.dispatchEvent(new Event('proposito-cerrado')) }
   useEffect(() => {
     const abrir = () => setAbierto(true)
-    const tecla = (e: KeyboardEvent) => { if (e.key === 'Escape') cerrar() }
+    const tecla = (e: KeyboardEvent) => { if (e.key === 'Escape' && document.querySelector('.proposito')) { e.stopImmediatePropagation(); cerrar() } }
     window.addEventListener('abrir-proposito', abrir)
     document.addEventListener('keydown', tecla)
     return () => { window.removeEventListener('abrir-proposito', abrir); document.removeEventListener('keydown', tecla) }
@@ -28,7 +28,7 @@ export default function Proposito() {
     <div className="proposito" role="dialog" aria-modal="false" aria-labelledby="proposito-titulo" onClick={cerrar}>
       <div className="proposito-cabecera">
         <h2 id="proposito-titulo">What is this page for?</h2>
-        <button type="button" className="proposito-cerrar" onClick={cerrar} aria-label="Close this panel">Got it ✕</button>
+        <button type="button" className="proposito-cerrar" onClick={(e) => { e.stopPropagation(); cerrar() }} aria-label="Close this panel">Got it ✕</button>
       </div>
       <dl>
         {BLOQUES.map((b) => <div key={b.titulo}><dt>{b.titulo}</dt><dd>{b.texto}</dd></div>)}

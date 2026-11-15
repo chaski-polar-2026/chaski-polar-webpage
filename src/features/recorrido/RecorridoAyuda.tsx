@@ -32,11 +32,21 @@ export default function RecorridoAyuda() {
  }
  useEffect(() => {
   try { if (localStorage.getItem(CLAVE)) return } catch { /* Continue without persistence. */ }
-  const iniciar = () => { if (objetivo(0)) { abrir(); return true } return false }
-  if (iniciar()) return
-  const observer = new MutationObserver(() => { if (iniciar()) observer.disconnect() })
+  let iniciado = false
+  let propositoVisto = false
+  try { propositoVisto = localStorage.getItem('chaski-proposito-visto') === '1' } catch { /* The close event also works without storage. */ }
+  const iniciar = () => {
+   if (iniciado || !propositoVisto || document.querySelector('.proposito') || !objetivo(0)) return
+   iniciado = true; abrir(); observer.disconnect(); window.removeEventListener('proposito-cerrado', alCerrar)
+  }
+  const alCerrar = () => { propositoVisto = true; window.setTimeout(iniciar, 0) }
+  const observer = new MutationObserver(iniciar)
   observer.observe(document.body, {childList:true, subtree:true})
-  return () => observer.disconnect()
+  window.addEventListener('proposito-cerrado', alCerrar)
+  iniciar()
+  // Recover if the purpose panel did not mount or its close event was missed.
+  const respaldo = window.setTimeout(() => { if (!document.querySelector('.proposito')) { propositoVisto = true; iniciar() } }, 5000)
+  return () => { observer.disconnect(); clearTimeout(respaldo); window.removeEventListener('proposito-cerrado', alCerrar) }
  }, [])
  const abierto = paso != null || ayuda
  useEffect(() => {
