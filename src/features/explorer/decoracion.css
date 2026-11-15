@@ -1,0 +1,50 @@
+/* Decoración del explorador: solo apariencia (bordes, brillos, acentos). No cambia tamaños ni posición.
+   Usa los tokens compartidos de src/styles/tokens.css. */
+
+/* Paneles de pestañas: borde con degradado y halo tenue */
+.relato-tabs {
+  border-color: transparent;
+  background: linear-gradient(rgba(7, 30, 51, .78), rgba(7, 30, 51, .78)) padding-box,
+              linear-gradient(135deg, var(--cp-cyan), rgba(36, 80, 122, .35) 55%, rgba(143, 227, 242, .5)) border-box;
+  box-shadow: 0 0 18px rgb(99 205 232 / .10);
+}
+.relato-tabs button { transition: background-color var(--cp-duration) var(--cp-ease), color var(--cp-duration) var(--cp-ease), box-shadow var(--cp-duration) var(--cp-ease); letter-spacing: .01em; }
+.relato-tabs button[aria-selected="true"] { background: linear-gradient(180deg, #b9f0f9, var(--cp-cyan)); box-shadow: 0 0 14px rgb(143 227 242 / .35); }
+.relato-tabs button:hover:not([aria-selected="true"]) { box-shadow: inset 0 0 0 1px rgb(143 227 242 / .35); }
+
+/* Títulos del panel con acento angulado */
+.relato h2 { position: relative; padding-bottom: 10px; }
+.relato h2::after { content: ""; position: absolute; left: 0; bottom: 0; width: 56px; height: 2px; background: linear-gradient(90deg, var(--cp-cyan), transparent); }
+
+/* Cifras clave: barra de acento a la izquierda */
+.cifra { position: relative; padding-left: 12px; }
+.cifra::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 2px; border-radius: 2px; background: linear-gradient(180deg, var(--cp-cyan), transparent); }
+
+/* Chips y controles pequeños */
+.chip, .control-pill { transition: background-color var(--cp-duration) var(--cp-ease), border-color var(--cp-duration) var(--cp-ease), box-shadow var(--cp-duration) var(--cp-ease); }
+.chip:hover, .control-pill:hover { box-shadow: 0 0 12px rgb(143 227 242 / .25); }
+.chip[aria-pressed="true"], .control-pill[aria-pressed="true"] { box-shadow: 0 0 14px rgb(143 227 242 / .4); }
+
+/* Botones de vista y de zonas: esquina cortada (misma familia que la portada) */
+.view-toggle button, .regiones .region { position: relative; transition: background-color var(--cp-duration) var(--cp-ease), box-shadow var(--cp-duration) var(--cp-ease), transform var(--cp-duration) var(--cp-ease); }
+.view-toggle button:hover, .regiones .region:hover { box-shadow: 0 0 14px rgb(143 227 242 / .28); transform: translateY(-1px); }
+.view-toggle button:active, .regiones .region:active { transform: translateY(0); }
+.view-toggle button[aria-pressed="true"], .regiones .region[aria-current="true"], .regiones .region[aria-pressed="true"] { box-shadow: 0 0 16px rgb(143 227 242 / .4); }
+.regiones-titulo { display: flex; align-items: center; gap: 8px; }
+.regiones-titulo::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgb(143 227 242 / .5), transparent); }
+
+/* Barra del globo */
+.globe-toolbar { border-radius: var(--cp-radius); box-shadow: 0 0 20px rgb(99 205 232 / .08); }
+
+/* Fichas y paneles de contenido */
+.peces-panel article, .comparacion-resultados, .comparacion-conclusion, .dato-clave {
+  border-color: transparent;
+  background: linear-gradient(rgba(7, 30, 51, .6), rgba(7, 30, 51, .6)) padding-box,
+              linear-gradient(135deg, rgba(143, 227, 242, .6), rgba(36, 80, 122, .25) 60%, rgba(143, 227, 242, .35)) border-box;
+  border-width: 1px; border-style: solid; border-radius: var(--cp-radius);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relato-tabs button, .chip, .control-pill, .view-toggle button, .regiones .region { transition: none; }
+  .view-toggle button:hover, .regiones .region:hover { transform: none; }
+}
