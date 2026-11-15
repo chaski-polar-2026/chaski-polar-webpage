@@ -1,0 +1,10 @@
+.nino-relaciones { margin-block:24px; }
+.nino-tarjetas { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.nino-tarjetas article,.nino-estado { padding:20px; border:1px solid #24507a; border-radius:6px; background:#071e33; color:#eaf3f5; min-width:0; overflow-wrap:anywhere; scroll-margin-top:90px; }
+.nino-tarjetas h3,.nino-estado h3 { color:#8fe3f2; }
+.nino-tarjetas dl { display:grid; grid-template-columns:1fr auto; gap:6px 16px; }
+.nino-tarjetas dd { margin:0; font-variant-numeric:tabular-nums; }
+.nino-insignia { display:block; margin:12px 0; padding:10px 12px; border:1px solid #24507a; border-radius:6px; background:#071e33; color:#8fe3f2; font-size:14px; overflow-wrap:anywhere; }
+.nino-relaciones a { color:#8fe3f2; }
+.nino-relaciones :focus-visible,.nino-insignia:focus-visible { outline:2px solid #8fe3f2; outline-offset:3px; }
+@media(max-width:640px){.nino-tarjetas { grid-template-columns:1fr; }}
