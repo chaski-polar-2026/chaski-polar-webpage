@@ -1,14 +1,13 @@
 import datos from './perspectiva_acierto.json'
 import './prediccion.css'
 
-type Fila = { variable: string; zone: string; horizon_months: number; model: string; mae_improvement: number; ci95: [number, number]; status: string }
 const NOMBRES: Record<string, string> = { paita: 'Paita', chimbote: 'Chimbote', callao: 'Callao', pisco: 'Pisco', ilo: 'Ilo' }
 const HORIZONTES = [1, 2, 3]
 const pct = (v: number) => `${v >= 0 ? '+' : '−'}${Math.abs(v * 100).toFixed(0)}%`
 
 /** Habilidad retrospectiva del pronóstico de temperatura superficial; no es un pronóstico de pesca. */
 export default function PerspectivaTemperatura() {
-  const filas = (datos.results as Fila[]).filter((f) => f.variable === 'SST' && f.model === 'nino')
+  const filas = datos.results.filter((f) => f.variable === 'SST' && f.model === 'nino')
   const zonas = Object.keys(NOMBRES).filter((z) => filas.some((f) => f.zone === z))
   return (
     <section className="seccion prediccion" id="temperature-outlook" aria-labelledby="t-temp-outlook">
