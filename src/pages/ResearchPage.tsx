@@ -66,7 +66,7 @@ function Research() {
             </section>
 
             <details className="seccion pregunta research-question"><summary>Research question and scope</summary>
-              <blockquote>How are changes in Antarctic phytoplankton associated with marine life in Peru?</blockquote>
+              <blockquote>Do changes in the Southern Ocean show up in the Peruvian sea? What the tests found.</blockquote>
               <div className="cuerpo">
                 <p>
                   <strong>Phytoplankton</strong> are microscopic algae floating in the sea. They support the food web: zooplankton eat them, anchoveta eat zooplankton, and birds, sea lions and fisheries depend on anchoveta.

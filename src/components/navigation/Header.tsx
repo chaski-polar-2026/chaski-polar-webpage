@@ -48,7 +48,7 @@ export default function Header() {
           </picture>
         </Link>
         <div className="titulo-barra hidden truncate font-display text-[1.05rem] font-normal text-ice-300 lg:block" role="heading" aria-level={1}>
-          From the Antarctic to the Peruvian sea
+          Is the change real? Ocean trends off Peru, tested
         </div>
       </div>
       <nav className="app-nav pointer-events-auto ml-auto flex gap-1 max-sm:[&>a]:px-2" aria-label="Sections">
