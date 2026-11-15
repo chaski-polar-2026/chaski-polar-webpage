@@ -117,7 +117,7 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
     };
 
     // letreros
-    for (const [texto, lat, lon] of [["Antártida", -67, -72], ["Chile", -32, -66], ["Perú", -10, -74], ["Océano Pacífico", -30, -95]] as const) {
+    for (const [texto, lat, lon] of [["Antarctica", -67, -72], ["Chile", -32, -66], ["Peru", -10, -74], ["Pacific Ocean", -30, -95]] as const) {
       const s = new THREE.Sprite(sinContorno(new THREE.SpriteMaterial({ map: textura(dibujarLetrero(texto)), transparent: true, depthWrite: false })));
       s.scale.set(10, 2.5, 1);
       s.position.set(aX(lon), 2.5, aZ(lat));
@@ -132,7 +132,7 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
     const naraVoxel = crearPersonajeVoxel(escena, sprite("nara", dibujarNara), 0.12, 2);
     nara.sprite.visible = false;
     nara.posicion.set(aX(INICIO.lon), 1.6, aZ(INICIO.lat));
-    const seguidor = crearSeguidor(camara, renderer.domElement, nara.posicion, { distancia: 26, giro: 0.6, inclinacionVertical: 0 });
+    const seguidor = crearSeguidor(camara, renderer.domElement, nara.posicion, { distancia: 26, giro: 0.6, inclinacionVertical: 0, orientacionFija: true });
 
     const vel = new THREE.Vector3(), mov = new THREE.Vector3(), siguiente = new THREE.Vector3();
     let grasa = 1, descanso = 0, tEstado = 0, fin = false, flechasPuestas = false, puntoSig = 0;

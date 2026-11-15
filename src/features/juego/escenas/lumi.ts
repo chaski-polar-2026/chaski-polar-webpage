@@ -1,5 +1,5 @@
 /* Escena de Lumi, el fitoplancton: el agua antártica bajo el hielo marino que se abre en primavera.
-   Se ve de lado, como un juego en 2D: A/D a los lados, W/S (o Q/E) arriba y abajo.
+   WASD controla el plano horizontal; Espacio/Q y C/E controlan la altura.
    Lumi necesita luz (arriba, fuera de la sombra del hielo) y nutrientes (suben desde abajo) a la vez.
    Como toda diatomea, se hunde poco a poco si no sube. Al llenarse se divide; con cada división
    avanza la primavera y el hielo se derrite un poco. Meta: DIVISIONES_META divisiones. */
@@ -86,12 +86,11 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
       return r;
     });
 
-    // fitoplancton de fondo: otras células que flotan lejos (decoración)
+    // Partículas verdes recogibles: recurso ilustrativo del juego, no células reales.
     const dibujoFito = sprite("fito", dibujarFito);
     const fondoFito = Array.from({ length: 16 }, () => {
       const p = crearPersonaje(escena, dibujoFito, { ancho: 0.9, alto: 0.9 });
-      p.posicion.set(azar(-X - 6, X + 6), azar(-9, -1), azar(-12, -6));
-      (p.sprite.material as THREE.SpriteMaterial).opacity = 0.55;
+      p.posicion.set(azar(-X, X), azar(Y_MIN, -3), azar(0, Z));
       return { p, fase: azar(0, 6) };
     });
     // nieve marina
@@ -107,7 +106,7 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
     lumi.posicion.set(-4.5, -6, 0); // en un claro entre las placas de hielo
     const halo = new THREE.Sprite(sinContorno(new THREE.SpriteMaterial({ map: texturaHalo(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })));
     escena.add(halo);
-    const seguidor = crearSeguidor(camara, renderer.domElement, lumi.posicion, { distancia: 14, giro: 0.5, inclinacion: 1.5, inclinacionLimites: [1.35, 1.75], inclinacionVertical: 0 }); // casi de lado: la cámara queda bajo el agua
+    const seguidor = crearSeguidor(camara, renderer.domElement, lumi.posicion, { distancia: 14, giro: 0.5, inclinacion: 1.5, inclinacionLimites: [1.35, 1.75], inclinacionVertical: 0, orientacionFija: true });
     const dibujo = sprite("lumi", dibujarLumi);
     const hijas: Personaje[] = [];
 
@@ -117,10 +116,10 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
       const p = crearPersonaje(escena, dibujoChispa, { ancho: 0.8, alto: 0.8 });
       p.sprite.visible = false;
       const voxel = crearPersonajeVoxel(escena, dibujoChispa, 0.04, 1);
-      p.posicion.set(azar(-X, X), azar(Y_MIN, -3), azar(-0.3, 0.3));
+      p.posicion.set(azar(-X, X), azar(Y_MIN, -3), azar(-Z, Z));
       return { p, voxel, vel: azar(0.5, 1.1), fase: azar(0, 6) };
     });
-    const renacer = (ch: (typeof chispas)[number]) => ch.p.posicion.set(azar(-X, X), Y_MIN, azar(-0.3, 0.3));
+    const renacer = (ch: (typeof chispas)[number]) => ch.p.posicion.set(azar(-X, X), Y_MIN, azar(-Z, Z));
 
     const vel = new THREE.Vector3(), mov = new THREE.Vector3(), quieto = new THREE.Vector3(), objetivo = new THREE.Vector3();
     const estado: EstadoLumi = { luz: 1, nutrientes: 0.3, crecimiento: 0, divisiones: 0, bajoHielo: false };
@@ -131,9 +130,9 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
       actualizar(dt, t) {
         const detenido = pausa() || fin;
         const d = detenido ? { x: 0, y: 0 } : entrada.direccion();
-        // A/D a los lados; W/S (o Q/E) arriba y abajo; sin nadar, Lumi se hunde
-        const subir = THREE.MathUtils.clamp(d.y + (detenido ? 0 : entrada.vertical()), -1, 1);
-        mov.set(0, 0, 0).addScaledVector(seguidor.derecha, d.x);
+        // El plano horizontal sigue la cámara, como en los demás niveles.
+        const subir = detenido ? 0 : entrada.vertical();
+        mov.set(0, 0, 0).addScaledVector(seguidor.derecha, d.x).addScaledVector(seguidor.adelante, d.y);
         mov.y = subir;
         if (mov.lengthSq() > 1) mov.normalize();
         mov.multiplyScalar(VELOCIDAD);
@@ -142,7 +141,7 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
         lumi.posicion.addScaledVector(vel, dt);
         lumi.posicion.x = THREE.MathUtils.clamp(lumi.posicion.x, -X, X);
         lumi.posicion.y = THREE.MathUtils.clamp(lumi.posicion.y + Math.sin(t * 1.3) * 0.004, Y_MIN, Y_MAX);
-        lumi.posicion.z += (0 - lumi.posicion.z) * Math.min(1, dt * 2); // se mantiene en el plano de la escena
+        lumi.posicion.z = THREE.MathUtils.clamp(lumi.posicion.z, -Z, Z);
         seguidor.seguir(lumi.posicion);
         // crece a la vista antes de dividirse; al dividirse da un pequeño salto
         estallido = Math.max(0, estallido - dt * 3);
@@ -185,7 +184,17 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
             renacer(ch);
           }
         }
-        for (const f of fondoFito) { f.p.posicion.y += Math.sin(t * 0.6 + f.fase) * 0.003; f.p.sprite.material.rotation = Math.sin(t * 0.4 + f.fase) * 0.3; }
+        for (const f of fondoFito) {
+          if (!detenido) {
+            f.p.posicion.y += Math.sin(t * 0.6 + f.fase) * 0.003;
+            if (f.p.posicion.distanceTo(lumi.posicion) < 1.3 * lumi.escala) {
+              estado.nutrientes = Math.min(1, estado.nutrientes + NUTRIENTES_POR_CHISPA);
+              sonar("comer");
+              f.p.posicion.set(azar(-X, X), azar(Y_MIN, -3), azar(0, Z));
+            }
+          }
+          f.p.sprite.material.rotation = Math.sin(t * 0.4 + f.fase) * 0.3;
+        }
         nieve.position.y = -((t * 0.2) % 2);
 
         if (!detenido) {
@@ -209,7 +218,7 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
         // las hijas acompañan a Lumi en su mismo plano
         hijas.forEach((h, k) => {
           const a = t * 0.6 + (k * Math.PI * 2) / Math.max(1, hijas.length);
-          h.posicion.lerp(objetivo.set(lumi.posicion.x + Math.cos(a) * 2.4, lumi.posicion.y + Math.sin(a) * 1.4, -0.4), Math.min(1, dt * 2));
+          h.posicion.lerp(objetivo.set(lumi.posicion.x + Math.cos(a) * 2.4, lumi.posicion.y + Math.sin(a) * 1.4, lumi.posicion.z - 0.4), Math.min(1, dt * 2));
           h.animar(t, vel, seguidor.derecha, VELOCIDAD);
         });
 

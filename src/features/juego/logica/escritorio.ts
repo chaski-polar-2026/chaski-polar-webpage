@@ -5,7 +5,7 @@
 import type { Mar } from "../motor/mar";
 import { anioDelMar, diagnosticar, type AnioDelMar } from "./cardumen";
 
-const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const MESES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export interface FilaReporte { mes: string; comida: number | null; nino: number | null }
 
@@ -26,9 +26,9 @@ export interface Expediente {
 export type Bandeja = "nino" | "normal" | "variabilidad" | "tendencia";
 export const BANDEJAS: { id: Bandeja; texto: string }[] = [
   { id: "nino", texto: "El Niño" },
-  { id: "normal", texto: "Año normal" },
-  { id: "variabilidad", texto: "Variabilidad" },
-  { id: "tendencia", texto: "Tendencia" },
+  { id: "normal", texto: "Normal year" },
+  { id: "variabilidad", texto: "Variability" },
+  { id: "tendencia", texto: "Trend" },
 ];
 
 export interface Turno {
@@ -50,14 +50,14 @@ function azarDe(semilla: number) {
 }
 
 const pct = (x: number) => `${Math.round(x * 100)} %`;
-const signo = (x: number) => `${x > 0 ? "+" : x < 0 ? "−" : ""}${Math.abs(x).toFixed(1).replace(".", ",")} °C`;
+const signo = (x: number) => `${x > 0 ? "+" : x < 0 ? "−" : ""}${Math.abs(x).toFixed(1)} °C`;
 
 const REGLAS = [
-  "Toda cifra de un expediente debe coincidir con el Reporte satelital (se acepta ±10 puntos). Si no coincide, se rechaza.",
-  "Temporada de pesca: si la comida de la costa central promedia menos de 50 % entre abril y julio, se deniega (veda).",
-  "El Niño: hay El Niño si el índice Niño 1+2 llega a +1 °C o más y la comida cae.",
-  "Que dos cosas pasen juntas no prueba que una cause la otra. Ningún dato del reporte muestra que la Antártida cause cambios en el Perú.",
-  "Una tendencia necesita muchos años de datos. Desde 1998 la clorofila frente al Perú no muestra tendencias significativas.",
+  "Every figure in a file must match the satellite report (±10 points allowed). Reject figures that do not match.",
+  "Fishing season: if food on the central coast averages below 50% from April through July, deny it (fishing ban).",
+  "El Niño: the game identifies El Niño if the Niño 1+2 index reaches +1 °C or more and food falls.",
+  "Two things happening together do not prove causation. No data in the report show that Antarctica causes changes in Peru.",
+  "A trend requires many years of data. Since 1998 chlorophyll off Peru shows no significant trends.",
 ];
 
 export function crearTurno(mar: Mar, anio: number, meses: number, generacion: number): Turno {
@@ -78,12 +78,12 @@ export function crearTurno(mar: Mar, anio: number, meses: number, generacion: nu
   if (temporada.length) {
     const prom = temporada.reduce((a, b) => a + b, 0) / temporada.length;
     expedientes.push({
-      id: "flota", tipo: "solicitud", remitente: "Flota Norte-Centro",
-      titulo: `Solicitud de temporada · abril a julio de ${anio}`,
-      cuerpo: `Solicitamos abrir la temporada de pesca de anchoveta de abril a julio de ${anio}. Según nuestros capitanes, «el mar está como siempre».`,
-      sellos: { si: "APROBADO", no: "DENEGADO" },
+      id: "flota", tipo: "solicitud", remitente: "North-Central Fleet",
+      titulo: `Season request · April to July ${anio}`,
+      cuerpo: `We request opening the anchoveta fishing season from April to July ${anio}. Our captains say “the sea is as usual”.`,
+      sellos: { si: "APPROVED", no: "DENIED" },
       correcta: prom >= 0.5 ? "si" : "no",
-      explicacion: `Entre abril y julio la comida de la costa central promedió ${pct(prom)}. ${prom >= 0.5 ? "Era suficiente: no correspondía veda." : "Menos de 50 %: correspondía veda."}`,
+      explicacion: `From April to July food on the central coast averaged ${pct(prom)}. ${prom >= 0.5 ? "That was sufficient: no fishing ban was required." : "Below 50%: a fishing ban was required."}`,
     });
   }
 
@@ -95,12 +95,12 @@ export function crearTurno(mar: Mar, anio: number, meses: number, generacion: nu
     const falsa = azar() < 0.5;
     const citada = falsa ? (real < 0.6 ? real + 0.45 + azar() * 0.2 : real - 0.4) : real + (azar() - 0.5) * 0.08;
     expedientes.push({
-      id: "prensa-cifra", tipo: "prensa", remitente: "Diario El Litoral",
-      titulo: "Nota de prensa para verificar",
-      cuerpo: `«En ${elegido.mes} de ${anio} el fitoplancton de la costa central llegó a ${pct(Math.max(0.05, citada))} de lo normal», afirma la nota.`,
-      sellos: { si: "RESPALDADO", no: "RECHAZADO" },
+      id: "prensa-cifra", tipo: "prensa", remitente: "El Litoral newspaper",
+      titulo: "Press report to verify",
+      cuerpo: `“In ${elegido.mes} ${anio}, phytoplankton on the central coast reached ${pct(Math.max(0.05, citada))} of normal,” the report says.`,
+      sellos: { si: "SUPPORTED", no: "REJECTED" },
       correcta: falsa ? "no" : "si",
-      explicacion: `El Reporte satelital marca ${pct(real)} en ${elegido.mes}. ${falsa ? "La nota usaba una cifra que no coincide." : "La cifra de la nota coincidía."}`,
+      explicacion: `The satellite report shows ${pct(real)} in ${elegido.mes}. ${falsa ? "The report used a figure that does not match." : "The figure in the report matched."}`,
     });
   }
 
@@ -111,28 +111,28 @@ export function crearTurno(mar: Mar, anio: number, meses: number, generacion: nu
   };
   if (azar() < 0.5) {
     expedientes.push({
-      id: "causa-nino", tipo: "causa", remitente: "Consultora OceanData",
-      titulo: "Informe técnico",
-      cuerpo: `«La caída del fitoplancton frente a Chimbote en ${anio} se asocia a El Niño».`,
-      sellos: { si: "RESPALDADO", no: "NO DEMOSTRADO" },
+      id: "causa-nino", tipo: "causa", remitente: "OceanData consultants",
+      titulo: "Technical report",
+      cuerpo: `“The phytoplankton decline off Chimbote in ${anio} is associated with El Niño.”`,
+      sellos: { si: "SUPPORTED", no: "NOT PROVEN" },
       correcta: diag === "nino" ? "si" : "no",
-      explicacion: diag === "nino" ? `El Niño 1+2 llegó a ${signo(resumen.ninoMax ?? 0)} y la comida cayó: el reporte lo respalda.` : `El Niño 1+2 no pasó de +1 °C con caída de comida: el reporte no lo respalda.`,
+      explicacion: diag === "nino" ? `Niño 1+2 reached ${signo(resumen.ninoMax ?? 0)} and food fell: the report supports this.` : `Niño 1+2 did not exceed +1 °C alongside falling food: the report does not support this.`,
     });
   } else {
     const p = zonas("paita"), c = zonas("callao");
     expedientes.push({
-      id: "causa-zonas", tipo: "causa", remitente: "Gremio de pescadores artesanales",
-      titulo: "Carta",
-      cuerpo: `«Este año a Paita le fue mejor que a Callao: allá hubo más comida para la anchoveta».`,
-      sellos: { si: "RESPALDADO", no: "NO DEMOSTRADO" },
+      id: "causa-zonas", tipo: "causa", remitente: "Artisanal fishers’ association",
+      titulo: "Letter",
+      cuerpo: `“Paita did better than Callao this year: there was more food for anchoveta there.”`,
+      sellos: { si: "SUPPORTED", no: "NOT PROVEN" },
       correcta: p > c ? "si" : "no",
-      explicacion: `Comida promedio del año: Paita ${pct(p)}, Callao ${pct(c)}.`,
+      explicacion: `Average food this year: Paita ${pct(p)}, Callao ${pct(c)}.`,
     });
   }
   const trampa = azar() < 0.5
-    ? { remitente: "Revista Mar Abierto", cuerpo: `«El deshielo antártico causó la caída de la anchoveta en ${anio}».`, explicacion: "Nada en el reporte muestra que la Antártida cause cambios en el Perú. Que algo coincida no prueba la causa." }
-    : { remitente: "Programa radial Mar y Pesca", cuerpo: "«El mar peruano se empobrece un poco cada año: es una tendencia».", explicacion: "Un año no muestra una tendencia; desde 1998 la clorofila frente al Perú no tiene una tendencia significativa." };
-  expedientes.push({ id: "trampa", tipo: "prensa", titulo: "Afirmación pública", sellos: { si: "RESPALDADO", no: "NO DEMOSTRADO" }, correcta: "no", ...trampa });
+    ? { remitente: "Mar Abierto magazine", cuerpo: `“Antarctic ice melt caused the anchoveta decline in ${anio}.”`, explicacion: "Nothing in the report shows that Antarctica causes changes in Peru. Coincidence does not prove causation." }
+    : { remitente: "Mar y Pesca radio show", cuerpo: "“The Peruvian sea gets a little poorer each year: it is a trend.”", explicacion: "One year does not show a trend; since 1998 chlorophyll off Peru has no significant trend." };
+  expedientes.push({ id: "trampa", tipo: "prensa", titulo: "Public claim", sellos: { si: "SUPPORTED", no: "NOT PROVEN" }, correcta: "no", ...trampa });
 
   // los papeles llegan desordenados
   for (let i = expedientes.length - 1; i > 0; i--) { const j = Math.floor(azar() * (i + 1)); [expedientes[i], expedientes[j]] = [expedientes[j]!, expedientes[i]!]; }

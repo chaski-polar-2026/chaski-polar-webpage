@@ -17,22 +17,22 @@ export default function GuiaEscritorio({ paso, hayPlan, alPaso, alCerrar, alMost
   paso: number; hayPlan: boolean; alPaso: (n: number) => void; alCerrar: () => void; alMostrar: (id: ReferenciaGuia) => void
 }) {
   const pasos = [
-    { titulo: 'Consulta antes de decidir', texto: 'El Manual explica las reglas. El Reporte satelital contiene los datos para comprobar cada afirmación. Puedes mover los papeles para leerlos juntos.', accion: 'reporte' as const, boton: 'Ver el reporte' },
-    { titulo: 'Selecciona y sella un expediente', texto: 'Elige una solicitud, carta o nota de prensa y después usa el sello verde o rojo. Los nombres del sello cambian según el documento. El Manual y el Reporte no se sellan.', accion: 'expediente' as const, boton: 'Elegir un expediente' },
-    { titulo: 'Archiva solo la carpeta del año', texto: 'No hay que meter todos los papeles en bandejas. La Carpeta resume el año: arrástrala a la categoría que corresponda. También puedes seleccionarla y tocar una bandeja.', accion: 'carpeta' as const, boton: 'Seleccionar la carpeta' },
-    { titulo: hayPlan ? 'Prepara la siguiente generación' : 'Revisa lo que queda', texto: hayPlan ? 'En el Plan, elige una estrategia y pulsa Firmar. Cada estrategia tiene una ventaja y un costo; revisa el año antes de elegir.' : 'Este es el último año de la campaña. No hay un plan siguiente que firmar: revisa los expedientes y la carpeta.', accion: hayPlan ? 'plan' as const : 'manual' as const, boton: hayPlan ? 'Ver el plan' : 'Ver el manual' },
-    { titulo: 'Entrega el turno completo', texto: 'Sella todos los expedientes, archiva la carpeta y firma el plan si lo hay. El contador de pendientes indica lo que falta. Entregar se activa al terminar; después podrás ver tus aciertos y citaciones.', accion: 'manual' as const, boton: 'Consultar el manual' },
+    { titulo: 'Check before deciding', texto: 'The manual explains the rules. The satellite report contains the data to check each claim. Move papers to read them together.', accion: 'reporte' as const, boton: 'View report' },
+    { titulo: 'Select and stamp a file', texto: 'Choose a request, letter or press report, then use the green or red stamp. Stamp labels depend on the document. Do not stamp the manual or report.', accion: 'expediente' as const, boton: 'Choose a file' },
+    { titulo: 'File only the year folder', texto: 'You do not need to file every paper. The folder summarizes the year: drag it to the matching category, or select it and tap a tray.', accion: 'carpeta' as const, boton: 'Select folder' },
+    { titulo: hayPlan ? 'Prepare the next generation' : 'Review what remains', texto: hayPlan ? 'In the plan, choose a strategy and press Sign. Each has a benefit and a cost; review the year before choosing.' : 'This is the final year of the campaign. There is no next plan to sign: review the files and folder.', accion: hayPlan ? 'plan' as const : 'manual' as const, boton: hayPlan ? 'View plan' : 'View manual' },
+    { titulo: 'Submit the completed shift', texto: 'Stamp every file, file the folder and sign the plan if there is one. The counter shows what remains. Submit becomes available when finished; then you can see your correct decisions and citations.', accion: 'manual' as const, boton: 'Check manual' },
   ]
   const actual = pasos[paso]!
   return <aside id="cabina-guia" className="cabina-guia" aria-labelledby="cabina-guia-titulo">
-    <div className="cabina-guia-cabecera"><span>Primera guardia · {paso + 1} / {pasos.length}</span><button type="button" onClick={alCerrar}>Cerrar guía</button></div>
+    <div className="cabina-guia-cabecera"><span>First shift · {paso + 1} / {pasos.length}</span><button type="button" onClick={alCerrar}>Close guide</button></div>
     <h3 id="cabina-guia-titulo" aria-live="polite">{paso === 1 && <IconoSello pequeno />}{actual.titulo}</h3>
     <p>{actual.texto}</p>
     <div className="cabina-guia-acciones">
       <button type="button" onClick={() => alMostrar(actual.accion)}>{actual.boton}</button>
-      {paso > 0 && <button type="button" onClick={() => alPaso(paso - 1)}>Anterior</button>}
-      {paso < pasos.length - 1 ? <button type="button" onClick={() => alPaso(paso + 1)}>Siguiente →</button>
-        : <button type="button" onClick={alCerrar}>Entendido</button>}
+      {paso > 0 && <button type="button" onClick={() => alPaso(paso - 1)}>Back</button>}
+      {paso < pasos.length - 1 ? <button type="button" onClick={() => alPaso(paso + 1)}>Next →</button>
+        : <button type="button" onClick={alCerrar}>Got it</button>}
     </div>
   </aside>
 }

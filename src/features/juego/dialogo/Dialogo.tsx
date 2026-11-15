@@ -43,14 +43,14 @@ export default function Dialogo() {
 
   if (!linea) return null
   return <button type="button" className="juego-dialogo juego-caja" onClick={() => (completo ? avanzar() : setLetras(largo))}
-    aria-label={`${nombreDe(linea.quien)}: ${linea.texto}. ${completo ? 'Pulsa para continuar' : 'Pulsa para mostrar el texto completo'}`}
+    aria-label={`${nombreDe(linea.quien)}: ${linea.texto}. ${completo ? 'Press to continue' : 'Press to show the full text'}`}
     aria-keyshortcuts="Space Enter">
     <img className="juego-dialogo-retrato" src={retratoDe(linea.quien)} alt="" width={64} height={64} />
     <span className="juego-dialogo-texto">
-      <span className="bitacora-dialogo-canal">Bitácora · Comunicación</span>
+      <span className="bitacora-dialogo-canal">Logbook · Communication</span>
       <b>{nombreDe(linea.quien)}</b>
       <span aria-hidden="true">{linea.texto.slice(0, letras)}</span>
-      <span className="bitacora-dialogo-paso" aria-hidden="true">{completo ? 'Continuar →' : 'Mostrar texto completo'}<kbd>Espacio / Intro</kbd></span>
+      <span className="bitacora-dialogo-paso" aria-hidden="true">{completo ? 'Continue →' : 'Show full text'}<kbd>Space / Enter</kbd></span>
     </span>
   </button>
 }
