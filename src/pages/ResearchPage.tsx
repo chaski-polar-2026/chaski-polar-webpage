@@ -62,7 +62,7 @@ function Research() {
                 <article><span>02 · NO ROBUST DIRECT LINK</span><h2>No robust Antarctic–Peruvian link</h2><p>The tested Antarctic–Peruvian phytoplankton links did not survive the robustness checks. This does not prove that no connection exists.</p><a href="#hallazgos">See the comparisons →</a></article>
                 <article><span>03 · PERIOD MATTERS</span><h2>A trend depends on the record</h2><p>Regional sea-level reanalysis shows a rising signal. Other trends depend on the period or product; annual autocorrelation remains a limitation.</p><a href="#trends">Compare periods →</a></article>
               </div>
-              <p className="research-limit">Associations are not proof of causation. Chlorophyll is a pigment indicator; landings are not fish biomass.</p>
+              <p className="research-limit">Associations are not proof of causation. Chlorophyll is a pigment indicator; landings are not fish biomass. Monthly zone averages cannot identify harmful algal blooms (“red tides”).</p>
             </section>
 
             <details className="seccion pregunta research-question"><summary>Research question and scope</summary>
