@@ -151,3 +151,8 @@
   .juego .cabina-vista { width: clamp(320px, 36%, 440px); flex: 0 0 clamp(320px, 36%, 440px); }
   .juego .cabina-personaje { transform-origin: bottom center; }
 }
+
+/* Sellos siempre opacos, tambien cuando aun no se puede sellar */
+.juego .sello-boton, .juego .sello-boton:disabled { opacity: 1 !important; }
+.juego .sello-boton:disabled .sello-dibujo { filter: drop-shadow(0 8px 6px rgba(0, 0, 0, .5)); }
+.juego .sello-boton:disabled { cursor: not-allowed; }

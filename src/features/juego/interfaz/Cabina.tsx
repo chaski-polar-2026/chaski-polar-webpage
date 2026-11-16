@@ -15,7 +15,6 @@ type Rejilla = string[][]
 const vacia = (): Rejilla => Array.from({ length: N }, () => Array<string>(N).fill('.'))
 const caja = (g: Rejilla, x0: number, y0: number, x1: number, y1: number, ch: string) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) g[y]![x] = ch }
 const elipse = (g: Rejilla, cx: number, cy: number, rx: number, ry: number, ch: string) => { for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1) g[y]![x] = ch }
-const contorno = (g: Rejilla) => { const o = g.map((f) => [...f]); for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (g[y]![x] === '.' && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => (g[y + dy!]?.[x + dx!] ?? '.') !== '.')) o[y]![x] = 'k'; return o }
 const cuerpoSello = (): Rejilla => {
   const g = vacia()
   elipse(g, 16, 4, 6.5, 3.5, 'W'); caja(g, 12, 2, 15, 3, 'h'); caja(g, 20, 5, 22, 6, 'w') // perilla
@@ -23,12 +22,12 @@ const cuerpoSello = (): Rejilla => {
   caja(g, 11, 15, 20, 16, 'W'); caja(g, 20, 15, 20, 16, 'w') // base del mango
   caja(g, 7, 17, 24, 20, 'M'); caja(g, 7, 17, 24, 17, 's'); caja(g, 7, 20, 24, 20, 'm') // banda metalica
   caja(g, 5, 21, 26, 27, 'C'); caja(g, 6, 22, 10, 22, 'i'); caja(g, 5, 26, 26, 27, 'c'); caja(g, 25, 21, 26, 25, 'c') // goma
-  return contorno(g)
+  return g
 }
 const almohadilla = (): Rejilla => {
   const g = vacia()
   caja(g, 2, 28, 29, 31, 'p'); caja(g, 4, 29, 27, 30, 'I'); caja(g, 6, 29, 14, 29, 'j')
-  return contorno(g)
+  return g
 }
 export function SelloGrande({ color }: { color: 'verde' | 'rojo' }) {
   const v = color === 'verde'
