@@ -1,6 +1,6 @@
 /* Escritorio: columna izquierda angosta con fondo negro, globo centrado, línea de tiempo fija y scroll solo en el panel derecho. */
 @media (min-width: 901px) {
-  .escenario { --izq: clamp(176px, 14vw, 210px); height: 100svh; min-height: 0; box-sizing: border-box; overflow: hidden; align-items: stretch; }
+  .escenario { --izq: clamp(220px, 17vw, 260px); height: 100svh; min-height: 0; box-sizing: border-box; overflow: hidden; align-items: stretch; }
   .escenario .relato { height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
   .lienzo-globo { position: relative; top: auto; height: 100%; min-height: 0; display: grid; grid-template-columns: var(--izq) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; overflow: hidden; }
   .lienzo-globo > .columna-izq { grid-column: 1; grid-row: 1; z-index: 8; display: flex; flex-direction: column; min-height: 0; overflow: hidden; padding: 6px; gap: 5px; background: #02060b; border-right: 1px solid var(--linea); }
@@ -14,7 +14,7 @@
   .columna-izq .globe-camera-controls { display: grid; gap: 6px; }
   .columna-izq .globe-camera-controls button { width: 100%; padding: 6px 8px; min-height: 36px; }
   .columna-izq .regiones { display: grid; gap: 6px; }
-  .columna-izq .region { width: 100%; text-align: left; padding: 6px 8px; min-height: 40px; font-size: .85rem; }
+  .columna-izq .region { width: 100%; text-align: center; padding: 6px 8px; min-height: 40px; font-size: .85rem; }
   .columna-izq .estilos-mapa { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .columna-izq .vista-nota, .columna-izq .pista-globo { font-size: .72rem; line-height: 1.4; margin: 0; flex: none; }
   .columna-izq .globe-legend { order: 0; margin: 0; width: 100%; }
@@ -38,18 +38,21 @@
   .columna-izq .globe-toolbar { gap: 5px; }
   .columna-izq .globe-toolbar > div:first-child button { min-height: 28px; }
   .columna-izq .globe-camera-controls { gap: 4px; }
-  .columna-izq .globe-camera-controls button, .columna-izq .step-preference, .columna-izq .recorrido-controles button { min-height: 26px; padding: 2px 6px; font-size: .72rem; }
-  .columna-izq .region { min-height: 30px; padding: 3px 7px; font-size: .74rem; line-height: 1.15; }
+  .columna-izq .globe-camera-controls button, .columna-izq .step-preference, .columna-izq .recorrido-controles button { min-height: 30px; padding: 3px 8px; font-size: .82rem; }
+  .columna-izq .region { min-height: 34px; padding: 4px 9px; font-size: .84rem; line-height: 1.15; }
   .columna-izq .regiones { gap: 4px; }
   .columna-izq .regiones-titulo { margin: 2px 0; }
   .columna-izq .estilos-mapa { gap: 4px; font-size: .72rem; }
-  .columna-izq .estilos-mapa .control-pill { min-height: 26px; padding: 2px 8px; font-size: .7rem; }
-  .columna-izq .globe-legend > summary { min-height: 30px; padding: 4px 8px; font-size: .74rem; }
+  .columna-izq .estilos-mapa .control-pill { min-height: 28px; padding: 3px 10px; font-size: .78rem; }
+  .columna-izq .globe-legend > summary { min-height: 32px; padding: 4px 8px; font-size: .8rem; }
   /* Estilo de vista (arriba a la izquierda del globo) y capas (arriba a la derecha) */
   .columna-izq .globe-toolbar > div:first-child { position: absolute; z-index: 9; top: 8px; left: calc(var(--izq) + 10px); width: 270px; background: rgba(2, 6, 11, .75); border-radius: 8px; }
   .columna-izq .globe-toolbar > div:first-child button { min-height: 32px; font-size: .78rem; }
-  .columna-izq .globe-toolbar > .vista-nota { top: 52px; }
+  .columna-izq .globe-toolbar > .vista-nota { top: 52px; left: calc(var(--izq) + 12px); }
   .columna-izq .globe-legend { position: absolute; z-index: 12; top: 8px; right: 12px; width: auto; max-width: min(420px, calc(100% - var(--izq) - 24px)); border-radius: 8px; background: rgba(2, 6, 11, .8); }
   .columna-izq .globe-legend[open] { background: #0a2540; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
   .columna-izq .globe-legend-content { position: static; width: auto; border: 0; padding: 0 12px 12px; background: none; max-height: calc(100svh - 320px); overflow-y: auto; }
+  /* texto centrado dentro de cada boton */
+  .columna-izq .globe-toolbar button, .columna-izq .region, .columna-izq .control-pill, .columna-izq .globe-toolbar > div:first-child button { text-align: center; justify-content: center; align-items: center; }
+  .columna-izq .region { display: flex; }
 }
