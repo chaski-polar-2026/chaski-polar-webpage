@@ -41,7 +41,7 @@ export default function PortadaPage() {
       if (location.hash !== '#challenge') return
       const panel = document.getElementById('challenge')
       if (sinEscena) panel?.scrollIntoView({ block: 'start', behavior: 'instant' })
-      else scrollTo({ top: posicionScroll(SECCIONES.find(s => s.variante === 'reto')!.de), behavior: 'instant' })
+      else { const r = SECCIONES.find(s => s.variante === 'reto')!; scrollTo({ top: posicionScroll(r.de + (r.a - r.de) * 0.3), behavior: 'instant' }) } // un poco dentro del tramo, cuando el panel ya terminó de aparecer
       requestAnimationFrame(() => { if (panel) { panel.inert = false; panel.setAttribute('aria-hidden', 'false'); panel.focus({ preventScroll: true }) } })
     }
     const frame = requestAnimationFrame(alinear)
