@@ -9,7 +9,7 @@ export default function GlobeLegend({ layers, onChange, distance }: { layers: Gl
     <input type="checkbox" checked={layers[key]} onChange={e => onChange({ ...layers, [key]: e.target.checked })} aria-describedby={`layer-${key}-help`} />
     <span><b>{label}</b><span id={`layer-${key}-help`}>{description}</span></span>
   </label>
-  return <details className="globe-legend" open>
+  return <details className="globe-legend">
     <summary>Globe layers and coverage</summary>
     <div className="globe-legend-content">
       {check('coverage', 'Data outline', COVERAGE_TEXT)}

@@ -1,0 +1,48 @@
+/* Escritorio: columna izquierda angosta con fondo negro, globo centrado, línea de tiempo fija y scroll solo en el panel derecho. */
+@media (min-width: 901px) {
+  .escenario { --izq: clamp(176px, 14vw, 210px); height: 100svh; min-height: 0; box-sizing: border-box; overflow: hidden; align-items: stretch; }
+  .escenario .relato { height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+  .lienzo-globo { position: relative; top: auto; height: 100%; min-height: 0; display: grid; grid-template-columns: var(--izq) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; overflow: hidden; }
+  .lienzo-globo > .columna-izq { grid-column: 1; grid-row: 1; z-index: 8; display: flex; flex-direction: column; min-height: 0; overflow: hidden; padding: 6px; gap: 5px; background: #02060b; border-right: 1px solid var(--linea); }
+  .lienzo-globo > .globe-stage { grid-column: 2; grid-row: 1; order: 0; min-height: 0; min-width: 0; }
+  .lienzo-globo #globo { position: absolute; inset: 0; width: auto; height: auto; order: 0; }
+  .lienzo-globo > .timeline-panel { grid-column: 1 / -1; grid-row: 2; border-top: 1px solid var(--linea); order: 0; margin: 0; padding: 8px 16px 6px; border-radius: 0; z-index: 9; }
+  /* contenido compacto de la columna */
+  .columna-izq .globe-toolbar { position: static; inset: auto; display: flex; flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 8px; max-width: none; margin: 0; padding: 0; background: none; border: 0; box-shadow: none; }
+  .columna-izq .globe-toolbar > * { width: 100%; max-width: none; margin: 0; }
+  .columna-izq .globe-toolbar button, .columna-izq .globe-toolbar .control-pill { font-size: .8rem; }
+  .columna-izq .globe-camera-controls { display: grid; gap: 6px; }
+  .columna-izq .globe-camera-controls button { width: 100%; padding: 6px 8px; min-height: 36px; }
+  .columna-izq .regiones { display: grid; gap: 6px; }
+  .columna-izq .region { width: 100%; text-align: left; padding: 6px 8px; min-height: 40px; font-size: .85rem; }
+  .columna-izq .estilos-mapa { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .columna-izq .vista-nota, .columna-izq .pista-globo { font-size: .72rem; line-height: 1.4; margin: 0; flex: none; }
+  .columna-izq .globe-legend { order: 0; margin: 0; width: 100%; }
+  .columna-izq .globe-legend > summary { min-height: 40px; font-size: .8rem; padding: 8px; }
+  .columna-izq .globe-legend-content { padding: 0 8px 10px; font-size: .75rem; }
+  .columna-izq .globe-toolbar { order: 0; gap: 6px; }
+  .columna-izq .globe-toolbar > * { min-width: 0; }
+  .columna-izq .vista-toggle, .columna-izq .globe-view-toggle, .columna-izq .globe-toolbar > div:first-child { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; }
+  .columna-izq .globe-toolbar > div:first-child button { padding: 5px 2px; min-height: 32px; font-size: .68rem; min-width: 0; }
+  .columna-izq .globe-camera-controls button, .columna-izq .step-preference, .columna-izq .recorrido-controles button { min-height: 30px; padding: 4px 6px; font-size: .75rem; }
+  .columna-izq .recorrido-controles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .columna-izq .region { min-height: 34px; padding: 4px 8px; font-size: .78rem; }
+  .columna-izq .regiones-titulo { margin: 4px 0 2px; font-size: .72rem; }
+  /* Textos de apoyo y capas: flotan sobre el globo para que la columna entre sin scroll */
+  .columna-izq .globe-toolbar > .vista-nota, .columna-izq .globe-toolbar > .pista-globo { width: auto; }
+  .columna-izq .vista-nota { position: absolute; z-index: 7; top: 8px; left: calc(var(--izq) + 12px); max-width: 300px; padding: 4px 8px; border-radius: 6px; background: rgba(2, 6, 11, .7); }
+  .columna-izq .pista-globo { position: absolute; z-index: 7; bottom: calc(var(--alto-tiempo, 150px) + 8px); left: calc(var(--izq) + 12px); padding: 3px 8px; border-radius: 6px; background: rgba(2, 6, 11, .7); }
+  .columna-izq .globe-legend { position: static; }
+  .columna-izq .globe-legend-content { position: absolute; z-index: 12; left: calc(var(--izq) + 8px); bottom: calc(var(--alto-tiempo, 150px) + 8px); width: min(420px, 60%); padding: 12px; border: 1px solid var(--linea); border-radius: 8px; background: var(--panel-fuerte, #0c2c4a); }
+  .lienzo-globo > .timeline-panel { gap: 4px; }
+  .columna-izq .globe-toolbar { gap: 5px; }
+  .columna-izq .globe-toolbar > div:first-child button { min-height: 28px; }
+  .columna-izq .globe-camera-controls { gap: 4px; }
+  .columna-izq .globe-camera-controls button, .columna-izq .step-preference, .columna-izq .recorrido-controles button { min-height: 26px; padding: 2px 6px; font-size: .72rem; }
+  .columna-izq .region { min-height: 30px; padding: 3px 7px; font-size: .74rem; line-height: 1.15; }
+  .columna-izq .regiones { gap: 4px; }
+  .columna-izq .regiones-titulo { margin: 2px 0; }
+  .columna-izq .estilos-mapa { gap: 4px; font-size: .72rem; }
+  .columna-izq .estilos-mapa .control-pill { min-height: 26px; padding: 2px 8px; font-size: .7rem; }
+  .columna-izq .globe-legend > summary { min-height: 30px; padding: 4px 8px; font-size: .74rem; }
+}

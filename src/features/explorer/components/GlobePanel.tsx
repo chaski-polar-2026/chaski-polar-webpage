@@ -29,6 +29,7 @@ import TarjetaMapa from './TarjetaMapa'
 import Proposito from './relato/Proposito'
 import { ExplorerBreadcrumb, ExplorerHelp, ExplorerHint, StepPreference } from './ExplorerOrientation'
 import GlobeLegend, { INITIAL_LAYERS } from './GlobeLegend'
+import './layout-izquierda.css'
 
 type Lado = 'der' | 'izq' | 'der-arriba' | 'der-abajo'
 type Marca = { z: string; lat: number; lng: number; texto: string; lado?: Lado; forma?: 'punto' | 'base' | 'rio' | 'grupo' | 'referencia'; soloCerca?: number; soloLejos?: number; ayuda?: string; cuenca?: boolean }
@@ -388,6 +389,7 @@ export default function GlobePanel() {
       <TarjetaMapa />
       <Proposito />
       </div>
+      <div className="columna-izq">
       <div className="globe-toolbar">
         <GlobeViewToggle value={view} onChange={(x) => { interaccion(); setView(x) }} />
         <RecorridoAyuda />
@@ -404,10 +406,11 @@ export default function GlobePanel() {
         </div>}
         <p className={`pista-globo${pistaOculta ? ' oculta' : ''}`}>Drag to rotate. Tap a zone, current or the sea.</p>
       </div>
+      <GlobeLegend layers={layers} onChange={setLayers} distance={testedLink.distance} />
+      </div>
       {textoVer && <button className="btn ver-relato" type="button" onClick={() => document.getElementById('relato')?.scrollIntoView({ behavior: menosMovimiento ? 'auto' : 'smooth' })}>{textoVer}</button>}
       {lectura && <div className="lectura" aria-hidden="true" style={{ transform: `translate(${Math.max(8, lectura.x)}px, ${lectura.y}px)` }}><b>{lectura.titulo}</b>{lectura.detalle.map((d) => <small key={d}>{d}</small>)}</div>}
       <TimelinePanel />
-      <GlobeLegend layers={layers} onChange={setLayers} distance={testedLink.distance} />
     </div>
     <aside className="relato" id="relato" aria-label="What the globe shows">
       <ExplorerBreadcrumb />
