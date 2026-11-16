@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import { useMemo } from 'react'
 import { CartesianGrid, ComposedChart, Legend, ReferenceArea, ResponsiveContainer, Scatter, Tooltip, XAxis, YAxis } from 'recharts'
 import { nf } from '../../lib/formato'
@@ -40,7 +41,7 @@ export default function CrucerosSection({ id = 'cruceros', compacto = false, enc
 
   return <section className={`seccion${compacto ? ' cruceros-lateral' : ''}`} id={id} aria-labelledby={encabezado ? `t-${id}` : undefined} aria-label={encabezado ? undefined : 'Anchoveta biomass by IMARPE survey'}>
     {encabezado && <div className="encabezado-seccion">
-      <h2 id={`t-${id}`}>Anchoveta in IMARPE surveys</h2>
+      <h2 id={`t-${id}`}><Icono nombre="bote" className="icono-titulo" />Anchoveta in IMARPE surveys</h2>
       <p>Each point is the total anchoveta biomass estimated by an IMARPE acoustic survey, including juveniles. Orange bands mark months when the northern Peruvian sea (Niño 1+2) was at least 1 °C warmer than normal. {minimo && <>In the north-central region, the lowest value since {desde} is survey {minimo.crucero}: <strong>{mt(minimo.biomasa_t)} million t</strong>{minimo.provisional ? ' (provisional)' : ''}.</>}</p>
     </div>}
     <div className="cruceros-grafico" role="img" aria-label="Anchoveta biomass by IMARPE survey, 1998 to 2026">
@@ -62,7 +63,7 @@ export default function CrucerosSection({ id = 'cruceros', compacto = false, enc
       </ResponsiveContainer>
     </div>
     <details className="cruceros-tabla">
-      <summary>View {cruises.length} records and sources</summary>
+      <summary><Icono nombre="tabla" className="icono-sub" />View {cruises.length} records and sources</summary>
       <div className="tabla-envoltura">
         <table className="fuentes">
           <thead><tr><th scope="col">Survey</th><th scope="col">Dates</th><th scope="col">Area</th><th scope="col">Biomass (million t)</th><th scope="col">Source</th></tr></thead>

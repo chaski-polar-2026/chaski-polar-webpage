@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import { media } from '../../lib/estadistica'
 import { nf, signo } from '../../lib/formato'
 import { useExplorer } from '../explorer/ExplorerContext'
@@ -48,7 +49,7 @@ export default function EventosNinoSection() {
 
   return <section className="seccion" id="eventos-nino" aria-labelledby="t-eventos">
     <div className="encabezado-seccion">
-      <h2 id="t-eventos">Each El Niño, zone by zone</h2>
+      <h2 id="t-eventos"><Icono nombre="termometro" className="icono-titulo" />Each El Niño, zone by zone</h2>
       <p>How phytoplankton (chlorophyll) changed relative to normal during each El Niño in the five zones along the Peruvian coast. Orange means a decline; green, an increase. {vulnerables?.resumen ?? ''}</p>
     </div>
     <div className="tabla-envoltura">

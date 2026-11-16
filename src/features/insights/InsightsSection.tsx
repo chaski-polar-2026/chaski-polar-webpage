@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import { useMemo, type ReactNode } from 'react'
 import { Bar, CartesianGrid, Cell, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { media, pearson } from '../../lib/estadistica'
@@ -48,7 +49,7 @@ export default function InsightsSection() {
 
   return <section className="seccion" id="hallazgos" aria-labelledby="t-hallazgos">
     <div className="encabezado-seccion">
-      <h2 id="t-hallazgos">What the data shows</h2>
+      <h2 id="t-hallazgos"><Icono nombre="lupa" className="icono-titulo" />What the data shows</h2>
       <p>Four results calculated from this page's series (1998–2024). The large number is the <em>r</em> correlation: it ranges from −1 to 1, and values near 0 mean there is no linear relationship. These are exploratory associations, not proof of causation.</p>
     </div>
 

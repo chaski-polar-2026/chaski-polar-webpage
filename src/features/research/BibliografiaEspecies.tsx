@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 // Referencias y alcance contrastados con el reporte documental de las doce especies.
 const EXPERIMENTALES = [
   {
@@ -137,13 +138,13 @@ function Referencias({ referencias }: { referencias: typeof EXPERIMENTALES }) {
 
 export default function BibliografiaEspecies() {
   return <section className="seccion bibliografia-especies" id="species-bibliography" aria-labelledby="species-bibliography-title">
-    <h2 id="species-bibliography-title">Species bibliography</h2>
+    <h2 id="species-bibliography-title"><Icono nombre="libro" className="icono-titulo" />Species bibliography</h2>
     <p>Studies behind the experimental findings in Explorer and For fishers. Results apply to the life stage and conditions studied; they do not predict catches or define general favourable ranges.</p>
-    <h3>Sources used in the experimental cards</h3>
+    <h3><Icono nombre="enlace" className="icono-sub" />Sources used in the experimental cards</h3>
     <Referencias referencias={EXPERIMENTALES} />
     <p className="bibliografia-datos">Associated dataset: Heuer et al. (2020), <a href="https://doi.org/10.7266/n7-xd7p-yj29" target="_blank" rel="noreferrer">Effects of temperature on swim performance of mahi-mahi (Coryphaena hippurus)</a>, GRIIDC. Dataset metadata were consulted; the data were not reanalysed.</p>
     <details className="bibliografia-contexto">
-      <summary>Other studies reviewed ({CONTEXTO.length})</summary>
+      <summary><Icono nombre="lupa" className="icono-sub" />Other studies reviewed ({CONTEXTO.length})</summary>
       <p>These sources informed the review of all 12 species. Their habitat observations, fishery associations or incomplete evidence were not added as experimental favourable ranges.</p>
       <Referencias referencias={CONTEXTO} />
     </details>

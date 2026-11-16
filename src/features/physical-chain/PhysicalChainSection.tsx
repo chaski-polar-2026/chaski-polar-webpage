@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import RelacionesNino, { useRelaciones } from '../nino/RelacionesNino'
 import { useEffect, useState } from 'react'
 import { CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -28,7 +29,7 @@ export default function PhysicalChainSection() {
     return () => controller.abort()
   }, [attempt])
   return <section className="seccion physical-chain" id="physical-chain" aria-labelledby="t-chain">
-    <div className="encabezado-seccion"><h2 id="t-chain">El Niño, from the surface to depth</h2><p>Follow the ocean’s response off Peru. Select a link to compare its monthly anomaly with Niño 1+2 over 1998–2025. The coefficients describe associations in the Peru CMEMS panel.</p></div>
+    <div className="encabezado-seccion"><h2 id="t-chain"><Icono nombre="capas" className="icono-titulo" />El Niño, from the surface to depth</h2><p>Follow the ocean’s response off Peru. Select a link to compare its monthly anomaly with Niño 1+2 over 1998–2025. The coefficients describe associations in the Peru CMEMS panel.</p></div>
     {relaciones.error ? <p role="alert">Relationships could not be loaded. <button onClick={relaciones.reintentar}>Retry</button></p> : relaciones.datos ? <RelacionesNino datos={relaciones.datos} /> : <p role="status">Loading relationships…</p>}
     <div className="chain-ocean">
       <div className="chain-origin"><span>Niño 1+2</span><p>Coastal warming</p></div>
@@ -51,7 +52,7 @@ export default function PhysicalChainSection() {
             <Line yAxisId="nino" dataKey="nino" name="Niño 1+2" stroke="#f08a4b" strokeDasharray="5 3" dot={false} isAnimationActive={false} />
           </ComposedChart></ResponsiveContainer>
         </div>
-        <details><summary>View monthly values as a table</summary><div className="chain-table"><table><caption>Calendar-month anomalies; no lag applied</caption><thead><tr><th scope="col">Month</th><th scope="col">{selected.name} ({selected.unit})</th><th scope="col">Niño 1+2 (°C)</th></tr></thead><tbody>{data.slice(tablePage * 24, (tablePage + 1) * 24).map((r) => <tr key={r.month}><th scope="row">{r.month}</th><td>{r[selected.id] ?? 'Not available'}</td><td>{r.nino ?? 'Not available'}</td></tr>)}</tbody></table></div><div className="chain-pagination"><button className="btn" disabled={tablePage === 0} onClick={() => setTablePage(tablePage - 1)}>Previous months</button><span role="status">Page {tablePage + 1} of {Math.ceil(data.length / 24)}</span><button className="btn" disabled={(tablePage + 1) * 24 >= data.length} onClick={() => setTablePage(tablePage + 1)}>Next months</button></div></details>
+        <details><summary><Icono nombre="tabla" className="icono-sub" />View monthly values as a table</summary><div className="chain-table"><table><caption>Calendar-month anomalies; no lag applied</caption><thead><tr><th scope="col">Month</th><th scope="col">{selected.name} ({selected.unit})</th><th scope="col">Niño 1+2 (°C)</th></tr></thead><tbody>{data.slice(tablePage * 24, (tablePage + 1) * 24).map((r) => <tr key={r.month}><th scope="row">{r.month}</th><td>{r[selected.id] ?? 'Not available'}</td><td>{r.nino ?? 'Not available'}</td></tr>)}</tbody></table></div><div className="chain-pagination"><button className="btn" disabled={tablePage === 0} onClick={() => setTablePage(tablePage - 1)}>Previous months</button><span role="status">Page {tablePage + 1} of {Math.ceil(data.length / 24)}</span><button className="btn" disabled={(tablePage + 1) * 24 >= data.length} onClick={() => setTablePage(tablePage + 1)}>Next months</button></div></details>
       </>}
       <p className="nota">Both lines use calendar months, without shifting by the reported delay. Anomalies are departures from each month’s normal; axes use different units. Missing values remain gaps. Source: CMEMS reanalysis and NOAA PSL Niño 1+2.</p>
     </div>

@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import { SectionArt } from '../../components/ui/SectionArt'
 import { useSectionReveal } from '../../components/ui/useSectionReveal'
 import { useEffect, useState } from 'react'
@@ -38,7 +39,7 @@ export default function PrediccionSection() {
     return () => { vivo = false }
   }, [attempt])
 
-  if (!datos) return <section className="seccion prediccion" id="prediction" aria-labelledby="t-prediccion"><h2 id="t-prediccion">Can we anticipate chlorophyll?</h2><div className="prediction-loading" role="status" aria-busy={!error}>{error ? <>Chlorophyll results could not be loaded. <button className="btn" onClick={() => setAttempt(attempt + 1)}>Try again</button></> : 'Loading chlorophyll results...'}</div></section>
+  if (!datos) return <section className="seccion prediccion" id="prediction" aria-labelledby="t-prediccion"><h2 id="t-prediccion"><Icono nombre="reloj" className="icono-titulo" />Can we anticipate chlorophyll?</h2><div className="prediction-loading" role="status" aria-busy={!error}>{error ? <>Chlorophyll results could not be loaded. <button className="btn" onClick={() => setAttempt(attempt + 1)}>Try again</button></> : 'Loading chlorophyll results...'}</div></section>
   const barras = ZONAS.map((z) => {
     const f: Record<string, number | string> = { zona: z.nombre }
     for (const h of datos.horizontes.filter((x) => x.zona === z.id)) f[`h${h.h}`] = h.habilidad
@@ -52,10 +53,10 @@ export default function PrediccionSection() {
   return (
     <section ref={reveal} className="seccion prediccion" id="prediction" aria-labelledby="t-prediccion">
       <header className="lab-heading" data-reveal><SectionArt kind="outlook" /><div><p className="puente-kicker">How far ahead can we see?</p>
-      <h2 id="t-prediccion">Can we anticipate chlorophyll?</h2></div></header>
+      <h2 id="t-prediccion"><Icono nombre="reloj" className="icono-titulo" />Can we anticipate chlorophyll?</h2></div></header>
       <p className="nota">We tested a simple model that predicts the chlorophyll anomaly<InfoTip term="Anomaly">Difference from what is normal for that month.</InfoTip> of a month from El Niño 1+2<InfoTip term="El Niño 1+2">Sea temperature in the coastal area off Peru and Ecuador.</InfoTip> and from last month&apos;s chlorophyll. To be fair, each year from 2010 to 2025 was predicted using only data from before that year.</p>
 
-      <h3>Skill over doing nothing, by months ahead</h3>
+      <h3><Icono nombre="barras" className="icono-sub" />Skill over doing nothing, by months ahead</h3>
       <p className="tend-nota">A positive value means the model made smaller errors than simply predicting a normal month. Higher is better.</p>
       <div className="tend-grafico" data-reveal role="group" aria-label="Forecast skill by zone and months ahead">
         <ResponsiveContainer width="100%" height={280}>
@@ -74,7 +75,7 @@ export default function PrediccionSection() {
       </div>
       <p className="tend-nota">The skill is modest: useful one month ahead (about +5% to +17%) and almost gone at three months. The model always beat simply repeating last month&apos;s anomaly, by 9% to 31%.</p>
 
-      <h3>A check with 2026</h3>
+      <h3><Icono nombre="check" className="icono-sub" />A check with 2026</h3>
       <p className="tend-nota">With the model fitted on 1998–2025, we compared its estimate with the chlorophyll observed from January to July 2026, knowing El Niño 1+2 each month. This is not a forecast: it checks whether the relationship holds in a new El Niño year.</p>
       <div className="tend-controles">
         <label>Zone
