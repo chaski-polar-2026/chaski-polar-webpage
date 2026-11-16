@@ -7,3 +7,35 @@
 .perspectiva-tabla td[data-claro="true"] { font-weight: 600; }
 .perspectiva-tabla td[data-claro="false"] { opacity: .8; }
 .tabla-scroll { overflow-x: auto; }
+
+.research-page .prediccion { border-top: 1px solid var(--linea); }
+.prediccion .lab-heading h2 { max-width: 27ch; }
+.prediccion > .nota { max-width: 76ch; color: var(--niebla); font-size: 1rem; line-height: 1.7; }
+.prediccion > h3 { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--linea); font: 400 clamp(1.4rem, 2.5vw, 1.9rem)/1.25 var(--serif); }
+.prediccion .tend-grafico { background: var(--profundo); border: 1px solid var(--linea); padding: 24px 12px 12px; }
+.prediccion .tend-veredicto { margin-block: 20px; padding: 20px 24px; background: var(--profundo); }
+.prediccion .monitor-aviso, #temperature-outlook > .tend-nota:last-child { margin-top: 28px; padding: 20px 24px; border-left: 2px solid var(--nino); background: var(--panel-suave); color: var(--niebla); max-width: 78ch; }
+.prediccion .tabla-scroll { margin-block: 28px; border: 1px solid var(--linea); border-radius: var(--cp-radius); }
+.prediccion .perspectiva-tabla { margin: 0; min-width: 560px; font-variant-numeric: tabular-nums; }
+.prediccion .perspectiva-tabla th, .prediccion .perspectiva-tabla td { padding: 20px 18px; border-color: var(--linea); }
+.prediccion .perspectiva-tabla thead { background: var(--profundo); color: var(--cp-cyan); font-family: var(--cp-hud); font-size: 1.1rem; }
+.prediccion .perspectiva-tabla td { font: 600 1.7rem/1.3 var(--cp-hud); }
+.prediccion .perspectiva-tabla td small { font: 400 .8rem/1.5 var(--sans); opacity: 1; color: var(--niebla); margin-top: 4px; }
+.prediccion .perspectiva-tabla td[data-claro="true"] { color: var(--fito); background: color-mix(in srgb, var(--fito) 5%, transparent); }
+.prediccion .perspectiva-tabla td[data-claro="false"] { opacity: 1; color: var(--niebla); }
+.prediccion .perspectiva-tabla tbody tr:hover { background: var(--panel-suave); }
+.prediccion .boton-datos { min-height: 44px; padding: 12px 20px; background: var(--profundo); border: 1px solid var(--frio); color: var(--hielo); font: 600 .95rem var(--sans); cursor: pointer; clip-path: var(--cp-cut); }
+.prediccion .boton-datos:hover { background: var(--corriente); }
+.prediccion :is(button, select, .tabla-scroll):focus-visible { outline: 3px solid var(--frio); outline-offset: 4px; }
+.prediction-loading { min-height: 320px; padding: 24px; background: var(--profundo); border: 1px solid var(--linea); }
+.prediction-loading::after { content: ''; display: block; height: 160px; margin-top: 24px; background: repeating-linear-gradient(0deg, transparent 0 37px, var(--linea) 38px 39px); }
+@media (max-width: 640px) {
+  .prediccion .tend-grafico { padding: 20px 0 8px; }
+  .prediccion .tend-controles { grid-template-columns: 1fr; padding: 16px; border-radius: var(--cp-radius); }
+  .prediccion .monitor-aviso { padding: 16px; }
+  .prediccion .perspectiva-tabla { min-width: 0; table-layout: fixed; }
+  .prediccion .perspectiva-tabla th, .prediccion .perspectiva-tabla td { padding: 14px 6px; }
+  .prediccion .perspectiva-tabla th { font-size: .8rem; overflow-wrap: anywhere; }
+  .prediccion .perspectiva-tabla td { font-size: 1.3rem; }
+  .prediccion .perspectiva-tabla td small { font-size: .72rem; }
+}

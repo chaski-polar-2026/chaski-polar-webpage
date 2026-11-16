@@ -1,0 +1,11 @@
+.section-art { width: 120px; height: 88px; flex: none; color: var(--cp-cyan); stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.section-art-grid { stroke: var(--linea); opacity: .45; stroke-width: .6; }
+.section-art-orbit { stroke: var(--frio); opacity: .35; stroke-dasharray: 2 5; stroke-width: 1; }
+.lab-heading { display: flex; align-items: center; gap: 22px; margin-bottom: 18px; }
+.lab-heading h2 { margin: 4px 0 0; }
+.lab-heading .puente-kicker { margin: 0; }
+.lab-heading + .nota { max-width: 76ch; }
+@media (max-width: 640px) {
+  .lab-heading { gap: 12px; align-items: flex-start; }
+  .lab-heading .section-art { width: 58px; height: 60px; }
+}

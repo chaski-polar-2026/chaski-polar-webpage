@@ -1,3 +1,5 @@
+import { SectionArt } from '../../components/ui/SectionArt'
+import { useSectionReveal } from '../../components/ui/useSectionReveal'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import './tendencias.css'
 
@@ -29,6 +31,7 @@ function color(v: number, variable: Variable, fuerte: boolean): string {
 /** Mapa de tendencia por celda: dónde sube o baja la variable y dónde el cambio es significativo (Mann-Kendall con FDR entre celdas) */
 export default function MapaTendencias() {
   const [datos, setDatos] = useState<Datos | null>(null)
+  const reveal = useSectionReveal(Boolean(datos))
   const [variable, setVariable] = useState<Variable>('clorofila')
   const [inicio, setInicio] = useState<Inicio>('1998')
   const [aviso, setAviso] = useState('Move over the map to read a cell.')
@@ -87,9 +90,9 @@ export default function MapaTendencias() {
   }
 
   return (
-    <section className="seccion tendencias" id="trend-map" aria-labelledby="t-mapa-tend">
-      <p className="puente-kicker">Where is it changing?</p>
-      <h2 id="t-mapa-tend">A map of trends, cell by cell</h2>
+    <section ref={reveal} className="seccion tendencias" id="trend-map" aria-labelledby="t-mapa-tend">
+      <header className="lab-heading" data-reveal><SectionArt kind="map" /><div><p className="puente-kicker">Where is it changing?</p>
+      <h2 id="t-mapa-tend">A map of trends, cell by cell</h2></div></header>
       <p className="nota">Each cell of the satellite maps gets its own Mann-Kendall test on the yearly average. Bright cells have a significant trend after correcting for testing thousands of cells at once; faint cells have a trend that cannot be told apart from chance.</p>
 
       <div className="tend-controles">
@@ -113,7 +116,7 @@ export default function MapaTendencias() {
         <span>{resumen.sig} of {resumen.n} cells · {resumen.sube} rising, {resumen.baja} falling · {inicio}–2025</span>
       </div>}
 
-      <div className="tend-mapa">
+      <div className="tend-mapa" data-reveal>
         {capa && <canvas ref={lienzo} width={ancho} height={alto} onMouseMove={leer} onMouseLeave={() => setAviso('Move over the map to read a cell.')} role="img" aria-label="Map of the trend of each cell, off the west coast of South America" />}
         <p className="tend-nota" aria-live="polite">{aviso}</p>
         <p className="tend-nota">{variable === 'clorofila' ? 'Green: rising. Ocher: falling.' : 'Red: warming. Blue: cooling.'} Bright cells are significant; faint cells are not. Color strength follows the size of the trend (full color at {variable === 'clorofila' ? '±20% per decade' : '±0.4 °C per decade'}).</p>

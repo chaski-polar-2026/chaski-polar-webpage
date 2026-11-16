@@ -14,3 +14,24 @@
   .app-header .app-nav a { padding-left: 7px; padding-right: 7px; }
 }
 @media (prefers-reduced-transparency: reduce) { .app-header { background: var(--abismo); backdrop-filter: none; } }
+
+/* Eight links cannot fit beside the logo at 390px with 44px targets. */
+@media (max-width: 640px) {
+  body:has(main.research-page) .app-header.chaski-header .app-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 4px; }
+  body:has(main.research-page) .app-header.chaski-header .app-nav a { min-width: 44px; min-height: 44px; padding-inline: 4px; }
+  main.research-page { padding-top: 100px; }
+  .research-page .seccion[id], .research-page [id="trend-glossary"] { scroll-margin-top: 112px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tendencias *, .tendencias *::before, .tendencias *::after,
+  .prediccion *, .prediccion *::before, .prediccion *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+.tendencias .btn:focus-visible, .prediccion .boton-datos:focus-visible { outline-offset: -4px; }
+/* Keep the small question mark while giving it a full touch target. */
+:is(.tendencias, .prediccion) .infotip { width: 20px; height: 20px; }
+:is(.tendencias, .prediccion) .infotip-boton { position: absolute; inset: -12px auto auto -12px; width: 44px; height: 44px; border: 0; background: none; }
+:is(.tendencias, .prediccion) .infotip-boton::before { content: ''; position: absolute; inset: 12px; border: 1px solid var(--frio); border-radius: 50%; }
+:is(.tendencias, .prediccion) .infotip-boton:hover { box-shadow: none; color: var(--hielo); }
+@media (max-width: 640px) {
+  :is(.tendencias, .prediccion) .infotip-globo { position: fixed; inset: auto 20px 20px; width: auto; transform: none; }
+}

@@ -1,3 +1,5 @@
+import { SectionArt } from '../../components/ui/SectionArt'
+import { useSectionReveal } from '../../components/ui/useSectionReveal'
 import { crearEvidencia } from './evidencia'
 import { Robustez, FichaEvidencia } from './FichaEvidencia'
 import { useEffect, useMemo, useState, useRef } from 'react'
@@ -65,6 +67,7 @@ const textoP = (p: number) => (p < 0.001 ? 'p < 0.001' : `p = ${nf(3).format(p)}
 
 /** Panel de tendencias: elegir variable, región y periodo, y comprobar si el cambio es estadísticamente significativo */
 export default function TendenciasSection() {
+  const reveal = useSectionReveal()
   const { monitor } = useData()
   const [largas, setLargas] = useState<Largas | null>(null)
   const [ronda, setRonda] = useState<Ronda | null>(null)
@@ -194,9 +197,9 @@ export default function TendenciasSection() {
   const cambiarVariable = (v: Variable) => { setVariable(v); setFuente(v === 'sst' ? 'crw' : 'occci'); setInicio(v === 'sst' ? 1998 : PRIMER_ANIO[v]); if (v !== 'chl' && v !== 'sst') setFin(ANIO_FINAL) }
 
   return (
-    <section className="seccion tendencias" id="trends" aria-labelledby="t-tendencias" aria-busy={esRonda && estadoRonda === 'loading'}>
-      <p className="puente-kicker">Be a trend detective</p>
-      <h2 id="t-tendencias">Is the change real? Test a trend yourself</h2>
+    <section ref={reveal} className="seccion tendencias" id="trends" aria-labelledby="t-tendencias" aria-busy={esRonda && estadoRonda === 'loading'}>
+      <header className="lab-heading" data-reveal><SectionArt /><div><p className="puente-kicker">Be a trend detective</p>
+      <h2 id="t-tendencias">Is the change real? Test a trend yourself</h2></div></header>
       <p className="nota">Pick a variable, a place and a period. The panel draws the yearly averages and runs the Mann-Kendall test<InfoTip term="Mann–Kendall">A test for whether a series tends to rise or fall.</InfoTip>, which asks whether the values tend to rise or fall consistently. A p-value below 0.05 is the usual standard for a significant trend.</p>
       <div className="tend-modos" role="group" aria-label="Exploration mode">
         <button className="btn" aria-pressed={!guiado} onClick={() => setGuiado(false)}>Explore freely</button>
@@ -213,7 +216,7 @@ export default function TendenciasSection() {
       </div>}
       {error && !esRonda && <p role="alert">Long-record data could not be loaded. <button className="btn" onClick={() => setIntento(intento + 1)}>Retry data loading</button></p>}
 
-      <div className="tend-ejemplos" role="group" aria-label="Guided examples">
+      <div className="tend-ejemplos" data-stagger role="group" aria-label="Guided examples">
         {EJEMPLOS.map((e) => (
           <div key={e.titulo} className="tend-ejemplo" role="group" aria-label={e.titulo}>
             <button type="button" className="btn" onClick={() => aplicar(e)}><b>{e.titulo}</b><span>{e.resumen}</span></button>
@@ -277,16 +280,16 @@ export default function TendenciasSection() {
 
         <Robustez e={evidencia} />
         <p className="tend-nota">{variable === 'chl' ? 'Green' : 'Orange'}: yearly mean · Dashed white: Sen trend line. {ini}–{fi}, {unidad}.</p>
-        <div className="tend-grafico" role="group" aria-label={`Yearly averages of ${nombreVariable} with the trend line`}>
+        <div className="tend-grafico" data-reveal role="group" aria-label={`Yearly averages of ${nombreVariable} with the trend line`}>
           <ResponsiveContainer width="100%" height={300}>
             <ComposedChart data={datosGrafico} margin={{ top: 10, right: 16, bottom: 4, left: 0 }}>
-              <CartesianGrid stroke="rgba(163,188,203,.16)" />
-              <XAxis dataKey="x" type="number" domain={['dataMin', 'dataMax']} tick={{ fill: '#a3bccb', fontSize: 12 }} allowDecimals={false} />
-              <YAxis tick={{ fill: '#a3bccb', fontSize: 12 }} domain={['auto', 'auto']} tickFormatter={(v: number) => nf(variable === 'chl' || variable === 'sealevel' ? 2 : 1).format(v)} label={{ value: unidad, angle: -90, position: 'insideLeft', fill: '#a3bccb', fontSize: 12 }} />
-              <Tooltip contentStyle={{ background: '#071e33', border: '1px solid #385367', borderRadius: 6, boxShadow: 'none' }} labelStyle={{ color: '#eaf3f5' }} formatter={(v, n) => [`${nf(dec).format(Number(v))} ${unidad}`, n === 'valor' ? fuenteTexto : n === 'otra' ? FUENTES[otraFuente] : 'Trend line (Sen)']} />
-              <Line dataKey="valor" stroke={variable === 'chl' ? '#3fc28c' : '#f08a4b'} strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
-              <Line dataKey="sen" stroke="#eaf3f5" strokeDasharray="6 4" strokeWidth={1.6} dot={false} isAnimationActive={false} />
-              {comparar && puedeComparar && <Line dataKey="otra" stroke="#63cde8" strokeDasharray="3 3" strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />}
+              <CartesianGrid stroke="var(--linea)" strokeOpacity={0.4} strokeDasharray="2 5" vertical={false} />
+              <XAxis dataKey="x" type="number" domain={['dataMin', 'dataMax']} tick={{ fill: 'var(--niebla)', fontSize: 12 }} allowDecimals={false} />
+              <YAxis tick={{ fill: 'var(--niebla)', fontSize: 12 }} domain={['auto', 'auto']} tickFormatter={(v: number) => nf(variable === 'chl' || variable === 'sealevel' ? 2 : 1).format(v)} label={{ value: unidad, angle: -90, position: 'insideLeft', fill: 'var(--niebla)', fontSize: 12 }} />
+              <Tooltip contentStyle={{ background: 'var(--profundo)', border: '1px solid var(--frio)', borderRadius: 6, boxShadow: 'none' }} labelStyle={{ color: 'var(--hielo)' }} formatter={(v, n) => [`${nf(dec).format(Number(v))} ${unidad}`, n === 'valor' ? fuenteTexto : n === 'otra' ? FUENTES[otraFuente] : 'Trend line (Sen)']} />
+              <Line dataKey="valor" stroke={variable === 'chl' ? 'var(--fito)' : 'var(--nino)'} strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
+              <Line dataKey="sen" stroke="var(--hielo)" strokeDasharray="6 4" strokeWidth={1.6} dot={false} isAnimationActive={false} />
+              {comparar && puedeComparar && <Line dataKey="otra" stroke="var(--frio)" strokeDasharray="3 3" strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />}
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -306,29 +309,29 @@ export default function TendenciasSection() {
           <p className="tend-nota"><a href="#hallazgos">Read the findings on period and source sensitivity</a>. Significance in one period does not establish a robust long-term change.</p>
           <p className="tend-nota">A trend is only credible if it holds up when the period changes.</p>
           <div className="tend-sens-graficos">
-            <figure>
+            <figure role="group" aria-label="Start year sensitivity chart; exact values are in the period sensitivity table below">
               <figcaption>Trend per decade, by start year</figcaption>
               <ResponsiveContainer width="100%" height={170}>
                 <LineChart data={sens.map((s) => ({ x: s.inicio, v: s.pendiente * 10 }))} margin={{ top: 6, right: 12, bottom: 0, left: 0 }}>
-                  <CartesianGrid stroke="rgba(163,188,203,.16)" />
-                  <XAxis dataKey="x" tick={{ fill: '#a3bccb', fontSize: 11 }} />
-                  <YAxis tick={{ fill: '#a3bccb', fontSize: 11 }} tickFormatter={(v: number) => nf(2).format(v)} />
-                  <ReferenceLine y={0} stroke="#a3bccb" />
-                  <Tooltip contentStyle={{ background: '#071e33', border: '1px solid #385367', borderRadius: 6, boxShadow: 'none' }} formatter={(v) => [`${nf(dec).format(Number(v))} ${unidad}/decade`, 'Trend']} labelFormatter={(l) => `Start: ${l}`} />
-                  <Line dataKey="v" stroke="#9fe0f2" strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
+                  <CartesianGrid stroke="var(--linea)" strokeOpacity={0.4} strokeDasharray="2 5" vertical={false} />
+                  <XAxis dataKey="x" tick={{ fill: 'var(--niebla)', fontSize: 11 }} />
+                  <YAxis tick={{ fill: 'var(--niebla)', fontSize: 11 }} tickFormatter={(v: number) => nf(2).format(v)} />
+                  <ReferenceLine y={0} stroke="var(--niebla)" />
+                  <Tooltip contentStyle={{ background: 'var(--profundo)', border: '1px solid var(--frio)', borderRadius: 6, boxShadow: 'none' }} formatter={(v) => [`${nf(dec).format(Number(v))} ${unidad}/decade`, 'Trend']} labelFormatter={(l) => `Start: ${l}`} />
+                  <Line dataKey="v" stroke="var(--cp-oxygen)" strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
             </figure>
-            <figure>
+            <figure role="group" aria-label="Start year sensitivity chart; exact values are in the period sensitivity table below">
               <figcaption>p-value, by start year (below the line = significant)</figcaption>
               <ResponsiveContainer width="100%" height={170}>
                 <LineChart data={sens.map((s) => ({ x: s.inicio, v: s.p }))} margin={{ top: 6, right: 12, bottom: 0, left: 0 }}>
-                  <CartesianGrid stroke="rgba(163,188,203,.16)" />
-                  <XAxis dataKey="x" tick={{ fill: '#a3bccb', fontSize: 11 }} />
-                  <YAxis domain={[0, 1]} tick={{ fill: '#a3bccb', fontSize: 11 }} />
-                  <ReferenceLine y={0.05} stroke="#f08a4b" strokeDasharray="5 4" label={{ value: '0.05', fill: '#f08a4b', fontSize: 11, position: 'insideTopRight' }} />
-                  <Tooltip contentStyle={{ background: '#071e33', border: '1px solid #385367', borderRadius: 6, boxShadow: 'none' }} formatter={(v) => [nf(3).format(Number(v)), 'p-value']} labelFormatter={(l) => `Start: ${l}`} />
-                  <Line dataKey="v" stroke="#3fc28c" strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
+                  <CartesianGrid stroke="var(--linea)" strokeOpacity={0.4} strokeDasharray="2 5" vertical={false} />
+                  <XAxis dataKey="x" tick={{ fill: 'var(--niebla)', fontSize: 11 }} />
+                  <YAxis domain={[0, 1]} tick={{ fill: 'var(--niebla)', fontSize: 11 }} />
+                  <ReferenceLine y={0.05} stroke="var(--nino)" strokeDasharray="5 4" label={{ value: '0.05', fill: 'var(--nino)', fontSize: 11, position: 'insideTopRight' }} />
+                  <Tooltip contentStyle={{ background: 'var(--profundo)', border: '1px solid var(--frio)', borderRadius: 6, boxShadow: 'none' }} formatter={(v) => [nf(3).format(Number(v)), 'p-value']} labelFormatter={(l) => `Start: ${l}`} />
+                  <Line dataKey="v" stroke="var(--fito)" strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
             </figure>
