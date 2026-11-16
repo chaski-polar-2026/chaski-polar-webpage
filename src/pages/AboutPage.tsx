@@ -11,7 +11,6 @@ import AppShell from '../layouts/AppShell'
 import { PipelineDiagrama } from '../features/guias/GuiasInvestigacion'
 import '../features/guias/guias.css'
 
-const PENDIENTE = 'To be confirmed by the team.'
 
 export default function AboutPage() {
   const reveal = useSectionReveal()
