@@ -17,6 +17,8 @@ const VELOCIDAD_PERSECUCION_PINGUINO = 6.75;
 const VELOCIDAD_INMERSION = 5;
 const ALTURA_ENTRADA = 17; // superficie del hielo voxel: y = 15.2
 const ALTURA_AGUA = 11;
+const ALTURA_CAMARA_MAX = 14; // bajo el techo de hielo (y = 15.2)
+const MARGEN_SUELO = 0.8; // Kiri mide 2.6: no se hunde en el relieve
 // Un factor mayor reduce el tiempo entre apariciones; el máximo es el tamaño del grupo.
 const FACTOR_APARICION_PINGUINOS = 1.5;
 const INTERVALO_APARICION = 6;
@@ -38,14 +40,14 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
     const sol = new THREE.DirectionalLight(0xfff4e0, 2);
     sol.position.set(14, 30, 8);
     escena.add(sol);
-    const { rayos, nieve } = crearFondoKiriVoxel(escena);
+    const { rayos, nieve, suelo, empujar } = crearFondoKiriVoxel(escena);
     const movimientoReducido = matchMedia('(prefers-reduced-motion: reduce)');
     const dibujoKiri = sprite("kiri", dibujarKiri);
     const kiri = crearPersonaje(escena, dibujoKiri, { ancho: 2.6, alto: 2.6, suelo: 0 });
     kiri.sprite.visible = false;
     const kiriVoxel = crearPersonajeVoxel(escena, dibujoKiri, 0.08, 2);
     kiri.posicion.set(0, ALTURA_NADO, 0);
-    const seguidor = crearSeguidor(camara, renderer.domElement, kiri.posicion, { libre: true });
+    const seguidor = crearSeguidor(camara, renderer.domElement, kiri.posicion, { libre: true, suelo, alturaMax: ALTURA_CAMARA_MAX });
 
     const dibujoPinguino = sprite("pinguino", dibujarPinguino), dibujoFito = sprite("fito", dibujarFito);
     const pinguinos: Pinguino[] = Array.from({ length: 3 }, (_, i) => {
@@ -55,7 +57,7 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
       voxel.visible = false;
       return { p, voxel, estado: "espera" as const, dur: i * 2, entrada: new THREE.Vector3() };
     });
-    const colocar = (f: Personaje) => { const a = azar(0, Math.PI * 2), d = azar(3, 22); f.posicion.set(Math.cos(a) * d, azar(2, 9), Math.sin(a) * d); };
+    const colocar = (f: Personaje) => { const a = azar(0, Math.PI * 2), d = azar(3, 22), x = Math.cos(a) * d, z = Math.sin(a) * d; f.posicion.set(x, Math.max(azar(2, 9), suelo(x, z) + 1), z); };
     const fitos = Array.from({ length: 14 }, () => {
       const f = crearPersonaje(escena, dibujoFito, { ancho: 1.4, alto: 1.4, suelo: 0 });
       f.sprite.visible = false;
@@ -76,9 +78,11 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
         mov.multiplyScalar(aturdido > 0 ? 2 : VELOCIDAD);
         vel.lerp(mov, 1 - Math.pow(0.002, dt));
         kiri.posicion.addScaledVector(vel, dt);
-        if (!detenido) kiri.posicion.y = THREE.MathUtils.clamp(kiri.posicion.y + entrada.vertical() * VELOCIDAD * dt, 1.5, 11);
         const horizontal = Math.hypot(kiri.posicion.x, kiri.posicion.z);
         if (horizontal > LIMITE) { kiri.posicion.x *= LIMITE / horizontal; kiri.posicion.z *= LIMITE / horizontal; }
+        empujar(kiri.posicion, 1);
+        if (!detenido) kiri.posicion.y += entrada.vertical() * VELOCIDAD * dt;
+        kiri.posicion.y = THREE.MathUtils.clamp(kiri.posicion.y, Math.min(11, Math.max(1.5, suelo(kiri.posicion.x, kiri.posicion.z) + MARGEN_SUELO)), 11);
         seguidor.seguir(kiri.posicion);
         kiri.animar(t, vel, seguidor.derecha, VELOCIDAD);
         kiriVoxel.position.copy(kiri.posicion); mirarALaCamara(kiriVoxel, camara);

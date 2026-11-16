@@ -28,9 +28,14 @@ export interface OpcionesSeguidor {
   inclinacionLimites?: [number, number];
   /** cuánto se inclina la cámara por cada unidad de velocidad vertical (0 = nada) */
   inclinacionVertical?: number;
+  /** altura del suelo en (x, z): la cámara no baja de ahí (más un margen) para no meterse en el relieve */
+  suelo?: (x: number, z: number) => number;
+  /** altura máxima de la cámara (por ejemplo, el techo de hielo) */
+  alturaMax?: number;
 }
 
 const ESPERA_RECENTRAR = 1.5; // segundos sin tocar el ratón antes de volver detrás del personaje
+const MARGEN_CAMARA = 0.6; // separación mínima entre la cámara y el suelo
 const SUAVIZADO_ALTURA = 6; // cuán rápido sigue la cámara los cambios de profundidad (por segundo)
 
 export function crearSeguidor(camara: THREE.PerspectiveCamera, elemento: HTMLElement, inicio: THREE.Vector3, opciones: OpcionesSeguidor = {}): Seguidor {
@@ -93,6 +98,8 @@ export function crearSeguidor(camara: THREE.PerspectiveCamera, elemento: HTMLEle
         camara.position.copy(controles.target).add(desplazamiento.setFromSpherical(esfera));
       }
       controles.update();
+      if (opciones.suelo) camara.position.y = Math.max(camara.position.y, opciones.suelo(camara.position.x, camara.position.z) + MARGEN_CAMARA);
+      if (opciones.alturaMax !== undefined) camara.position.y = Math.min(camara.position.y, opciones.alturaMax);
       camara.getWorldDirection(adelante);
       adelante.y = 0;
       adelante.normalize();

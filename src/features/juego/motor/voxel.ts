@@ -33,7 +33,14 @@ function roca(cubos: Cubo[], altura: (x: number, z: number) => number, cx: numbe
 }
 
 /** Construye un fondo antártico amplio con las proporciones voxel del prototipo original. */
-export function crearFondoKiriVoxel(escena: THREE.Scene): { rayos: THREE.Mesh[]; nieve: THREE.Points } {
+export function crearFondoKiriVoxel(escena: THREE.Scene): {
+  rayos: THREE.Mesh[]; nieve: THREE.Points
+  /** altura (unidades de escena) de la superficie sólida en (x, z): relieve, rocas y bloques decorativos */
+  suelo(x: number, z: number): number
+  /** saca a un cuerpo de radio dado de las torres de roca (columnas macizas) */
+  empujar(p: THREE.Vector3, radio: number): void
+} {
+  const rocas: [number, number, number, number][] = [], torres: [number, number, number, number][] = [], bloques: [number, number, number, number][] = []
   const cubos: Cubo[] = []
   const radio = 150
   const enMundo = (x: number, z: number) => Math.hypot(x, z) <= radio
@@ -48,10 +55,13 @@ export function crearFondoKiriVoxel(escena: THREE.Scene): { rayos: THREE.Mesh[];
   }
   for (let i = 0; i < 30; i++) {
     const a = i * 2.399, d = 110 + (i * 37) % 40
-    roca(cubos, altura, Math.round(Math.cos(a) * d), Math.round(Math.sin(a) * d), 6 + (i % 8), 0.8)
+    const rx = Math.round(Math.cos(a) * d), rz = Math.round(Math.sin(a) * d), rr = 6 + (i % 8)
+    rocas.push([rx, rz, rr, altura(rx, rz)])
+    roca(cubos, altura, rx, rz, rr, 0.8)
   }
   for (let i = 0; i < 10; i++) {
     const a = i * 2.399, d = 130, cx = Math.round(Math.cos(a) * d), cz = Math.round(Math.sin(a) * d), alto = 25 + (i * 13) % 36, base = altura(cx, cz)
+    torres.push([cx, cz, base, alto])
     for (let y = 0; y < alto; y++) {
       const r = Math.max(1.5, 5 * (1 - y / alto * 0.7))
       for (let x = -6; x <= 6; x++) for (let z = -6; z <= 6; z++) if (Math.hypot(x, z) < r && Math.hypot(x, z) > r - 1.5) cubos.push([cx + x, base + y, cz + z, elegir(PIEDRA, x + y + z)])
@@ -62,6 +72,7 @@ export function crearFondoKiriVoxel(escena: THREE.Scene): { rayos: THREE.Mesh[];
     const a = i * 2.399, d = 25 + (i * 19) % 105, x0 = Math.round(Math.cos(a) * d), z0 = Math.round(Math.sin(a) * d), h = altura(x0, z0) + 1, color = decoracion[i % decoracion.length]!
     if (i % 3) {
       const alto = 4 + i % 8, r = i % 4 ? 1 : 2
+      bloques.push([x0, z0, r, h + alto - 1])
       for (let y = 0; y < alto; y++) for (let x = -r; x <= r; x++) for (let z = -r; z <= r; z++) if (Math.max(Math.abs(x), Math.abs(z)) === r || y === 0) cubos.push([x0 + x, h + y, z0 + z, color])
     } else for (let k = 0; k < 5; k++) for (let l = 0; l <= 4; l++) { const g = k / 5 * Math.PI * 2; cubos.push([x0 + Math.round(Math.cos(g) * l), h, z0 + Math.round(Math.sin(g) * l), color]) }
   }
@@ -94,7 +105,31 @@ export function crearFondoKiriVoxel(escena: THREE.Scene): { rayos: THREE.Mesh[];
   geometriaNieve.setAttribute('position', new THREE.BufferAttribute(posiciones, 3))
   const nieve = new THREE.Points(geometriaNieve, sinContorno(new THREE.PointsMaterial({ color: 0xffffff, size: 0.09, transparent: true, opacity: 0.7, depthWrite: false })))
   escena.add(nieve)
-  return { rayos, nieve }
+  const suelo = (x: number, z: number) => {
+    const xv = x / VOXEL, zv = z / VOXEL
+    let alto = altura(Math.round(xv), Math.round(zv))
+    for (const [cx, cz, r, base] of rocas) {
+      const d = Math.hypot(xv - cx, zv - cz)
+      if (d < r) alto = Math.max(alto, base + 0.8 * Math.sqrt(r * r - d * d) + 1)
+    }
+    for (const [bx, bz, r, tope] of bloques) if (Math.abs(xv - bx) <= r + 0.5 && Math.abs(zv - bz) <= r + 0.5) alto = Math.max(alto, tope)
+    return alto * VOXEL + VOXEL / 2
+  }
+  const empujar = (p: THREE.Vector3, radio: number) => {
+    const yv = p.y / VOXEL
+    for (const [cx, cz, base, alto] of torres) {
+      const rel = yv - base
+      if (rel < -radio / VOXEL || rel > alto + radio / VOXEL) continue
+      const r = (Math.max(1.5, 5 * (1 - Math.min(Math.max(rel, 0), alto) / alto * 0.7)) + 0.5) * VOXEL + radio
+      const dx = p.x - cx * VOXEL, dz = p.z - cz * VOXEL, d = Math.hypot(dx, dz)
+      if (d < r) {
+        const k = d > 1e-4 ? r / d : 0
+        p.x = cx * VOXEL + (k ? dx * k : r)
+        p.z = cz * VOXEL + (k ? dz * k : 0)
+      }
+    }
+  }
+  return { rayos, nieve, suelo, empujar }
 }
 
 export function crearPersonajeVoxel(escena: THREE.Scene, canvas: HTMLCanvasElement, tamaño = PIXEL_VOXEL, profundidad = 1): THREE.InstancedMesh {
@@ -151,6 +186,13 @@ export function crearFondoCardumenVoxel(escena: THREE.Scene, zMin: number, zMax:
   escena.add(lecho)
 }
 
+/** Altura de la superficie de arena del lecho del Cardumen en (x, z), con la misma fórmula del dibujo. */
+export function alturaSueloCardumen(x: number, z: number): number {
+  const xv = Math.round(x / VOXEL / 4) * 4, zv = Math.round(z / VOXEL / 4) * 4
+  const h = -1 + Math.round(Math.sin(xv * 0.09) + Math.cos(zv * 0.04) + Math.sin((xv + zv) * 0.035))
+  return -14 + h * VOXEL + VOXEL * 2
+}
+
 /** Fondo rocoso y placas de hielo para Lumi, ajustado a su corredor lateral original. */
 export function crearEntornoLumiVoxel(escena: THREE.Scene): void {
   const cubos: Cubo[] = []
@@ -167,11 +209,27 @@ export function crearEntornoLumiVoxel(escena: THREE.Scene): void {
   }
   // Unidades del corredor de Lumi: cubo de escena de 0.2, suelo bajo Y_MIN.
   const malla = instanciar(cubos, new THREE.BoxGeometry(VOXEL, VOXEL, VOXEL))
-  malla.position.set(0, Y_MIN_LUMI, -4)
+  malla.position.set(0, Y_MIN_LUMI, Z_LUMI)
   escena.add(malla)
 }
 
 const Y_MIN_LUMI = -14
+const Z_LUMI = -4
+
+/** Altura del lecho de Lumi en (x, z), con relieve y rocas como en crearEntornoLumiVoxel. */
+export function alturaSueloLumi(x: number, z: number): number {
+  const xv = x / VOXEL, zv = (z - Z_LUMI) / VOXEL
+  let alto = -1
+  if (Math.abs(xv) <= 90.5 && Math.abs(zv) <= 18.5) {
+    const ax = Math.round(xv), az = Math.round(zv)
+    alto = Math.round(2 + Math.sin(ax * 0.08) * 1.4 + Math.cos(az * 0.19) * 0.8)
+  }
+  for (let i = 0; i < 16; i++) {
+    const cx = -82 + i * 11, cz = i % 2 ? -14 : 14, radio = 3 + i % 3, d = Math.hypot(xv - cx, zv - cz)
+    if (d < radio) alto = Math.max(alto, 3 + 0.8 * Math.sqrt(radio * radio - d * d) + 1)
+  }
+  return Y_MIN_LUMI + alto * VOXEL + VOXEL / 2
+}
 
 /** Placa formada por cubos y carámbanos cortos; la escena anima su grupo como antes. */
 export function crearPlacaHieloVoxel(escena: THREE.Scene, ancho: number, profundidad: number): THREE.Group {
