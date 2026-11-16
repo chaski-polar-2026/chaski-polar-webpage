@@ -8,21 +8,34 @@ export function IconoSello({ pequeno = false }: { pequeno?: boolean }) {
   </svg>
 }
 
-/** Sello de goma dibujado (mango de madera, cuerpo metalico, base de goma) sobre su almohadilla de tinta. */
+/** Sello de goma en pixel art (mango de madera, banda metalica, goma de color) sobre su almohadilla de tinta. */
+const SELLO_CUERPO = [
+  '........wwww........',
+  '.......wWWWWw.......',
+  '.......wWWWWw.......',
+  '........wwww........',
+  '.........wWw........',
+  '.........wWw........',
+  '.........wWw........',
+  '.....mMMMMMMMMm.....',
+  '.....mmmmmmmmmm.....',
+  '....cCCCCCCCCCCc....',
+  '....cCCCCCCCCCCc....',
+  '....cccccccccccc....',
+]
+const SELLO_ALMOHADILLA = [
+  '..pppppppppppppppp..',
+  '..pIIIIIIIIIIIIIIp..',
+  '..pIIIIIIIIIIIIIIp..',
+  '..pppppppppppppppp..',
+]
 export function SelloGrande({ color }: { color: 'verde' | 'rojo' }) {
-  const tinta = color === 'verde' ? '#3fa66b' : '#c0453a', tintaOsc = color === 'verde' ? '#1f6f47' : '#8f2f29'
-  return <svg className="sello-dibujo" viewBox="0 0 120 120" width={120} height={120} aria-hidden="true" focusable="false">
-    <rect x="8" y="88" width="104" height="26" rx="5" fill="#16202a" stroke="#3a4a58" strokeWidth="2" />
-    <rect x="14" y="92" width="92" height="14" rx="3" fill={tintaOsc} />
-    <rect x="20" y="94" width="80" height="6" rx="3" fill={tinta} opacity=".8" />
-    <g className="sello-cuerpo">
-      <ellipse cx="60" cy="14" rx="15" ry="9" fill="#b07a44" stroke="#6b4423" strokeWidth="2" />
-      <path d="M52 20h16l5 30H47z" fill="#c68b4e" stroke="#6b4423" strokeWidth="2" strokeLinejoin="round" />
-      <rect x="30" y="50" width="60" height="14" rx="3" fill="#8e9ba8" stroke="#4d5a66" strokeWidth="2" />
-      <rect x="34" y="53" width="52" height="3" rx="1.5" fill="#c6d0d9" />
-      <rect x="32" y="64" width="56" height="12" rx="3" fill={tinta} stroke={tintaOsc} strokeWidth="2" />
-      <path d="M44 70h32" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" opacity=".55" />
-    </g>
+  const tinta = color === 'verde' ? '#3fa66b' : '#c0453a', oscuro = color === 'verde' ? '#1f6f47' : '#8f2f29'
+  const paleta: Record<string, string> = { w: '#8a5a2e', W: '#c68b4e', m: '#7d8b98', M: '#c6d0d9', C: tinta, c: oscuro, p: '#3a4a58', I: oscuro }
+  const celdas = (filas: string[], y0: number) => filas.flatMap((fila, y) => [...fila].map((ch, x) => paleta[ch] ? <rect key={`${y}-${x}`} x={x * 6} y={(y0 + y) * 6} width={6} height={6} fill={paleta[ch]} /> : null))
+  return <svg className="sello-dibujo" viewBox="0 0 120 108" width={120} height={108} shapeRendering="crispEdges" aria-hidden="true" focusable="false">
+    <g>{celdas(SELLO_ALMOHADILLA, 14)}</g>
+    <g className="sello-cuerpo">{celdas(SELLO_CUERPO, 1)}</g>
   </svg>
 }
 
