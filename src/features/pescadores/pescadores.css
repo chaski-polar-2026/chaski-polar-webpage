@@ -55,3 +55,5 @@
 
 .pesc-ficha header > .pesc-ilus { flex: 0 0 100%; width: 100%; max-width: 120px; height: 54px; margin: 0 0 4px; }
 .pesc-ficha header > h3 { margin-right: 4px; }
+.pesc-ilus.pesc-ilus-img { height: auto !important; max-height: 72px; object-fit: contain; object-position: left center; margin: 0 0 4px; }
+.vista-zona-peces .pesc-ilus.pesc-ilus-img { max-height: 44px; object-position: center; }

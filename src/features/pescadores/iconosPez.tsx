@@ -28,6 +28,14 @@ const ILUSTRACIONES: Record<string, ReactNode> = {
 /** Silueta genérica por grupo, para especies sin ilustración propia. */
 const GENERICAS: Record<string, string> = { 'pelagic fish': 'anchoveta', 'demersal fish': 'cachema', mollusc: 'concha_abanico' }
 
+/** Ilustraciones por especie (imagen con fondo transparente). Las dimensiones evitan saltos de diseño. */
+const IMAGENES: Record<string, [number, number]> = {
+  anchoveta: [640, 199], pota: [640, 163], concha_abanico: [640, 527], pulpo: [640, 327], merluza: [640, 201], cachema: [640, 243],
+  jurel: [640, 254], perico: [640, 272], caballa: [640, 242], bonito: [640, 248], lorna: [640, 321], corvina: [640, 225],
+}
+
 export function iconoPez(id: string, grupo: string): ReactNode {
+  const t = IMAGENES[id]
+  if (t) return <img className="pesc-ilus pesc-ilus-img" src={`/assets/especies/ilus-${id}.webp`} alt="" aria-hidden="true" width={t[0]} height={t[1]} loading="lazy" />
   return ILUSTRACIONES[id] ?? ILUSTRACIONES[GENERICAS[grupo] ?? 'anchoveta']
 }
