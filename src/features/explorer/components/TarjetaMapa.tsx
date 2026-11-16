@@ -133,11 +133,17 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
               <stop offset=".45" stopColor="#3fc28c" stopOpacity=".6" />
               <stop offset="1" stopColor="#3fc28c" stopOpacity="0" />
             </radialGradient>
+            <filter id={`${id}-planos`} x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
+              <feGaussianBlur stdDeviation="3.2" />
+              <feComponentTransfer>
+                {(['R', 'G', 'B'] as const).map((c) => { const Fn = `feFunc${c}` as 'feFuncR'; return <Fn key={c} type="discrete" tableValues="0.05 0.18 0.3 0.42 0.54 0.66 0.78 0.9 1" /> })}
+              </feComponentTransfer>
+            </filter>
             <clipPath id={`${id}-recorte`}><polygon points={tierra} /></clipPath>
           </defs>
           {/* Mar: degradado perpendicular a la costa, bandas de profundidad y olas */}
           <rect x={x0 - 300} y={y0 - 300} width={ancho + 600} height={alto + 600} fill={`url(#${id}-mar)`} />
-          {campo && <image href={campo.url} x={px(campo.lonO)} y={py(campo.latN)} width={(campo.lonE - campo.lonO) * K} height={(campo.latN - campo.latS) * K} preserveAspectRatio="none" style={{ imageRendering: 'pixelated' }} />}
+          {campo && <image href={campo.url} x={px(campo.lonO)} y={py(campo.latN)} width={(campo.lonE - campo.lonO) * K} height={(campo.latN - campo.latS) * K} preserveAspectRatio="none" filter={`url(#${id}-planos)`} />}
           <path d={olas} fill="none" stroke="#8fe3f2" strokeOpacity=".18" strokeWidth=".6" strokeLinecap="round" />
           {/* Tierra: arena cerca de la costa, ocre y pardo hacia el interior, sierras y sombra */}
           <polygon points={tierra} fill={`url(#${id}-suelo)`} />
