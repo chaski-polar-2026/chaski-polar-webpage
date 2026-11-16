@@ -1,6 +1,6 @@
 .tarjeta-mapa { position: absolute; right: 12px; top: 12px; z-index: 5; width: 190px; padding: 8px; border: 1px solid rgba(143, 227, 242, .35); border-radius: 8px; background: rgba(7, 30, 51, .82); box-shadow: 0 0 18px rgba(99, 205, 232, .12); pointer-events: auto; }
 .tarjeta-mapa-titulo { margin: 0 0 6px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: #8fe3f2; }
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .tarjeta-mapa { width: auto; padding: 0; border: 0; background: none; box-shadow: none; top: 268px; right: auto; left: 8px; bottom: auto; }
   .tarjeta-mapa .pesc-mapa, .tarjeta-mapa-titulo { display: none; }
   .tarjeta-mapa:not(:has(.tarjeta-mapa-ampliar)) { display: none; }
@@ -65,7 +65,7 @@
 .vista-zona-biologia .zona-biologia { border-top: 0; margin-top: 0; padding-top: 0; }
 .zona-pescadores { display: inline-block; padding: 10px 0; color: #8fe3f2; }
 .vista-zona :is(button,a,summary):focus-visible { outline: 2px solid #8fe3f2; outline-offset: 3px; }
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .tarjeta-mapa > .zona-mapa { display: none; }
   .vista-zona { inset: 6px; padding: 10px; }
   .vista-zona-barra { gap: 8px; }
@@ -94,7 +94,7 @@
 
 /* Keep the compact left column and timeline tracks unchanged; only the zone stage spans both rows. */
 .zona-escena-titulo { display: none; }
-@media (min-width: 901px) {
+@media (min-width: 1101px) {
   .lienzo-globo:is([data-zone-phase="map"], [data-zone-phase="returning"]) > .globe-stage { grid-row: 1 / -1; }
   .vista-zona-titulo-en-escena { display: none; }
   .zona-escena-imagen { position: relative; isolation: isolate; }

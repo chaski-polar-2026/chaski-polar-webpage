@@ -12,7 +12,7 @@
 .recorrido-tarjeta details { border-top:1px solid #24507a; padding:12px 0; }
 .recorrido-tarjeta summary { cursor:pointer; }
 .recorrido-tarjeta :focus-visible,.recorrido-controles :focus-visible { outline:2px solid #8fe3f2; outline-offset:3px; }
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .recorrido-controles { gap: 4px; }
   .recorrido-controles button { padding: 6px 8px; font-size: .76rem; }
 }

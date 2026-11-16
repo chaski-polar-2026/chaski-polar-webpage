@@ -33,7 +33,7 @@ import GlobeLegend, { INITIAL_LAYERS } from './GlobeLegend'
 import './layout-izquierda.css'
 import ColumnIcon from './ColumnIcon'
 
-const desktopQuery = window.matchMedia('(min-width: 901px)')
+const desktopQuery = window.matchMedia('(min-width: 1101px)')
 const subscribeDesktop = (notify: () => void) => {
   desktopQuery.addEventListener('change', notify)
   return () => desktopQuery.removeEventListener('change', notify)
@@ -109,7 +109,7 @@ export default function GlobePanel() {
     const anterior = vistaAnterior.current
     vistaAnterior.current = { panel, section }
     if (anterior.panel === panel && anterior.section === section) return
-    if (window.matchMedia('(max-width: 900px)').matches) return
+    if (window.matchMedia('(max-width: 1100px)').matches) return
     const escenario = lienzo.current?.parentElement
     if (escenario && escenario.getBoundingClientRect().top < -2) {
       window.scrollTo({ top: escenario.offsetTop, behavior: menosMovimiento ? 'auto' : 'smooth' })

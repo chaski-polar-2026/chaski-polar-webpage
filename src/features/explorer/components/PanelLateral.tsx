@@ -9,12 +9,12 @@ export default function PanelLateral({ titulo, children }: { titulo: string; chi
   const panel = useExplorerStore(s => s.panel)
   const section = useExplorerStore(s => s.section)
   const phase = useExplorerStore(s => s.zonePhase)
-  const [movil, setMovil] = useState(() => window.matchMedia('(max-width: 900px)').matches)
+  const [movil, setMovil] = useState(() => window.matchMedia('(max-width: 1100px)').matches)
   const boton = useRef<HTMLButtonElement>(null)
   const cuerpo = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const media = window.matchMedia('(max-width: 900px)')
+    const media = window.matchMedia('(max-width: 1100px)')
     const cambiar = () => setMovil(media.matches)
     media.addEventListener('change', cambiar)
     return () => media.removeEventListener('change', cambiar)
