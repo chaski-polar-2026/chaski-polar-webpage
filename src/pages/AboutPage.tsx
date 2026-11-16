@@ -90,7 +90,7 @@ export default function AboutPage() {
         <h2 id="t-ai">Use of AI</h2>
         <p><strong>AI as a development tool.</strong> AI assistants were used as support during development, analysis, debugging and writing. The team set the questions, the statistical criteria and the rules for results, and the assistants worked within them.</p>
         <p><strong>AI as part of the solution: no.</strong> The website, the games and the analyses do not call any AI service and contain no machine-learning model. The outlooks use simple regressions and persistence. All interface text is fixed.</p>
-        <p className="nota">Details on the tools used and on any AI-generated design material: {PENDIENTE}</p>
+        <p className="nota">Details on the tools used and on AI-generated design material are listed under Credits below.</p>
       </section>
 
       <section className="seccion pescadores" id="games" aria-labelledby="t-games">
@@ -102,9 +102,9 @@ export default function AboutPage() {
         <h2 id="t-credits">Credits, license and code</h2>
         <ul className="about-lista">
           <li><strong>Team members and roles:</strong> {PENDIENTE}</li>
-          <li><strong>Design tools and assets:</strong> {PENDIENTE}</li>
+          <li><strong>Design tools and assets:</strong> The species, port, Antarctic, krill and penguin illustrations were generated with Google Gemini and then cleaned up (background removal, cropping, compression) by the team. Some vector maps, diagrams and icons were drawn with the help of OpenAI Codex and are shared under CC BY 4.0. Coastlines come from Natural Earth. The maps and illustrations are schematic and not to scale. No photographs or third-party images are used.</li>
           <li><strong>License:</strong> {PENDIENTE}</li>
-          <li><strong>Code and reproducibility:</strong> {PENDIENTE}</li>
+          <li><strong>Code and reproducibility:</strong> The website and the analyses were written by the team with AI coding assistants (OpenAI Codex and Claude Code), as described under Use of AI. The data are public and open (see Data), and the analysis code is in the project&apos;s data repository.</li>
         </ul>
       </section>
       <footer className="pie">Chaski Polar · The relationships shown here are associations, not proof of causation.</footer>
