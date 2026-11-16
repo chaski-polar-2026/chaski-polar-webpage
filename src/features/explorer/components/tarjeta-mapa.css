@@ -91,3 +91,17 @@
 .zona-fauna figcaption { margin-top: 4px; font-size: .75rem; opacity: .85; }
 @media (max-width: 700px) { .zona-escena img { height: 90px; } }
 .zona-mapa .zm-etiqueta { font-weight: 700; letter-spacing: .02em; filter: drop-shadow(0 .4px .7px rgba(3, 25, 45, .9)) drop-shadow(0 0 1.5px rgba(3, 25, 45, .6)); }
+
+/* Keep the compact left column and timeline tracks unchanged; only the zone stage spans both rows. */
+.zona-escena-titulo { display: none; }
+@media (min-width: 901px) {
+  .lienzo-globo:is([data-zone-phase="map"], [data-zone-phase="returning"]) > .globe-stage { grid-row: 1 / -1; }
+  .vista-zona-titulo-en-escena { display: none; }
+  .zona-escena-imagen { position: relative; isolation: isolate; }
+  .zona-escena-imagen img { height: 190px; border: 0; border-radius: 8px 8px 0 0; mask-image: linear-gradient(to bottom, black 55%, transparent 100%); }
+  .zona-escena-imagen::after { content: ''; position: absolute; z-index: 0; inset: 0; border-radius: 8px 8px 0 0; background: linear-gradient(to bottom, transparent 20%, rgb(7 30 51 / .8) 70%, var(--abismo)); pointer-events: none; }
+  .zona-escena-titulo { position: absolute; z-index: 1; inset: auto 20px 16px; display: flex; align-items: center; gap: 12px; color: var(--hielo); }
+  .zona-escena-titulo > svg { width: 24px; height: 24px; flex: none; color: var(--frio); }
+  .zona-escena-titulo h3 { margin: 0; font: 400 clamp(1.45rem, 2.2vw, 2rem)/1.15 var(--serif); }
+  .zona-escena-titulo .zona-region { margin: 4px 0 0; color: var(--cp-muted, var(--hielo)); }
+}
