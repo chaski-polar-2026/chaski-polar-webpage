@@ -48,6 +48,24 @@ const AYUDA: Record<EscenaPrologo | 'cardumen', string> = {
   cardumen: 'WASD: swim · Space: up · C: down · Shift: boost · F: gather',
 }
 
+const ACCIONES_VISOR = [
+  { etiqueta: 'Rise', icono: 'rise', teclas: [['SPACE', ' '], ['Q', 'q']] },
+  { etiqueta: 'Dive', icono: 'dive', teclas: [['C', 'c'], ['E', 'e']] },
+  { etiqueta: 'Boost', icono: 'boost', teclas: [['SHIFT', 'shift']] },
+  { etiqueta: 'Gather', icono: 'gather', teclas: [['F', 'f']] },
+] as const
+
+/** Decorative control symbols; the actual keyboard labels remain visible. */
+function IconoControl({ tipo }: { tipo: 'move' | typeof ACCIONES_VISOR[number]['icono'] }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+    {tipo === 'move' && <path d="M12 3v18M3 12h18M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3" />}
+    {tipo === 'rise' && <path d="M12 20V4M6 10l6-6 6 6" />}
+    {tipo === 'dive' && <path d="M12 4v16M6 14l6 6 6-6" />}
+    {tipo === 'boost' && <path d="m4 6 6 6-6 6m9-12 6 6-6 6" />}
+    {tipo === 'gather' && <><path d="M5 6H3v12h2m14-12h2V6h-2" /><circle cx="12" cy="8" r="1" /><circle cx="10" cy="15" r="1" /><circle cx="14" cy="15" r="1" /></>}
+  </svg>
+}
+
 /** Juego: mundo 3D con personajes dibujados en 2D */
 export default function JuegoPage() {
   const dialogoAbierto = useDialogo((s) => s.linea !== null)
@@ -268,8 +286,15 @@ export default function JuegoPage() {
     </div>}
     {pantalla.tipo !== 'menu' && !dialogoAbierto && !informe && !verFinal && !pausado && <div className="visor-teclas" aria-hidden="true">
       <span>CONTROLS</span><div className="visor-grupos">
-        {[ [['W', 'w'], ['A', 'a'], ['S', 's'], ['D', 'd']], [['↑', 'arrowup'], ['←', 'arrowleft'], ['↓', 'arrowdown'], ['→', 'arrowright']] ].map((grupo, i) => <div className="visor-cruz" key={i}>{grupo.map(([label, key], posicion) => <kbd key={key} className={`${posicion === 0 ? 'tecla-arriba ' : ''}${teclas.has(key) ? 'pulsada' : ''}`}>{label}</kbd>)}</div>)}
-        <div className="visor-acciones">{(pantalla.tipo === 'cardumen' || pantalla.escena === 'kiri' || pantalla.escena === 'lumi' ? [['SPACE', ' '], ['Q', 'q'], ['C', 'c'], ['E', 'e'], ...(pantalla.tipo === 'cardumen' ? [['SHIFT', 'shift'], ['F', 'f']] : [])] : []).map(([label, key]) => <kbd key={key} className={teclas.has(key) ? 'pulsada' : ''}>{label}</kbd>)}</div>
+        {[ [['W', 'w'], ['A', 'a'], ['S', 's'], ['D', 'd']], [['↑', 'arrowup'], ['←', 'arrowleft'], ['↓', 'arrowdown'], ['→', 'arrowright']] ].map((grupo, i) => <div className="visor-movimiento" key={i}>
+          {i === 1 && <span className="visor-alternativa">or</span>}
+          <div className="visor-cruz">{grupo.map(([label, key], posicion) => <kbd key={key} className={`${posicion === 0 ? 'tecla-arriba ' : ''}${teclas.has(key) ? 'pulsada' : ''}`}>{label}</kbd>)}</div>
+          <span className="visor-etiqueta"><IconoControl tipo="move" />Move</span>
+        </div>)}
+        <div className="visor-acciones">{(pantalla.tipo === 'cardumen' ? ACCIONES_VISOR : pantalla.escena === 'kiri' || pantalla.escena === 'lumi' ? ACCIONES_VISOR.slice(0, 2) : []).map((grupo) => <div className="visor-accion" key={grupo.icono}>
+          <div className="visor-pareja">{grupo.teclas.map(([label, key]) => <kbd key={key} className={teclas.has(key) ? 'pulsada' : ''}>{label}<IconoControl tipo={grupo.icono} /></kbd>)}</div>
+          <span className="visor-etiqueta">{grupo.icono === 'gather' && compacto ? 'Spread' : grupo.etiqueta}</span>
+        </div>)}</div>
       </div>
     </div>}
     {pausado && <div className="pausa-velo" role="dialog" aria-modal="true" aria-labelledby="pausa-titulo"><div className="pausa-panel juego-caja"><span>LOGBOOK · ON HOLD</span><h2 id="pausa-titulo">Game paused</h2><p>The expedition is paused. Take a moment.</p><button autoFocus type="button" className="juego-caja principal" onClick={() => setPausado(false)}>Continue <kbd>ESC</kbd></button></div></div>}
