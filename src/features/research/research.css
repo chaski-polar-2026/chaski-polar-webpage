@@ -1,4 +1,21 @@
 .research-page { padding-top: 56px; }
+.bibliografia-especies { scroll-margin-top: 80px; }
+.bibliografia-especies > p { max-width: 78ch; color: var(--niebla); }
+.bibliografia-especies h3 { margin: 24px 0 8px; font-size: 1.15rem; }
+.bibliografia-lista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 32px; margin: 0; padding-left: 22px; }
+.bibliografia-lista li { min-width: 0; padding: 14px 0; border-top: 1px solid var(--linea); overflow-wrap: anywhere; }
+.bibliografia-lista li::marker { color: var(--tenue); font-size: .8rem; }
+.bibliografia-lista p { margin: 0; }
+.bibliografia-autores, .bibliografia-publicacion { color: var(--niebla); font-size: .8rem; line-height: 1.5; }
+.bibliografia-lista cite { display: block; margin: 6px 0; font-style: normal; font-size: .95rem; line-height: 1.5; }
+.bibliografia-lista a, .bibliografia-datos a { color: var(--frio); text-underline-offset: 3px; }
+.bibliografia-lista .bibliografia-alcance { margin-top: 8px; color: var(--niebla); font-size: .85rem; line-height: 1.5; }
+.bibliografia-datos, .bibliografia-fecha { font-size: .82rem; line-height: 1.5; }
+.bibliografia-contexto { margin-top: 20px; border-top: 1px solid var(--linea); }
+.bibliografia-contexto > summary { min-height: 44px; padding: 12px 0; color: var(--frio); cursor: pointer; }
+.bibliografia-contexto > p { max-width: 78ch; color: var(--niebla); font-size: .9rem; }
+.bibliografia-especies :is(a, summary):focus-visible { outline: 2px solid var(--frio); outline-offset: 3px; }
+@media (max-width: 700px) { .bibliografia-lista { grid-template-columns: 1fr; gap: 0; } }
 .research-page .puente-explorador { min-height: 0; padding: 48px clamp(20px, 6vw, 80px) 40px; }
 .research-page .puente-hilo { height: 44px; }
 .research-page .seccion { padding: clamp(32px, 5vw, 56px) clamp(20px, 4vw, 48px); }
@@ -22,6 +39,16 @@
 .research-question > summary { min-height: 44px; padding: 10px 0; cursor: pointer; color: var(--frio); font-size: 1.1rem; border-bottom: 1px solid var(--linea); }
 .research-question[open] > blockquote { margin: 16px 0; }
 .research-question .cuerpo { max-width: 80ch; }
+.research-question#conexion-antartida .cuerpo { padding-block: 20px 24px; }
+.research-question#conexion-antartida .cuerpo > h2:first-child { margin-top: 0; }
+.antartida-tabla { max-width: 100%; overflow-x: auto; margin: 20px 0; }
+.antartida-tabla:focus-visible { outline: 2px solid var(--frio); outline-offset: 4px; }
+.antartida-tabla table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.antartida-tabla caption { text-align: left; color: var(--niebla); padding-bottom: 12px; }
+.antartida-tabla th, .antartida-tabla td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--linea); }
+.antartida-tabla thead th { color: var(--frio); }
+.antartida-tabla tbody th { color: var(--hielo); font-weight: 400; }
+.antartida-tabla td { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .research-page #anchoveta-response > h2 { margin-top: 0; }
 @media (max-width: 760px) {
   .research-page { padding-top: 52px; }

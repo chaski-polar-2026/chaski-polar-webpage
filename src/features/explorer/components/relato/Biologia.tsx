@@ -43,11 +43,16 @@ export default function Biologia({ zona }: { zona?: IdZona }) {
   const dato = valor != null && Number.isFinite(valor) ? valor : null
   return <section className="peces-panel">
     <h2>Fish biological response</h2>
+    <div className="peces-filtros">
     <label>Coastal zone <select value={z} onChange={e => acciones.irAZona(e.target.value as IdZona)}>{modelo.ids.filter(esPeru).map(id => <option key={id} value={id}>{modelo.zona(id).nombre}</option>)}</select></label>
-    <p><strong>{new Date(Date.UTC(fecha.anio, fecha.mes, 1)).toLocaleDateString('en', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</strong> · {modelo.zona(z).nombre}</p>
+    <label>Fish <select value={especie} onChange={e => setEspecie(e.target.value)}><option value="all">All fish</option>{peces.map(p => <option key={p.id} value={p.id}>{p.common_name_es}</option>)}</select></label>
+    </div>
+    <p className="peces-fecha"><strong>{new Date(Date.UTC(fecha.anio, fecha.mes, 1)).toLocaleDateString('en', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</strong> · {modelo.zona(z).nombre}</p>
+    <p className="nota peces-resumen">Species records and laboratory findings, not a catch forecast.</p>
+    <details className="peces-ayuda"><summary>How to read these records</summary>
     <p className="nota">Choose a zone here or on the globe, and use the timeline to explore another month.</p>
     <p className="nota">Closeness to recorded temperatures compares the selected surface temperature with observations in a matching context. Recorded temperatures are not tolerance limits or optima and do not indicate wellbeing or fishing probability. Species are not ranked.</p>
-    <label>Fish <select value={especie} onChange={e => setEspecie(e.target.value)}><option value="all">All fish</option>{peces.map(p => <option key={p.id} value={p.id}>{p.common_name_es}</option>)}</select></label>
+    </details>
     <div className="peces-lista">{peces.filter(p => especie === 'all' || p.id === especie).map(pez => {
       const referencia = rango(pez.recorded_temperature, fecha.mes)
       const distancia = referencia && dato != null ? Math.max(referencia.min - dato, 0, dato - referencia.max) : null
@@ -61,7 +66,6 @@ export default function Biologia({ zona }: { zona?: IdZona }) {
           <p className="nota">{pez.temperature_note} {enlace && <a href={enlace} target="_blank" rel="noreferrer">Source ({referencia.fuente.page_or_table})</a>}</p>
         </div> : <p className="nota">No comparable data{referencia && dato == null ? ' for this month' : ''}.</p>}
         <TarjetaCondiciones id={pez.id} mes={fecha.mes} tempComparable={!!(referencia && dato != null)} />
-        {pez.id === 'merluza' && pez.depth_note && <p className="nota">{pez.depth_note} Recorded fishing depth is not a physiological limit.</p>}
       </article>
     })}</div>
   </section>

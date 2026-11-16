@@ -2,6 +2,8 @@
    El navegador solo permite sonar después de que el jugador toca algo, por eso el audio se crea al primer gesto.
    La preferencia de silencio se recuerda en este navegador. */
 
+import { iniciarMusica } from './musica';
+
 export type Sonido = "comer" | "golpe" | "aviso" | "dialogo" | "division" | "exito" | "boton";
 
 const CLAVE = "juego-silencio";
@@ -94,7 +96,7 @@ export function sonar(s: Sonido): void {
   }
 }
 
-/** Fondo submarino suave: ruido filtrado que respira lentamente */
+/** Fondo submarino con música de consola y ruido filtrado que respira lentamente */
 export function iniciarAmbiente(): void {
   const c = contexto();
   if (!c || !principal || ambiente) return;
@@ -115,7 +117,8 @@ export function iniciarAmbiente(): void {
   ruido.connect(filtro).connect(g).connect(principal);
   ruido.start();
   lfo.start();
-  ambiente = { detener() { ruido.stop(); lfo.stop(); g.disconnect(); } };
+  const detenerMusica = iniciarMusica(c, principal);
+  ambiente = { detener() { detenerMusica(); ruido.stop(); lfo.stop(); g.disconnect(); } };
 }
 
 export function detenerAmbiente(): void {

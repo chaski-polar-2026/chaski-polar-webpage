@@ -1,0 +1,59 @@
+.especie-experimento {
+  padding: 0;
+  border: 1px solid #34576a;
+  border-radius: 6px;
+  background: #102e41;
+  color: #eaf3f5;
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.especie-experimento .especie-experimento-cabecera {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  min-height: 44px;
+  padding: 10px 32px 10px 12px;
+  color: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  cursor: pointer;
+  list-style: none;
+}
+.especie-experimento-cabecera::-webkit-details-marker { display: none; }
+.especie-experimento-cabecera::after { content: ''; position: absolute; top: 16px; right: 13px; width: 7px; height: 7px; border-right: 1.5px solid #9bd5e2; border-bottom: 1.5px solid #9bd5e2; transform: rotate(45deg); }
+.especie-experimento[open] > .especie-experimento-cabecera::after { top: 22px; transform: rotate(225deg); }
+.especie-experimento-titulo { font-size: 14px; font-weight: 700; line-height: 1.4; }
+.especie-experimento-tipo { color: #a9c4d0; font-size: 11px; }
+.especie-experimento-resumen { display: flex; flex-wrap: wrap; flex-basis: 100%; gap: 4px 16px; color: #b6cfdb; font-size: 12px; }
+.especie-experimento-resumen strong { color: #eaf3f5; font-weight: 600; font-variant-numeric: tabular-nums; }
+.especie-experimento-contenido { padding: 0 12px 10px; }
+.especie-experimento p { margin: 10px 0 0; }
+.especie-experimento .especie-experimento-contexto { margin-top: 4px; color: #b6cfdb; font-size: 12px; }
+.especie-experimento .especie-experimento-valores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.especie-experimento-valores > div { min-width: 0; }
+.especie-experimento dt { font-size: 12px; color: #b6cfdb; }
+.especie-experimento dd { margin: 2px 0 0; font-size: 20px; font-weight: 700; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.especie-experimento dd > span { display: block; margin-top: 2px; color: #b6cfdb; font-size: 11px; font-weight: 400; }
+.especie-experimento-resultado > strong { display: block; margin-bottom: 2px; font-size: 12px; color: #9bd5e2; }
+.especie-experimento .especie-experimento-alcance { font-size: 12px; color: #b6cfdb; }
+.especie-experimento .especie-experimento-detalles { margin: 12px 0 0; padding: 0; border: 0; font-size: inherit; }
+.especie-experimento .especie-experimento-detalles > summary { min-height: 44px; padding: 10px 0; cursor: pointer; color: #9bd5e2; font-size: inherit; font-weight: 400; }
+.especie-experimento-localizador { color: #b6cfdb; font-size: 12px; }
+.especie-experimento .especie-experimento-fuente { display: inline-block; padding: 10px 0; color: #9bd5e2; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.especie-experimento :is(summary, a):focus-visible { outline: 2px solid #8fe3f2; outline-offset: 3px; }
+.especie-experimento--vacio { border: 0; border-left: 2px solid #34576a; border-radius: 0; background: transparent; }
+.especie-experimento--vacio p { margin-top: 4px; color: #b6cfdb; font-size: 12px; }
+.cond details.especie-experimento { margin: 0; padding: 0; }
+.fishers-v2 details.especie-experimento { margin-top: 16px; padding: 0; border-top: 1px solid #34576a; font-size: 16px; }
+.fishers-v2 .especie-experimento .especie-experimento-titulo { font-size: 17px; }
+.fishers-v2 .especie-experimento :is(.especie-experimento-contexto, .especie-experimento-alcance, .especie-experimento-localizador, .especie-experimento-fuente, .especie-experimento-tipo, .especie-experimento-resumen, dt, dd > span, .especie-experimento-resultado > strong) { font-size: 14px; }
+.fishers-v2 .especie-experimento dd { font-size: 24px; }
+.fishers-v2 .especie-experimento--vacio p { font-size: 14px; }

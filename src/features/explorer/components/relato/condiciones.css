@@ -12,3 +12,10 @@
 .cond summary { cursor: pointer; color: #8fe3f2; }
 .cond summary:focus-visible { outline: 2px solid #8fe3f2; outline-offset: 2px; }
 .cond-aviso { font-style: italic; margin: 0; }
+.cond .cond-leyenda {display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:7px;font-size:10px}
+.cond-leyenda > span {display:inline-flex;align-items:center;gap:4px}
+.cond-leyenda i {width:8px;height:8px;border-radius:2px;flex:none}
+.cond-clave-principal {background:#7ea995}.cond-clave-otros {background:#3d6b66}.cond-clave-mes {border:1px solid #fff}
+.cond .cond-registro {border-top:1px solid #345466}
+.cond-registro > summary {padding:10px 0;min-height:40px;font-size:12px}
+.cond-registro > .nota:last-child {margin-bottom:8px}

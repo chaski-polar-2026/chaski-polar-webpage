@@ -27,7 +27,8 @@ import Relato from './relato/Relato'
 import { TimelinePanel } from './TimelinePanel'
 import TarjetaMapa from './TarjetaMapa'
 import Proposito from './relato/Proposito'
-import { ExplorerBreadcrumb, ExplorerHelp, ExplorerHint, StepPreference } from './ExplorerOrientation'
+import { ExplorerBreadcrumb, ExplorerHelp, StepPreference } from './ExplorerOrientation'
+import PanelLateral from './PanelLateral'
 import GlobeLegend, { INITIAL_LAYERS } from './GlobeLegend'
 import './layout-izquierda.css'
 import ColumnIcon from './ColumnIcon'
@@ -419,17 +420,19 @@ export default function GlobePanel() {
       </div>
       <GlobeLegend layers={layers} onChange={setLayers} distance={testedLink.distance} />
       </div>
-      {textoVer && <button className="btn ver-relato" type="button" onClick={() => document.getElementById('relato')?.scrollIntoView({ behavior: menosMovimiento ? 'auto' : 'smooth' })}>{textoVer}</button>}
+      {textoVer && <button className="btn ver-relato" type="button" onClick={() => useExplorerStore.getState().setSidebarOpen(true)}>{textoVer}</button>}
       {lectura && <div className="lectura" aria-hidden="true" style={{ transform: `translate(${Math.max(8, lectura.x)}px, ${lectura.y}px)` }}><b>{lectura.titulo}</b>{lectura.detalle.map((d) => <small key={d}>{d}</small>)}</div>}
       <TimelinePanel />
     </div>
-    <aside className="relato" id="relato" aria-label="What the globe shows">
+    <PanelLateral titulo={section === 'anchoveta' ? 'Fish biological response' : v.nombre}>
       <ExplorerBreadcrumb />
-      <p className="explorer-keys"><b>Keyboard:</b> Tab moves between controls. Enter opens a focused place. Escape returns. Arrow keys adjust the month slider and tabs, or move through the tour.</p>
-      <ExplorerHint />
-      <div className="relato-orientacion"><span>Explore the selected view below</span><a href="/research">Research <span aria-hidden="true">→</span></a><a href="/fishers">For fishers <span aria-hidden="true">→</span></a><button type="button" className="orientacion-boton" onClick={() => window.dispatchEvent(new Event("abrir-proposito"))}>What is this for?</button></div>
       <div aria-live="polite"><Relato /></div>
-    </aside>
+      <details className="relato-ayuda">
+        <summary>Help and related pages</summary>
+        <p className="explorer-keys">Tab moves between controls. Enter opens a focused place. Escape returns. Arrow keys adjust the month slider and tabs, or move through the tour.</p>
+        <div className="relato-orientacion"><a href="/research">Research <span aria-hidden="true">→</span></a><a href="/fishers">For fishers <span aria-hidden="true">→</span></a><button type="button" className="orientacion-boton" onClick={() => window.dispatchEvent(new Event('abrir-proposito'))}>What is this for?</button></div>
+      </details>
+    </PanelLateral>
     <ExplorerHelp />
     <div className={`velo-entrada${veloAbierto ? ' abierto' : ''}`} aria-hidden="true" />
   </section>

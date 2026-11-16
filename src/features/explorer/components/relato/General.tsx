@@ -42,7 +42,7 @@ export default function General() {
   }
 
   return <>
-    <div className="explorer-empty"><p><StepNumber step={4} />Select a place on the globe or from the list</p><a href="#globo" onClick={e => { e.preventDefault(); const globe = document.getElementById('globo'); globe?.scrollIntoView({ block: 'center' }); globe?.focus({ preventScroll: true }) }}><span aria-hidden="true">← </span>Go to the globe</a><a href="#explorer-place-list" onClick={e => { e.preventDefault(); document.querySelector<HTMLButtonElement>('#explorer-place-list button')?.focus() }}><span aria-hidden="true">↓ </span>Choose from the list</a></div>
+    <div className="explorer-empty"><p><StepNumber step={4} />Select a place on the globe or from the list</p><a href="#globo" onClick={e => { e.preventDefault(); if (window.matchMedia('(max-width: 900px)').matches) useExplorerStore.getState().setSidebarOpen(false); const globe = document.getElementById('globo'); globe?.scrollIntoView({ block: 'center' }); globe?.focus({ preventScroll: true }) }}><span aria-hidden="true">← </span>Go to the globe</a><a href="#explorer-place-list" onClick={e => { e.preventDefault(); document.querySelector<HTMLButtonElement>('#explorer-place-list button')?.focus() }}><span aria-hidden="true">↓ </span>Choose from the list</a></div>
     <h2 id="variable-actual" className="titulo-con-icono">{ICONO_VARIABLE[v.id] && <IconoVariable tipo={ICONO_VARIABLE[v.id]!} />}<span>{v.nombre}</span></h2>
     <Guia variable={v} />
     {section === 'humboldt' && <InsigniaNino variable={v.id} />}
@@ -71,7 +71,7 @@ export default function General() {
     </details>
     <h3>Explore an El Niño event</h3>
     <ChipsEventos />
-    <h3>Explore a story</h3>
+    <details className="relato-extras"><summary>Stories and guided tour</summary>
     <button className="recorrido-cta" type="button" onClick={() => acciones.paso(0)}>
       <b>From ice to anchoveta</b>
       <span>Guided tour · 3 min</span>
@@ -86,5 +86,6 @@ export default function General() {
       <a className="btn" href="/research#hallazgos">View findings</a>
       <a className="btn" href="/research#physical-chain">Physical conditions</a>
     </div>
+    </details>
   </>
 }

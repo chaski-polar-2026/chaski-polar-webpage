@@ -20,7 +20,7 @@ export default function RegionesPanel({ alElegir }: { alElegir?: () => void }) {
     st.setPlaying(false)
     st.flyTo(a.pov, 1400)
     if (a.id === 'anchoveta' && window.matchMedia('(max-width: 900px)').matches) {
-      document.getElementById('relato')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
+      st.setSidebarOpen(true)
     }
   }
   return <nav className="regiones" aria-label="Study areas">
