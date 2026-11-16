@@ -145,3 +145,9 @@
 .juego .sello-boton:disabled .sello-dibujo { filter: grayscale(.7) drop-shadow(0 8px 6px rgba(0, 0, 0, .5)); }
 @media (max-width: 900px) { .juego .sello-boton { min-width: 0; } .juego .sello-boton .sello-dibujo { width: 84px; height: 84px; } }
 @media (prefers-reduced-motion: reduce) { .juego .sello-boton .sello-cuerpo { transition: none; } }
+
+/* Reportero mas grande */
+@media (min-width: 1151px) {
+  .juego .cabina-vista { width: clamp(320px, 36%, 440px); flex: 0 0 clamp(320px, 36%, 440px); }
+  .juego .cabina-personaje { transform-origin: bottom center; }
+}

@@ -8,34 +8,39 @@ export function IconoSello({ pequeno = false }: { pequeno?: boolean }) {
   </svg>
 }
 
-/** Sello de goma en pixel art (mango de madera, banda metalica, goma de color) sobre su almohadilla de tinta. */
-const SELLO_CUERPO = [
-  '........wwww........',
-  '.......wWWWWw.......',
-  '.......wWWWWw.......',
-  '........wwww........',
-  '.........wWw........',
-  '.........wWw........',
-  '.........wWw........',
-  '.....mMMMMMMMMm.....',
-  '.....mmmmmmmmmm.....',
-  '....cCCCCCCCCCCc....',
-  '....cCCCCCCCCCCc....',
-  '....cccccccccccc....',
-]
-const SELLO_ALMOHADILLA = [
-  '..pppppppppppppppp..',
-  '..pIIIIIIIIIIIIIIp..',
-  '..pIIIIIIIIIIIIIIp..',
-  '..pppppppppppppppp..',
-]
+/** Sello de goma en pixel art (mango de madera, banda metalica, goma de color) sobre su almohadilla de tinta.
+    La rejilla es de 32 x 32 celdas; el contorno oscuro se calcula solo, como en los demas personajes pixelados. */
+const N = 32
+type Rejilla = string[][]
+const vacia = (): Rejilla => Array.from({ length: N }, () => Array<string>(N).fill('.'))
+const caja = (g: Rejilla, x0: number, y0: number, x1: number, y1: number, ch: string) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) g[y]![x] = ch }
+const elipse = (g: Rejilla, cx: number, cy: number, rx: number, ry: number, ch: string) => { for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1) g[y]![x] = ch }
+const contorno = (g: Rejilla) => { const o = g.map((f) => [...f]); for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (g[y]![x] === '.' && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => (g[y + dy!]?.[x + dx!] ?? '.') !== '.')) o[y]![x] = 'k'; return o }
+const cuerpoSello = (): Rejilla => {
+  const g = vacia()
+  elipse(g, 16, 4, 6.5, 3.5, 'W'); caja(g, 12, 2, 15, 3, 'h'); caja(g, 20, 5, 22, 6, 'w') // perilla
+  caja(g, 13, 8, 18, 14, 'W'); caja(g, 13, 8, 14, 14, 'h'); caja(g, 18, 8, 18, 14, 'w') // mango
+  caja(g, 11, 15, 20, 16, 'W'); caja(g, 20, 15, 20, 16, 'w') // base del mango
+  caja(g, 7, 17, 24, 20, 'M'); caja(g, 7, 17, 24, 17, 's'); caja(g, 7, 20, 24, 20, 'm') // banda metalica
+  caja(g, 5, 21, 26, 27, 'C'); caja(g, 6, 22, 10, 22, 'i'); caja(g, 5, 26, 26, 27, 'c'); caja(g, 25, 21, 26, 25, 'c') // goma
+  return contorno(g)
+}
+const almohadilla = (): Rejilla => {
+  const g = vacia()
+  caja(g, 2, 28, 29, 31, 'p'); caja(g, 4, 29, 27, 30, 'I'); caja(g, 6, 29, 14, 29, 'j')
+  return contorno(g)
+}
 export function SelloGrande({ color }: { color: 'verde' | 'rojo' }) {
-  const tinta = color === 'verde' ? '#3fa66b' : '#c0453a', oscuro = color === 'verde' ? '#1f6f47' : '#8f2f29'
-  const paleta: Record<string, string> = { w: '#8a5a2e', W: '#c68b4e', m: '#7d8b98', M: '#c6d0d9', C: tinta, c: oscuro, p: '#3a4a58', I: oscuro }
-  const celdas = (filas: string[], y0: number) => filas.flatMap((fila, y) => [...fila].map((ch, x) => paleta[ch] ? <rect key={`${y}-${x}`} x={x * 6} y={(y0 + y) * 6} width={6} height={6} fill={paleta[ch]} /> : null))
-  return <svg className="sello-dibujo" viewBox="0 0 120 108" width={120} height={108} shapeRendering="crispEdges" aria-hidden="true" focusable="false">
-    <g>{celdas(SELLO_ALMOHADILLA, 14)}</g>
-    <g className="sello-cuerpo">{celdas(SELLO_CUERPO, 1)}</g>
+  const v = color === 'verde'
+  const paleta: Record<string, string> = {
+    k: '#0b1620', W: '#c68b4e', h: '#e3b27a', w: '#8a5a2e', M: '#aab6c2', s: '#dfe7ee', m: '#6f7d8a',
+    C: v ? '#3fa66b' : '#c0453a', i: v ? '#7be0a6' : '#ff9c8f', c: v ? '#1f6f47' : '#8f2f29',
+    p: '#3a4a58', I: v ? '#1f6f47' : '#8f2f29', j: v ? '#3fa66b' : '#c0453a',
+  }
+  const celdas = (g: Rejilla) => g.flatMap((fila, y) => fila.map((ch, x) => paleta[ch] ? <rect key={`${y}-${x}`} x={x * 4} y={y * 4} width={4} height={4} fill={paleta[ch]} /> : null))
+  return <svg className="sello-dibujo" viewBox="0 0 128 128" width={128} height={128} shapeRendering="crispEdges" aria-hidden="true" focusable="false">
+    <g>{celdas(almohadilla())}</g>
+    <g className="sello-cuerpo">{celdas(cuerpoSello())}</g>
   </svg>
 }
 
