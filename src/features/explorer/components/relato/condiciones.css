@@ -1,0 +1,14 @@
+.cond { margin-top: 10px; display: grid; gap: 10px; }
+.cond-bloque b { display: block; font-size: 13px; margin-bottom: 4px; }
+.cond small { display: block; color: #c3d5df; font-size: 12px; margin-top: 4px; }
+.cond-meses { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; list-style: none; margin: 0; padding: 0; }
+.cond-meses li { text-align: center; font-size: 11px; padding: 4px 0; border-radius: 3px; background: #264354; color: #8aa3b1; }
+.cond-meses .cond-m-ot { background: #3d6b66; color: #d8efe8; }
+.cond-meses .cond-m-pp { background: #7ea995; color: #0b2233; font-weight: 700; }
+.cond-meses .cond-m-hoy { outline: 2px solid #fff; outline-offset: 1px; }
+.cond-prof { position: relative; height: 10px; background: #264354; border-radius: 3px; }
+.cond-prof span { position: absolute; top: 0; height: 100%; background: #6cb7d6; border-radius: 3px; }
+.cond details { font-size: 13px; }
+.cond summary { cursor: pointer; color: #8fe3f2; }
+.cond summary:focus-visible { outline: 2px solid #8fe3f2; outline-offset: 2px; }
+.cond-aviso { font-style: italic; margin: 0; }

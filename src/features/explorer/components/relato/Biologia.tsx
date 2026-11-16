@@ -7,6 +7,7 @@ import type { IdZona } from '../../lib/tipos'
 import especies from '../../data/especies.json'
 import fuentes from '../../data/fuentes-especies.json'
 import { iconoPez } from '../../../pescadores/iconosPez'
+import TarjetaCondiciones from './TarjetaCondiciones'
 import './peces.css'
 
 type Fuente = { source_id: string; page_or_table: string; short_quote: string }
@@ -59,6 +60,7 @@ export default function Biologia({ zona }: { zona?: IdZona }) {
           <small>Recorded: {referencia.min}–{referencia.max} °C · {distancia === 0 ? 'Within recorded range' : `${distancia?.toFixed(2)} °C ${dato < referencia.min ? 'below' : 'above'} recorded range`}</small>
           <p className="nota">{pez.temperature_note} {enlace && <a href={enlace} target="_blank" rel="noreferrer">Source ({referencia.fuente.page_or_table})</a>}</p>
         </div> : <p className="nota">No comparable data{referencia && dato == null ? ' for this month' : ''}.</p>}
+        <TarjetaCondiciones id={pez.id} mes={fecha.mes} tempComparable={!!(referencia && dato != null)} />
         {pez.id === 'merluza' && pez.depth_note && <p className="nota">{pez.depth_note} Recorded fishing depth is not a physiological limit.</p>}
       </article>
     })}</div>
