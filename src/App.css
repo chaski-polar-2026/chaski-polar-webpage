@@ -119,7 +119,7 @@
 .monitor-aviso strong { color: var(--hielo); }
 .llamada { position: relative; overflow: hidden; border-radius: 22px; padding: clamp(32px, 6vw, 64px); background: var(--profundo); border: 1px solid var(--linea); }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .escenario { display: block; height: auto; min-height: 0; }
   .lienzo-globo { position: relative; top: auto; height: 76svh; min-height: 560px; }
   .relato { border-left: 0; border-top: 1px solid var(--linea); overflow: visible; }

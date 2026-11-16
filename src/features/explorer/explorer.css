@@ -148,7 +148,7 @@ table.fuentes { width: 100%; border-collapse: collapse; font-size: .95rem; }
 .pista-globo { margin: 0; font-size: .8rem; color: var(--niebla); transition: opacity .6s; }
 .pista-globo.oculta { opacity: 0; }
 .ver-relato { display: none; }
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .ver-relato { display: inline-flex; position: absolute; z-index: 7; left: 50%; transform: translateX(-50%); bottom: 190px; padding: 9px 16px; font-size: .92rem; white-space: nowrap; max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis; background: var(--hielo); color: var(--abismo); border-color: var(--hielo); }
 }
 
@@ -332,7 +332,7 @@ table.eventos-nino { width: 100%; border-collapse: separate; border-spacing: 4px
 .indicadores span { font-size: .82rem; color: var(--niebla); }
 .indicadores li[data-ok="false"] { background: transparent; border: 1px dashed var(--linea); }
 .indicadores li[data-ok="false"] b { color: var(--tenue); }
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .regiones { display: block; width: 100%; max-width: none; margin: 0; }
   .regiones-titulo, .regiones .region { display: none; }
   .regiones-movil { display: flex; align-items: center; gap: 8px; color: var(--niebla); font-size: .75rem; }

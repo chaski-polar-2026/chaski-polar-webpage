@@ -42,7 +42,7 @@ export default function General() {
   }
 
   return <>
-    <div className="explorer-empty"><p><StepNumber step={4} />Select a place on the globe or from the list</p><a href="#globo" onClick={e => { e.preventDefault(); if (window.matchMedia('(max-width: 900px)').matches) useExplorerStore.getState().setSidebarOpen(false); const globe = document.getElementById('globo'); globe?.scrollIntoView({ block: 'center' }); globe?.focus({ preventScroll: true }) }}><span aria-hidden="true">← </span>Go to the globe</a><a href="#explorer-place-list" onClick={e => { e.preventDefault(); document.querySelector<HTMLButtonElement>('#explorer-place-list button')?.focus() }}><span aria-hidden="true">↓ </span>Choose from the list</a></div>
+    <div className="explorer-empty"><p><StepNumber step={4} />Select a place on the globe or from the list</p><a href="#globo" onClick={e => { e.preventDefault(); if (window.matchMedia('(max-width: 1100px)').matches) useExplorerStore.getState().setSidebarOpen(false); const globe = document.getElementById('globo'); globe?.scrollIntoView({ block: 'center' }); globe?.focus({ preventScroll: true }) }}><span aria-hidden="true">← </span>Go to the globe</a><a href="#explorer-place-list" onClick={e => { e.preventDefault(); document.querySelector<HTMLButtonElement>('#explorer-place-list button')?.focus() }}><span aria-hidden="true">↓ </span>Choose from the list</a></div>
     <h2 id="variable-actual" className="titulo-con-icono">{ICONO_VARIABLE[v.id] && <IconoVariable tipo={ICONO_VARIABLE[v.id]!} />}<span>{v.nombre}</span></h2>
     <Guia variable={v} />
     {section === 'humboldt' && <InsigniaNino variable={v.id} />}

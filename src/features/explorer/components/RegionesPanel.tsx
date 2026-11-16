@@ -19,7 +19,7 @@ export default function RegionesPanel({ alElegir }: { alElegir?: () => void }) {
     if (primera) st.setVariable(primera.id)
     st.setPlaying(false)
     st.flyTo(a.pov, 1400)
-    if (a.id === 'anchoveta' && window.matchMedia('(max-width: 900px)').matches) {
+    if (a.id === 'anchoveta' && window.matchMedia('(max-width: 1100px)').matches) {
       st.setSidebarOpen(true)
     }
   }

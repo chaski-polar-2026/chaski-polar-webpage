@@ -2,4 +2,4 @@
 
 export const menosMovimiento = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 export const punteroFino = typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches;
-export const esAngosto = (): boolean => innerWidth <= 900;
+export const esAngosto = (): boolean => innerWidth <= 1100;
