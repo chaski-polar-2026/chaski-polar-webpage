@@ -60,3 +60,30 @@
   .juego .cabina-escritorio .sello-boton { min-width: 0; flex: 1; padding: 10px; font-size: 12px; }
   .juego .cabina-escritorio .escritorio-sellos { gap: 8px; }
 }
+
+/* Ajuste de proporciones: personaje mas grande y texto con menos relleno y mas legible. */
+.juego .cabina-ventanilla { gap: 8px; }
+.juego .cabina-vista { width: clamp(260px, 34%, 360px); flex: 0 0 clamp(260px, 34%, 360px); }
+.juego .cabina-placa { font-size: 12px; padding: 12px 14px; }
+.juego .cabina-visita { padding: 22px 26px 20px 8px; }
+.juego .cabina-rotulo { font-size: 12px; margin-bottom: 8px; }
+.juego .cabina-visita h3 { font-size: 30px; margin-bottom: 12px; }
+.juego .cabina-visita p:not(.cabina-rotulo) { font-size: 17px; line-height: 1.55; }
+.juego .cabina-visita p.cabina-estado { font-size: 14px; margin-top: 16px; }
+.juego .cabina-guia { padding: 20px 24px; }
+.juego .cabina-guia-cabecera { font-size: 13px; }
+.juego .cabina-guia h3 { font-size: 26px; }
+.juego .cabina-guia p { font-size: 16px; }
+.juego .cabina-guia button { font-size: 14px; padding: 9px 14px; }
+.juego .cabina-instruccion { font-size: 22px; }
+.juego .cabina-instruccion span { font-size: 15px; }
+@media (max-width: 1150px) {
+  .juego .cabina-vista { width: clamp(200px, 38%, 300px); flex-basis: clamp(200px, 38%, 300px); }
+  .juego .cabina-visita h3 { font-size: 26px; }
+  .juego .cabina-visita p:not(.cabina-rotulo) { font-size: 15px; }
+}
+@media (max-width: 640px) {
+  .juego .cabina-ventanilla { flex-direction: column; }
+  .juego .cabina-vista { width: 100%; flex: none; border-right: 0; border-bottom: 1px solid #42616a; }
+  .juego .cabina-visita { padding: 14px 16px; }
+}
