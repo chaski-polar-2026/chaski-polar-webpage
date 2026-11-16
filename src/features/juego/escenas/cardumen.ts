@@ -14,7 +14,7 @@ import { dibujarFito } from "../personajes/antartida";
 import { dibujarAnchi, dibujarAnchoveta, dibujarGuanay, dibujarLetrero, dibujarLobo } from "../personajes/costa";
 import { sonar } from "../motor/sonido";
 import { sprite } from "../personajes/sprites";
-import { crearFondoCardumenVoxel, crearPersonajeVoxel, mirarALaCamara } from "../motor/voxel";
+import { alturaSueloCardumen, crearFondoCardumenVoxel, crearPersonajeVoxel, mirarALaCamara } from "../motor/voxel";
 
 import { crearDiorama } from "../motor/diorama";
 
@@ -145,7 +145,7 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
     const anchiVoxel = crearPersonajeVoxel(escena, sprite("anchi", dibujarAnchi), 0.08, 1);
     anchi.sprite.visible = false;
     anchi.posicion.set(-3, -3, centroZona(ZONA_INICIAL));
-    const seguidor = crearSeguidor(camara, renderer.domElement, anchi.posicion, { distancia: 15, libre: true });
+    const seguidor = crearSeguidor(camara, renderer.domElement, anchi.posicion, { distancia: 15, libre: true, suelo: alturaSueloCardumen });
 
     // el cardumen: un dibujo por cada PECES_POR_DIBUJO peces
     const dibujoPez = sprite("anchoveta", dibujarAnchoveta);
@@ -244,7 +244,7 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
         vel.lerp(mov, 1 - Math.pow(0.003, dt));
         anchi.posicion.addScaledVector(vel, dt);
         anchi.posicion.x = THREE.MathUtils.clamp(anchi.posicion.x, X_MIN, X_MAX);
-        anchi.posicion.y = THREE.MathUtils.clamp(anchi.posicion.y, Y_MIN, Y_MAX);
+        anchi.posicion.y = THREE.MathUtils.clamp(anchi.posicion.y, Math.max(Y_MIN, alturaSueloCardumen(anchi.posicion.x, anchi.posicion.z) + 0.5), Y_MAX);
         anchi.posicion.z = THREE.MathUtils.clamp(anchi.posicion.z, Z_MIN + 0.5, Z_MAX - 0.5);
         seguidor.seguir(anchi.posicion, vel.y);
         tmp.set(vel.x, 0, vel.z);
@@ -278,6 +278,7 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
           if (k >= visibles) return;
           tmp.set(anchi.posicion.x + f.ox * radio + Math.sin(t * 1.3 + f.fase) * 0.3, anchi.posicion.y + f.oy * radio * 0.5, anchi.posicion.z + f.oz * radio);
           f.p.posicion.lerp(tmp, Math.min(1, dt * (2.5 + (k % 5) * 0.4)));
+          f.p.posicion.set(THREE.MathUtils.clamp(f.p.posicion.x, X_MIN, X_MAX), THREE.MathUtils.clamp(f.p.posicion.y, Y_MIN, Y_MAX), THREE.MathUtils.clamp(f.p.posicion.z, Z_MIN, Z_MAX));
           f.voxel.position.copy(f.p.posicion);
           f.p.animar(t, vel, seguidor.derecha, VELOCIDAD);
           f.p.sprite.material.rotation = cabeceo;

@@ -156,7 +156,7 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
         mov.multiplyScalar(VELOCIDAD);
         if (!detenido) { mov.x += cor.v.x; mov.z -= cor.v.y; } // la corriente arrastra (norte = −z)
         vel.lerp(mov, 1 - Math.pow(0.02, dt));
-        if (!detenido) {
+        if (!detenido && tierra) { // sin la máscara de tierra cargada, Nara espera en su sitio
           // avanza por partes para deslizarse por la costa en lugar de atravesarla
           siguiente.copy(nara.posicion).addScaledVector(vel, dt);
           if (!esTierra(aLat(nara.posicion.z), aLon(siguiente.x))) nara.posicion.x = siguiente.x;

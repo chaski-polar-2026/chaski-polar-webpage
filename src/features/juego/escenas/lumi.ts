@@ -11,7 +11,7 @@ import { crearPersonaje, type Personaje } from "../motor/personaje";
 import { sonar } from "../motor/sonido";
 import { dibujarFito, dibujarLumi, dibujarNutriente } from "../personajes/antartida";
 import { sprite } from "../personajes/sprites";
-import { crearEntornoLumiVoxel, crearPersonajeVoxel, crearPlacaHieloVoxel, mirarALaCamara } from "../motor/voxel";
+import { alturaSueloLumi, crearEntornoLumiVoxel, crearPersonajeVoxel, crearPlacaHieloVoxel, mirarALaCamara } from "../motor/voxel";
 import { crearDiorama } from "../motor/diorama";
 
 export const DIVISIONES_META = 3;
@@ -109,7 +109,7 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
     lumi.posicion.set(-4.5, -6, 0); // en un claro entre las placas de hielo
     const halo = new THREE.Sprite(sinContorno(new THREE.SpriteMaterial({ map: texturaHalo(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })));
     escena.add(halo);
-    const seguidor = crearSeguidor(camara, renderer.domElement, lumi.posicion, { distancia: 14, giro: 0.5, inclinacion: 1.5, inclinacionLimites: [1.35, 1.75], inclinacionVertical: 0, orientacionFija: true });
+    const seguidor = crearSeguidor(camara, renderer.domElement, lumi.posicion, { distancia: 14, giro: 0.5, inclinacion: 1.5, inclinacionLimites: [1.35, 1.75], inclinacionVertical: 0, orientacionFija: true, suelo: alturaSueloLumi });
     const dibujo = sprite("lumi", dibujarLumi);
     const hijas: { h: Personaje; voxel: THREE.Object3D }[] = [];
 
@@ -143,8 +143,8 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
         vel.lerp(mov, 1 - Math.pow(0.01, dt));
         lumi.posicion.addScaledVector(vel, dt);
         lumi.posicion.x = THREE.MathUtils.clamp(lumi.posicion.x, -X, X);
-        lumi.posicion.y = THREE.MathUtils.clamp(lumi.posicion.y + Math.sin(t * 1.3) * 0.004, Y_MIN, Y_MAX);
         lumi.posicion.z = THREE.MathUtils.clamp(lumi.posicion.z, -Z, Z);
+        lumi.posicion.y = THREE.MathUtils.clamp(lumi.posicion.y + Math.sin(t * 1.3) * 0.004, Math.max(Y_MIN, alturaSueloLumi(lumi.posicion.x, lumi.posicion.z) + 0.5), Y_MAX);
         seguidor.seguir(lumi.posicion);
         // crece a la vista antes de dividirse; al dividirse da un pequeño salto
         estallido = Math.max(0, estallido - dt * 3);
@@ -224,6 +224,9 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
         hijas.forEach(({ h, voxel }, k) => {
           const a = t * 0.6 + (k * Math.PI * 2) / Math.max(1, hijas.length);
           h.posicion.lerp(objetivo.set(lumi.posicion.x + Math.cos(a) * 2.4, lumi.posicion.y + Math.sin(a) * 1.4, lumi.posicion.z - 0.4), Math.min(1, dt * 2));
+          h.posicion.x = THREE.MathUtils.clamp(h.posicion.x, -X, X);
+          h.posicion.z = THREE.MathUtils.clamp(h.posicion.z, -Z, Z);
+          h.posicion.y = THREE.MathUtils.clamp(h.posicion.y, Math.max(Y_MIN, alturaSueloLumi(h.posicion.x, h.posicion.z) + 0.5), Y_MAX);
           h.animar(t, vel, seguidor.derecha, VELOCIDAD);
           voxel.position.copy(h.posicion);
           mirarALaCamara(voxel, camara);
