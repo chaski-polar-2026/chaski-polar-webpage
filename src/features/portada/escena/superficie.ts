@@ -175,6 +175,12 @@ export function crearSuperficie(escena: THREE.Scene, C: Calidad): Capa {
     textureWidth: C.agua, textureHeight: C.agua, waterNormals: normalesOlas(), sunDirection: DIR_SOL.clone(),
     sunColor: 0xffd9a8, waterColor: 0x062b3a, distortionScale: 1.8, fog: true, alpha: 1,
   });
+  // Comprime las altas luces del cielo HDR y atenúa el destello del sol sin borrar las olas.
+  // El reflejo conserva tonos azules en vez de convertir la superficie en un espejo blanco.
+  agua.material.fragmentShader = agua.material.fragmentShader.replace(
+    'reflectionSample + specularLight',
+    '(reflectionSample / (vec3(1.0) + reflectionSample)) * vec3(0.18, 0.28, 0.34) + specularLight * 0.12',
+  );
   agua.rotation.x = -Math.PI / 2;
   const tiempoAgua = agua.material.uniforms.time!;
   agua.material.uniforms.size!.value = 0.35; // olas más finas, sin manchas grandes
