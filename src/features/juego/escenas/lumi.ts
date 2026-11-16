@@ -111,7 +111,7 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
     escena.add(halo);
     const seguidor = crearSeguidor(camara, renderer.domElement, lumi.posicion, { distancia: 14, giro: 0.5, inclinacion: 1.5, inclinacionLimites: [1.35, 1.75], inclinacionVertical: 0, orientacionFija: true });
     const dibujo = sprite("lumi", dibujarLumi);
-    const hijas: Personaje[] = [];
+    const hijas: { h: Personaje; voxel: THREE.Object3D }[] = [];
 
     // nutrientes: suben desde el fondo (en el mismo plano que Lumi) y se agotan cerca de la superficie
     const dibujoChispa = sprite("nutriente", dibujarNutriente);
@@ -212,8 +212,9 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
             estado.divisiones++;
             estallido = 1;
             const h = crearPersonaje(escena, dibujo, { ancho: 1.6, alto: 1.6 });
+            h.sprite.visible = false; // se dibuja como voxel, igual que Lumi, para que tenga luz y sombras
             h.posicion.copy(lumi.posicion);
-            hijas.push(h);
+            hijas.push({ h, voxel: crearPersonajeVoxel(escena, dibujo, 0.056, 1.6) });
             for (const pl of placas) pl.ancho *= DESHIELO; // avanza la primavera
             sonar("division");
             eventos.division(estado.divisiones);
@@ -221,10 +222,12 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
           }
         }
         // las hijas acompañan a Lumi en su mismo plano
-        hijas.forEach((h, k) => {
+        hijas.forEach(({ h, voxel }, k) => {
           const a = t * 0.6 + (k * Math.PI * 2) / Math.max(1, hijas.length);
           h.posicion.lerp(objetivo.set(lumi.posicion.x + Math.cos(a) * 2.4, lumi.posicion.y + Math.sin(a) * 1.4, lumi.posicion.z - 0.4), Math.min(1, dt * 2));
           h.animar(t, vel, seguidor.derecha, VELOCIDAD);
+          voxel.position.copy(h.posicion);
+          mirarALaCamara(voxel, camara);
         });
 
         tEstado -= dt;
