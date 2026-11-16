@@ -123,7 +123,7 @@ AI assistants were used as support for development, analysis, debugging and writ
 ## License
 
 - **Source code:** [MIT License](LICENSE).
-- **Texts, tables and datasets processed by the team:** CC BY 4.0 (reuse with credit to the Chaski Polar team).
+- **Texts, tables and datasets processed by the team:** CC BY 4.0 (reuse with credit to the Chaski Polar team); see [LICENSE-DATOS.md](LICENSE-DATOS.md).
 - **Logo:** may be used if the Chaski Polar team is credited.
 - **AI-generated illustrations** are not covered by these licenses.
 - **Source datasets** keep the terms of their agencies (NASA, ESA, NOAA, Copernicus, NSIDC, FAO, BCRP, IMARPE). Fonts, maps and textures keep their own open licenses.
