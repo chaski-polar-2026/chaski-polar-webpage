@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { nombreDe, retratoDe } from '../personajes/guias'
 import { useDialogo } from './estado'
-import { sonar } from '../motor/sonido'
+import { sonar, hablar } from '../motor/sonido'
 
 const LETRAS_POR_SEGUNDO = 45
 const sinMovimiento = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -29,6 +29,16 @@ export default function Dialogo() {
     id = requestAnimationFrame(paso)
     return () => cancelAnimationFrame(id)
   }, [linea])
+
+  // Un sonidito por cada dos letras que aparecen (no suena si se completa el texto de golpe)
+  const sonadas = useRef(0)
+  useEffect(() => {
+    if (!linea) return
+    const antes = sonadas.current
+    sonadas.current = letras
+    if (letras - antes !== 1 && letras - antes !== 2) return
+    if (letras % 2 === 0) hablar(linea.quien, linea.texto[letras - 1] ?? '')
+  }, [letras, linea])
 
   useEffect(() => {
     if (!linea) return

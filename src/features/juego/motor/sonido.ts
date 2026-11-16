@@ -58,6 +58,27 @@ function nota(frecuencia: number, inicio: number, duracion: number, tipo: Oscill
   o.stop(inicio + duracion + 0.02);
 }
 
+/** Voz de cada personaje: un "soniditos" corto por letra, al estilo de los juegos de rol. Cada uno tiene su timbre y tono */
+type Voz = { onda: OscillatorType; base: number; variacion: number; dur: number; vol: number; desliz?: number };
+const VOCES: Record<string, Voz> = {
+  gaia: { onda: "triangle", base: 330, variacion: 70, dur: 0.06, vol: 0.14 },           // cálida, tono medio
+  orbi: { onda: "square", base: 880, variacion: 140, dur: 0.045, vol: 0.06, desliz: 1.15 }, // robótica, aguda
+  kiri: { onda: "sine", base: 200, variacion: 50, dur: 0.09, vol: 0.2, desliz: 0.8 },      // grave y redonda
+  anchi: { onda: "sine", base: 620, variacion: 90, dur: 0.05, vol: 0.16, desliz: 1.2 },
+  lumi: { onda: "triangle", base: 1000, variacion: 120, dur: 0.04, vol: 0.1 },
+  nara: { onda: "sawtooth", base: 260, variacion: 40, dur: 0.07, vol: 0.05 },
+};
+
+/** Suena el blip de quien habla; se llama al aparecer una letra (se ignoran espacios y puntuación) */
+export function hablar(quien: string, letra: string): void {
+  if (!/[\p{L}\p{N}]/u.test(letra)) return;
+  const c = contexto();
+  if (!c || silencio || c.state !== "running") return;
+  const v = VOCES[quien] ?? VOCES.gaia;
+  const f = v.base + (letra.toLowerCase().charCodeAt(0) % 7) / 6 * v.variacion; // el tono depende de la letra
+  nota(f, c.currentTime, v.dur, v.onda, v.vol, v.desliz ? f * v.desliz : undefined);
+}
+
 export function sonar(s: Sonido): void {
   const c = contexto();
   if (!c || silencio || c.state !== "running") return;
