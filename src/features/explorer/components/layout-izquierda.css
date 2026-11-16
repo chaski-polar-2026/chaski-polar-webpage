@@ -45,4 +45,11 @@
   .columna-izq .estilos-mapa { gap: 4px; font-size: .72rem; }
   .columna-izq .estilos-mapa .control-pill { min-height: 26px; padding: 2px 8px; font-size: .7rem; }
   .columna-izq .globe-legend > summary { min-height: 30px; padding: 4px 8px; font-size: .74rem; }
+  /* Estilo de vista (arriba a la izquierda del globo) y capas (arriba a la derecha) */
+  .columna-izq .globe-toolbar > div:first-child { position: absolute; z-index: 9; top: 8px; left: calc(var(--izq) + 10px); width: 270px; background: rgba(2, 6, 11, .75); border-radius: 8px; }
+  .columna-izq .globe-toolbar > div:first-child button { min-height: 32px; font-size: .78rem; }
+  .columna-izq .globe-toolbar > .vista-nota { top: 52px; }
+  .columna-izq .globe-legend { position: absolute; z-index: 12; top: 8px; right: 12px; width: auto; max-width: min(420px, calc(100% - var(--izq) - 24px)); border-radius: 8px; background: rgba(2, 6, 11, .8); }
+  .columna-izq .globe-legend[open] { background: #0a2540; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
+  .columna-izq .globe-legend-content { position: static; width: auto; border: 0; padding: 0 12px 12px; background: none; max-height: calc(100svh - 320px); overflow-y: auto; }
 }
