@@ -11,6 +11,7 @@ import { CargarAlVer } from '../components/ui/CargarAlVer'
 import FuentesSection from '../features/fuentes/FuentesSection'
 import AppShell from '../layouts/AppShell'
 import BiologiaResearch from '../features/explorer/components/relato/BiologiaResearch'
+import BibliografiaEspecies from '../features/research/BibliografiaEspecies'
 
 // las secciones con gráficos se descargan cuando el usuario se acerca a ellas
 const InsightsSection = lazy(() => import('../features/insights/InsightsSection'))
@@ -25,6 +26,17 @@ const GuiasInvestigacion = lazy(() => import('../features/guias/GuiasInvestigaci
 
 import '../features/research/research.css'
 import '../features/research/research-vida.css'
+
+// Resumen descriptivo de OC-CCI, enero de 1998 a diciembre de 2025; sin rellenar huecos.
+const CLOROFILA_ANTARTIDA_PERU = [
+  { zona: 'Pisco', media: '2.81', maximo: 'March', minimo: 'August', meses: 336 },
+  { zona: 'Chimbote', media: '2.25', maximo: 'March', minimo: 'June', meses: 334 },
+  { zona: 'Callao', media: '2.13', maximo: 'April', minimo: 'August', meses: 335 },
+  { zona: 'Paita–Sechura', media: '1.66', maximo: 'April', minimo: 'September', meses: 336 },
+  { zona: 'Ilo', media: '1.41', maximo: 'May', minimo: 'August', meses: 336 },
+  { zona: 'King George Island', media: '0.44', maximo: 'February', minimo: 'August', meses: 226 },
+  { zona: 'Antarctic Peninsula', media: '0.24', maximo: 'December', minimo: 'August', meses: 245 },
+]
 
 export default function ResearchPage() {
   useEffect(() => {
@@ -60,7 +72,7 @@ function Research() {
               <h1 id="research-title">What the ocean records reveal</h1>
               <p>El Niño, phytoplankton and a changing sea. Explore what the evidence supports—and where it remains uncertain.</p>
               <nav className="research-nav" aria-label="Research sections">
-                <a href="#hallazgos">Findings</a><a href="#trends">Test a trend</a><a href="#anchoveta-response">Anchoveta response</a><a href="#cruceros">Anchoveta surveys</a><a href="#fuentes">Sources &amp; methods</a>
+                <a href="#hallazgos">Findings</a><a href="#conexion-antartida">Antarctica &amp; Peru</a><a href="#trends">Test a trend</a><a href="#anchoveta-response">Anchoveta response</a><a href="#cruceros">Anchoveta surveys</a><a href="#fuentes">Sources &amp; methods</a><a href="#species-bibliography">Species bibliography</a>
               </nav>
               <div className="research-results">
                 <article><span>01 · SUPPORTED ASSOCIATION</span><h2>El Niño and Peru’s phytoplankton</h2><p>Warmer Niño 1+2 conditions are associated with lower modeled phytoplankton carbon and lower satellite chlorophyll in Chimbote and Callao.</p><a href="#hallazgos">Explore the evidence →</a></article>
@@ -84,12 +96,31 @@ function Research() {
                 </p>
               </div>
             </details>
-            <details className="seccion pregunta research-question" id="conexion-antartida"><summary>Is there a physical link between the Southern Ocean and Peru?</summary>
+            <details className="seccion pregunta research-question" id="conexion-antartida"><summary>Antarctica &amp; Peru: is there a physical ocean connection?</summary>
               <div className="cuerpo">
+                <h2>Chlorophyll in the two regions</h2>
+                <div className="antartida-tabla" role="region" aria-label="Chlorophyll by zone, 1998–2025" tabIndex={0}>
+                  <table>
+                    <caption>ESA OC-CCI monthly series · January 1998–December 2025</caption>
+                    <thead><tr><th scope="col">Zone</th><th scope="col">Mean (mg/m³)</th><th scope="col">Peak month</th><th scope="col">Lowest month</th><th scope="col">Months with data</th></tr></thead>
+                    <tbody>{CLOROFILA_ANTARTIDA_PERU.map((fila) => <tr key={fila.zona}>
+                      <th scope="row">{fila.zona}</th><td>{fila.media}</td><td>{fila.maximo}</td><td>{fila.minimo}</td><td>{fila.meses} / 336</td>
+                    </tr>)}</tbody>
+                  </table>
+                </div>
+                <p>Peruvian coastal chlorophyll is higher in these sampled zones, with peaks in March–May; the Antarctic zones peak in December–February. Peak and lowest months refer to averages for each calendar month across the record. The overall means use only available observations, without filling gaps.</p>
+                <p>About 27–33% of Antarctic months are missing, with sea ice and low winter light limiting ocean-colour observations. Winter minima and regional means therefore need caution: the available months do not represent every season equally. August is the lowest observed monthly average in both Antarctic zones, but the Peruvian minimum varies by zone.</p>
+                <h2>Water origin, nutrient supply and biological response</h2>
                 <p><strong>In principle, yes, through the ocean.</strong> Subantarctic Mode Water forms at the northern edge of the Southern Ocean, travels north below the surface, and is a main source of nutrients for the thermocline of much of the ocean (<a href="https://www.nature.com/articles/nature02127" target="_blank" rel="noreferrer">Sarmiento et al., 2004</a>). A model study found that more than half of each mode-water tracer reaches the subtropical thermocline within 50 years, with large differences between regions (<a href="https://doi.org/10.1002/2016JC011680" target="_blank" rel="noreferrer">Jones et al., 2016</a>). Models estimate that nutrients exported from the Southern Ocean support between 33% and 75% of low-latitude productivity. Other methods give different results, and the figure is not specific to Peru (<a href="https://doi.org/10.1029/2018GB005977" target="_blank" rel="noreferrer">Hauck et al., 2018</a>).</p>
+                <p><strong>The Eastern Pacific pathway is especially efficient in the tracer model:</strong> roughly 80% of its mode-water tracer enters the subtropical thermocline within 50 years (<a href="https://doi.org/10.1002/2016JC011680" target="_blank" rel="noreferrer">Jones et al., 2016</a>). This describes modeled water-mass ventilation, not the percentage of nitrate off Peru supplied by Antarctica.</p>
+                <p><strong>Local nitrate supply is a separate step.</strong> Observations off Peru report 15–20 µmol/L of nitrate in subsurface waters brought up by coastal upwelling (<a href="https://doi.org/10.5194/bg-18-3605-2021" target="_blank" rel="noreferrer">Hauschildt et al., 2021</a>, section 3.1). A synthesis of the Peruvian margin cites nutrient-rich source waters near 30 µmol/L and identifies the Peru–Chile Undercurrent as the local subsurface supply (<a href="https://doi.org/10.5194/bg-16-2163-2019" target="_blank" rel="noreferrer">Doering et al., 2019</a>, “Regional setting”). These concentrations do not identify an Antarctic fraction; the 15–20 µmol/L value is not the concentration in the filament's mixed layer.</p>
                 <p><strong>Off Peru, much of the upwelled nitrate does not stay near the surface.</strong> A study combining ship observations and a model estimates that 30% to 40% of upwelled nitrate sinks again within 20 days. In a cold filament, surface chlorophyll was about four times lower than at the upwelling front, while primary production was about twice as high (<a href="https://doi.org/10.5194/bg-18-3605-2021" target="_blank" rel="noreferrer">Hauschildt et al., 2021</a>). Chlorophyll, nutrients and production are not the same thing.</p>
+                <p><strong>Nitrate-supported production is another distinct measure.</strong> The f-ratio describes new production relative to total primary production. <a href="https://doi.org/10.1002/2016GB005554" target="_blank" rel="noreferrer">Kadko, 2017</a> (section 3.4) discusses a regional estimate of 0.29 ± 0.11 from earlier work and a separate calculation of 0.48 using another production estimate. These are different estimates, not a single uncertainty interval or a coast-wide constant. Neither measures the Antarctic share of Peru's nitrate.</p>
                 <p><strong>In the atmosphere, the documented direction mostly runs the other way.</strong> El Niño changes tropical convection, which drives the Pacific–South America pattern that affects the Antarctic Peninsula and West Antarctica (<a href="https://doi.org/10.1175/JCLI-D-11-00273.1" target="_blank" rel="noreferrer">Schneider et al., 2012</a>). So El Niño can influence both regions, which is why our tests control for it.</p>
                 <p><strong>What our tests found.</strong> In more than 1,000 tests at monthly and yearly scales (Antarctic sea ice, the SAM index, and Antarctic and South Pacific temperatures against chlorophyll, temperature and nutrients off Peru), none showed a robust link once El Niño was taken into account. The ocean pathways act over decades and do not tell us how much of Peru's upwelled nitrate is Antarctic in origin. A slow link is possible, but 28 years of satellite and reanalysis data cannot test it.</p>
+                <p>Specifically, none of the project's 208 regional-current comparisons was robust. The strongest reported signal was zonal current versus Peruvian temperature one month later (r = 0.29; FDR-adjusted q = 0.057), below the evidence required by the q &lt; 0.05 criterion. It concerned temperature, not nitrate (<a href="https://github.com/chaski-polar-2026/data-treatment/blob/main/docs/pruebas_pendientes/RESULTADOS_PRUEBAS_PENDIENTES.md#b4-corrientes" target="_blank" rel="noreferrer">project report, B4</a>).</p>
+                <h2>What would test the slow pathway?</h2>
+                <p>A future study would need to distinguish subsurface water-mass transport, the local nitrate flux supplied by upwelling, and the subsequent response of chlorophyll, phytoplankton carbon and acoustically observed anchoveta biomass. Longer records and independent transport or tracer observations would be needed to evaluate the proposed route. The published percentages describe different steps and cannot be combined into one Antarctic contribution to Peruvian fisheries.</p>
               </div>
             </details>
             <CargarAlVer id="how-to-read" alto={160}><GuiasInvestigacion /></CargarAlVer>
@@ -112,6 +143,7 @@ function Research() {
               </div>
             </section>
             <FuentesSection />
+            <BibliografiaEspecies />
           </main>
           <footer className="pie">Chaski Polar · Open satellite data from NASA, ESA and NOAA. The relationships shown here are associations, not proof of causation.</footer>
   </ExplorerProvider></DataState></AppShell>

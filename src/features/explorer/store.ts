@@ -20,6 +20,7 @@ type ExplorerState = {
   variable: ExplorerVariable
   section: ExplorerSection
   sidebarTab: SidebarTab
+  sidebarOpen: boolean
   view: GlobeView
   month: number
   playing: boolean
@@ -32,6 +33,7 @@ type ExplorerState = {
   setVariable: (variable: ExplorerVariable) => void
   setSection: (section: ExplorerSection) => void
   setSidebarTab: (sidebarTab: SidebarTab) => void
+  setSidebarOpen: (open: boolean) => void
   setView: (view: GlobeView) => void
   setMonth: (month: number) => void
   setPlaying: (playing: boolean) => void
@@ -52,6 +54,7 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   variable: 'clorofila_mg_m3',
   section: 'humboldt',
   sidebarTab: 'parametro',
+  sidebarOpen: false,
   view: 'detailed',
   month: 364, // mayo de 2023 (las series empiezan en enero de 1993)
   playing: false,
@@ -63,6 +66,7 @@ export const useExplorerStore = create<ExplorerState>((set) => ({
   setVariable: (variable) => set({ variable }),
   setSection: (section) => set({ section, zonePhase: 'globe', zoneView: null, zoneRequest: null }),
   setSidebarTab: (sidebarTab) => set({ sidebarTab }),
+  setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
   setView: (view) => set({ view }),
   setMonth: (month) => set({ month }),
   setPlaying: (playing) => set({ playing }),

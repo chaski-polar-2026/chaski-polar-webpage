@@ -1,8 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
+import { useExplorerStore } from '../explorer/store'
 import { FAQ, PASOS } from './contenido'
 import './recorrido.css'
 import ColumnIcon from '../explorer/components/ColumnIcon'
 const CLAVE = 'chaski-polar-guide-v1'
+function prepararObjetivo(i: number) {
+ const selector = PASOS[i]!.selector
+ if (/#variable-actual|#panel-datos|#tab-|\.relato-orientacion/.test(selector) && window.matchMedia('(max-width: 900px)').matches && !useExplorerStore.getState().sidebarOpen) {
+  flushSync(() => useExplorerStore.getState().setSidebarOpen(true))
+ }
+ if (selector.includes('.relato-orientacion')) {
+  const ayuda = document.querySelector<HTMLDetailsElement>('.relato-ayuda')
+  if (ayuda) ayuda.open = true
+ }
+}
 function objetivo(i: number) {
  for (const selector of PASOS[i]!.selector.split(',')) {
   const visible = [...document.querySelectorAll<HTMLElement>(selector.trim())]
@@ -27,7 +39,11 @@ export default function RecorridoAyuda({ icons = false }: { icons?: boolean }) {
  const mover = (direccion: number) => {
   if (paso == null) return
   let i = paso + direccion
-  while (i >= 0 && i < PASOS.length && !objetivo(i)) i += direccion
+  while (i >= 0 && i < PASOS.length) {
+   prepararObjetivo(i)
+   if (objetivo(i)) break
+   i += direccion
+  }
   if (i >= PASOS.length) cerrar()
   else if (i >= 0) setPaso(i)
  }
