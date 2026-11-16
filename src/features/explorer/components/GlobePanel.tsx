@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import Globe, { type GlobeMethods } from 'react-globe.gl'
 import * as THREE from 'three'
 import { PALETAS } from '../../../lib/atlas'
@@ -30,6 +30,14 @@ import Proposito from './relato/Proposito'
 import { ExplorerBreadcrumb, ExplorerHelp, ExplorerHint, StepPreference } from './ExplorerOrientation'
 import GlobeLegend, { INITIAL_LAYERS } from './GlobeLegend'
 import './layout-izquierda.css'
+import ColumnIcon from './ColumnIcon'
+
+const desktopQuery = window.matchMedia('(min-width: 901px)')
+const subscribeDesktop = (notify: () => void) => {
+  desktopQuery.addEventListener('change', notify)
+  return () => desktopQuery.removeEventListener('change', notify)
+}
+const isDesktop = () => desktopQuery.matches
 
 type Lado = 'der' | 'izq' | 'der-arriba' | 'der-abajo'
 type Marca = { z: string; lat: number; lng: number; texto: string; lado?: Lado; forma?: 'punto' | 'base' | 'rio' | 'grupo' | 'referencia'; soloCerca?: number; soloLejos?: number; ayuda?: string; cuenca?: boolean }
@@ -61,6 +69,7 @@ function encuadreInicial(w: number, h: number): Pov {
 const desdeEtiqueta = (ev: Event | undefined): boolean => ev?.target instanceof Element && ev.target.closest('.etq') != null
 
 export default function GlobePanel() {
+  const desktop = useSyncExternalStore(subscribeDesktop, isDesktop)
   const { modelo, mapa, mapaEstado, pedirMapa } = useExplorer()
   const acciones = useAcciones()
   const { variable: idVariable, month, view, panel, mapStyle, camera, setView, setMapStyle } = useExplorerStore()
@@ -392,18 +401,20 @@ export default function GlobePanel() {
       <div className="columna-izq">
       <div className="globe-toolbar">
         <GlobeViewToggle value={view} onChange={(x) => { interaccion(); setView(x) }} />
-        <RecorridoAyuda />
+        {!desktop && <RecorridoAyuda />}
         <div className="globe-camera-controls" role="group" aria-label="Center the globe">
-          <button type="button" onClick={() => { interaccion(); acciones.irARegion('peru') }}>Center on Peru</button>
-          <button type="button" onClick={() => { interaccion(); acciones.irARegion('antartida') }}>Center on Antarctica</button>
-          <button type="button" onClick={() => { interaccion(); acciones.general(false); useExplorerStore.getState().flyTo({ lat: -34, lng: -100, altitude: 2.4 }, 1400) }}>Whole globe</button>
+          {desktop && <p className="column-title"><ColumnIcon name="eye" />Globe views</p>}
+          <button type="button" onClick={() => { interaccion(); acciones.irARegion('peru') }}>{desktop && <ColumnIcon name="pin" />}Center on Peru</button>
+          <button type="button" onClick={() => { interaccion(); acciones.irARegion('antartida') }}>{desktop && <ColumnIcon name="snow" />}Center on Antarctica</button>
+          <button type="button" onClick={() => { interaccion(); acciones.general(false); useExplorerStore.getState().flyTo({ lat: -34, lng: -100, altitude: 2.4 }, 1400) }}>{desktop && <ColumnIcon name="globe" />}Whole globe</button>
         </div>
         <RegionesPanel alElegir={interaccion} />
-        <StepPreference />
+        {!desktop && <StepPreference />}
         <p className="vista-nota" aria-live="polite" title={nota}>{nota}</p>
         {mapaActivo && <div className="estilos-mapa" role="group" aria-label="Satellite map style"><span>Map:</span>
           {(['bandas', 'celdas', 'suave'] as const).map((e) => <button className="control-pill" key={e} type="button" aria-pressed={mapStyle === e} onClick={() => setMapStyle(e)}>{{ bandas: 'Bands', celdas: 'Cells', suave: 'Smooth' }[e]}</button>)}
         </div>}
+        {desktop && <div className="column-support"><RecorridoAyuda icons /><StepPreference /></div>}
         <p className={`pista-globo${pistaOculta ? ' oculta' : ''}`}>Drag to rotate. Tap a zone, current or the sea.</p>
       </div>
       <GlobeLegend layers={layers} onChange={setLayers} distance={testedLink.distance} />

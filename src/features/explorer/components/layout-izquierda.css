@@ -7,52 +7,74 @@
   .lienzo-globo > .globe-stage { grid-column: 2; grid-row: 1; order: 0; min-height: 0; min-width: 0; }
   .lienzo-globo #globo { position: absolute; inset: 0; width: auto; height: auto; order: 0; }
   .lienzo-globo > .timeline-panel { grid-column: 1 / -1; grid-row: 2; border-top: 1px solid var(--linea); order: 0; margin: 0; padding: 8px 16px 6px; border-radius: 0; z-index: 9; }
-  /* contenido compacto de la columna */
-  .columna-izq .globe-toolbar { position: static; inset: auto; display: flex; flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 8px; max-width: none; margin: 0; padding: 0; background: none; border: 0; box-shadow: none; }
-  .columna-izq .globe-toolbar > * { width: 100%; max-width: none; margin: 0; }
-  .columna-izq .globe-toolbar button, .columna-izq .globe-toolbar .control-pill { font-size: .8rem; }
-  .columna-izq .globe-camera-controls { display: grid; gap: 6px; }
-  .columna-izq .globe-camera-controls button { width: 100%; padding: 6px 8px; min-height: 36px; }
-  .columna-izq .regiones { display: grid; gap: 6px; }
-  .columna-izq .region { width: 100%; text-align: center; padding: 6px 8px; min-height: 40px; font-size: .85rem; }
-  .columna-izq .estilos-mapa { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-  .columna-izq .vista-nota, .columna-izq .pista-globo { font-size: .72rem; line-height: 1.4; margin: 0; flex: none; }
-  .columna-izq .globe-legend { order: 0; margin: 0; width: 100%; }
-  .columna-izq .globe-legend > summary { min-height: 40px; font-size: .8rem; padding: 8px; }
-  .columna-izq .globe-legend-content { padding: 0 8px 10px; font-size: .75rem; }
-  .columna-izq .globe-toolbar { order: 0; gap: 6px; }
-  .columna-izq .globe-toolbar > * { min-width: 0; }
-  .columna-izq .vista-toggle, .columna-izq .globe-view-toggle, .columna-izq .globe-toolbar > div:first-child { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; }
-  .columna-izq .globe-toolbar > div:first-child button { padding: 5px 2px; min-height: 32px; font-size: .68rem; min-width: 0; }
-  .columna-izq .globe-camera-controls button, .columna-izq .step-preference, .columna-izq .recorrido-controles button { min-height: 30px; padding: 4px 6px; font-size: .75rem; }
+  /* La altura disponible de la columna, sin la linea de tiempo, determina la densidad. */
+  .columna-izq { container-type: size; }
+  .columna-izq .globe-toolbar { position: static; inset: auto; display: flex; flex-direction: column; align-items: stretch; flex-wrap: nowrap; flex: 1; min-height: 0; gap: clamp(8px, 2cqh, 18px); max-width: none; margin: 0; padding: 4px; background: none; border: 0; box-shadow: none; }
+  .columna-izq .globe-toolbar > * { width: 100%; max-width: none; min-width: 0; margin: 0; flex: none; }
+  .columna-izq .column-icon { width: 18px; height: 18px; flex: none; color: #8fe3f2; }
+  .columna-izq .column-title, .columna-izq .regiones-titulo { display: flex; align-items: center; gap: 7px; margin: 0 0 4px; min-height: 22px; color: #8fe3f2; font-size: .75rem; font-weight: 500; letter-spacing: 0; text-transform: none; }
+  .columna-izq .globe-camera-controls { display: grid; gap: 2px; }
+  .columna-izq .globe-camera-controls button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: clamp(32px, 8cqh, 48px); padding: 5px 4px; border: 0; border-bottom: 1px solid rgb(143 227 242 / .18); border-radius: 0; background: transparent; color: #eaf3f5; font-size: .78rem; line-height: 1.25; text-align: left; }
+  .columna-izq .globe-camera-controls button:hover { background: rgb(143 227 242 / .1); }
+  .columna-izq .regiones { display: grid; gap: 5px; }
+  .columna-izq .region { width: 100%; min-height: clamp(42px, 8.5cqh, 54px); padding: 5px 8px; text-align: left; }
+  .columna-izq .region b { font-size: .88rem; line-height: 1.2; }
+  .columna-izq .estilos-mapa { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .columna-izq .estilos-mapa > span { grid-column: 1 / -1; color: #8fe3f2; font-size: .75rem; }
+  .columna-izq .estilos-mapa .control-pill { min-width: 0; min-height: clamp(30px, 8cqh, 44px); padding: 3px 1px; font-size: .72rem; }
+  .columna-izq .column-support { display: grid; gap: 6px; margin-top: auto; padding-top: clamp(6px, 2cqh, 14px); border-top: 1px solid rgb(143 227 242 / .25); }
   .columna-izq .recorrido-controles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .columna-izq .region { min-height: 34px; padding: 4px 8px; font-size: .78rem; }
-  .columna-izq .regiones-titulo { margin: 4px 0 2px; font-size: .72rem; }
-  /* Textos de apoyo y capas: flotan sobre el globo para que la columna entre sin scroll */
-  .columna-izq .globe-toolbar > .vista-nota, .columna-izq .globe-toolbar > .pista-globo { width: auto; }
-  .columna-izq .vista-nota { position: absolute; z-index: 7; top: 8px; left: calc(var(--izq) + 12px); max-width: 300px; padding: 4px 8px; border-radius: 6px; background: rgba(2, 6, 11, .7); }
-  .columna-izq .pista-globo { position: absolute; z-index: 7; bottom: calc(var(--alto-tiempo, 150px) + 8px); left: calc(var(--izq) + 12px); padding: 3px 8px; border-radius: 6px; background: rgba(2, 6, 11, .7); }
-  .columna-izq .globe-legend { position: static; }
-  .columna-izq .globe-legend-content { position: absolute; z-index: 12; left: calc(var(--izq) + 8px); bottom: calc(var(--alto-tiempo, 150px) + 8px); width: min(420px, 60%); padding: 12px; border: 1px solid var(--linea); border-radius: 8px; background: var(--panel-fuerte, #0c2c4a); }
+  .columna-izq .recorrido-controles button { display: flex; align-items: center; justify-content: center; gap: 5px; min-width: 0; min-height: clamp(30px, 8cqh, 44px); padding: 4px; border: 1px solid rgb(143 227 242 / .45); background: transparent; color: #eaf3f5; font-size: .75rem; }
+  .columna-izq .step-preference { width: 100%; min-height: clamp(28px, 8cqh, 44px); padding: 3px; border-color: transparent; background: transparent; color: var(--niebla); font-size: .72rem; }
+  .columna-izq .column-support button:hover { color: #8fe3f2; background: rgb(143 227 242 / .08); }
+  .columna-izq button:focus-visible { outline: 2px solid #8fe3f2; outline-offset: 2px; }
+  .columna-izq .vista-nota, .columna-izq .pista-globo { position: absolute; z-index: 7; width: auto; font-size: .72rem; line-height: 1.4; padding: 4px 8px; border-radius: 6px; background: rgba(2, 6, 11, .7); }
+  .columna-izq .vista-nota { left: calc(var(--izq) + 12px); max-width: 300px; }
+  .columna-izq .pista-globo { bottom: calc(var(--alto-tiempo, 150px) + 8px); left: calc(var(--izq) + 12px); }
+  .columna-izq .globe-toolbar > .view-toggle { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; }
+  .columna-izq .globe-legend { margin: 0; }
+  .columna-izq .globe-legend > summary { min-height: 30px; padding: 4px 8px; font-size: .74rem; }
   .lienzo-globo > .timeline-panel { gap: 4px; }
-  .columna-izq .globe-toolbar { gap: 5px; }
-  .columna-izq .globe-toolbar > div:first-child button { min-height: 28px; }
-  .columna-izq .globe-camera-controls { gap: 4px; }
-  .columna-izq .globe-camera-controls button, .columna-izq .step-preference, .columna-izq .recorrido-controles button { min-height: 30px; padding: 3px 8px; font-size: .82rem; }
-  .columna-izq .region { min-height: 34px; padding: 4px 9px; font-size: .84rem; line-height: 1.15; }
-  .columna-izq .regiones { gap: 4px; }
-  .columna-izq .regiones-titulo { margin: 2px 0; }
-  .columna-izq .estilos-mapa { gap: 4px; font-size: .72rem; }
-  .columna-izq .estilos-mapa .control-pill { min-height: 28px; padding: 3px 10px; font-size: .78rem; }
-  .columna-izq .globe-legend > summary { min-height: 32px; padding: 4px 8px; font-size: .8rem; }
   /* Estilo de vista (arriba a la izquierda del globo) y capas (arriba a la derecha) */
-  .columna-izq .globe-toolbar > div:first-child { position: absolute; z-index: 9; top: 8px; left: calc(var(--izq) + 10px); width: 270px; background: rgba(2, 6, 11, .75); border-radius: 8px; }
-  .columna-izq .globe-toolbar > div:first-child button { min-height: 32px; font-size: .78rem; }
-  .columna-izq .globe-toolbar > .vista-nota { top: 52px; left: calc(var(--izq) + 12px); }
+  .columna-izq .globe-toolbar > .view-toggle { position: absolute; z-index: 9; top: 8px; left: calc(var(--izq) + 10px); width: 270px; background: rgba(2, 6, 11, .75); border-radius: 8px; }
+  .columna-izq .globe-toolbar > .view-toggle button { min-height: 32px; font-size: .78rem; }
+  .columna-izq .globe-toolbar > .vista-nota { top: 52px; }
   .columna-izq .globe-legend { position: absolute; z-index: 12; top: 8px; right: 12px; width: auto; max-width: min(420px, calc(100% - var(--izq) - 24px)); border-radius: 8px; background: rgba(2, 6, 11, .8); }
   .columna-izq .globe-legend[open] { background: #0a2540; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
   .columna-izq .globe-legend-content { position: static; width: auto; border: 0; padding: 0 12px 12px; background: none; max-height: calc(100svh - 320px); overflow-y: auto; }
   /* texto centrado dentro de cada boton */
-  .columna-izq .globe-toolbar button, .columna-izq .region, .columna-izq .control-pill, .columna-izq .globe-toolbar > div:first-child button { text-align: center; justify-content: center; align-items: center; }
+  .columna-izq .region, .columna-izq .control-pill, .columna-izq .globe-toolbar > .view-toggle button { text-align: center; justify-content: center; align-items: center; }
   .columna-izq .region { display: flex; }
+  .columna-izq .region b { width: 100%; text-align: center; }
+}
+
+/* Compactar solo cuando la columna pierde altura; no afecta el diseno movil. */
+@media (min-width: 901px) {
+  @container (max-height: 500px) {
+    .columna-izq .globe-toolbar { gap: 6px; padding: 0 2px; }
+    .columna-izq .column-title, .columna-izq .regiones-titulo { margin-bottom: 0; }
+    .columna-izq .region { min-height: 38px; padding: 3px 6px; }
+    .columna-izq .region b { font-size: .8rem; }
+    .columna-izq .regiones { gap: 3px; }
+    .columna-izq .column-support { padding-top: 4px; gap: 2px; }
+  }
+  @container (max-height: 400px) {
+    .columna-izq .globe-toolbar { gap: 3px; }
+    .columna-izq .globe-camera-controls button { min-height: 28px; padding-block: 3px; }
+    .columna-izq .region { min-height: 34px; }
+    .columna-izq .region b { font-size: .76rem; }
+    .columna-izq .column-support button { min-height: 28px; }
+  }
+  @container (max-height: 330px) {
+    .columna-izq .globe-toolbar { gap: 1px; }
+    .columna-izq .regiones { gap: 1px; }
+    .columna-izq .globe-camera-controls button { min-height: 22px; padding-block: 1px; font-size: .68rem; }
+    .columna-izq .column-title, .columna-izq .regiones-titulo { min-height: 18px; font-size: .7rem; }
+    .columna-izq .region { min-height: 28px; padding-block: 1px; }
+    .columna-izq .region b { font-size: .68rem; }
+    .columna-izq .column-icon { width: 14px; height: 14px; }
+    .columna-izq .estilos-mapa { grid-template-columns: auto repeat(3, minmax(0, 1fr)); gap: 2px; align-items: center; }
+    .columna-izq .estilos-mapa > span { grid-column: auto; font-size: .65rem; }
+    .columna-izq .estilos-mapa .control-pill, .columna-izq .column-support button { min-height: 22px; padding-block: 1px; font-size: .65rem; }
+  }
 }

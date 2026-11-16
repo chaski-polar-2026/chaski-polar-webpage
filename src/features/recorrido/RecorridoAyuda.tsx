@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { FAQ, PASOS } from './contenido'
 import './recorrido.css'
+import ColumnIcon from '../explorer/components/ColumnIcon'
 const CLAVE = 'chaski-polar-guide-v1'
 function objetivo(i: number) {
  for (const selector of PASOS[i]!.selector.split(',')) {
@@ -10,7 +11,7 @@ function objetivo(i: number) {
  }
  return null
 }
-export default function RecorridoAyuda() {
+export default function RecorridoAyuda({ icons = false }: { icons?: boolean }) {
  const [paso, setPaso] = useState<number | null>(null)
  const [ayuda, setAyuda] = useState(false)
  const dialogo = useRef<HTMLDialogElement>(null)
@@ -71,7 +72,7 @@ export default function RecorridoAyuda() {
   return () => { observer.disconnect(); removeEventListener('scroll',posicionar,true); removeEventListener('resize',posicionar) }
  }, [paso])
  return <>
-  <nav className="recorrido-controles" aria-label="Explorer help"><button id="explorer-guide" ref={guia} onClick={abrir}>Guide</button><button id="explorer-existing-help" ref={help} onClick={() => setAyuda(true)}>Help</button></nav>
+  <nav className="recorrido-controles" aria-label="Explorer help"><button id="explorer-guide" ref={guia} onClick={abrir}>{icons && <ColumnIcon name="book" />}Guide</button><button id="explorer-existing-help" ref={help} onClick={() => setAyuda(true)}>{icons && <ColumnIcon name="help" />}Help</button></nav>
   <dialog className={`recorrido-dialogo${ayuda ? ' recorrido-dialogo-ayuda' : ''}`} ref={dialogo} aria-labelledby="recorrido-titulo" onCancel={e => {e.preventDefault();cerrar()}} onKeyDown={e => {
    if (paso != null && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {e.preventDefault();mover(e.key === 'ArrowRight' ? 1 : -1)}
    if(e.key === 'Tab') {
