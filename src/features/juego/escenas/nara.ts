@@ -166,9 +166,6 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
         seguidor.seguir(nara.posicion);
         nara.animar(t, vel, seguidor.derecha, VELOCIDAD);
         naraVoxel.position.copy(nara.posicion); mirarALaCamara(naraVoxel, camara);
-        // El sprite original se espeja según el producto velocidad·derecha de cámara.
-        // El modelo voxel mira inicialmente a +X, así que refleja esa misma orientación con un giro Y.
-        naraVoxel.rotation.y = vel.lengthSq() > 0.2 && vel.dot(seguidor.derecha) < 0 ? Math.PI : 0;
 
         for (const f of flechas) (f.material as THREE.MeshBasicMaterial).opacity = 0.35 + 0.25 * Math.sin(t * 3 - f.position.z * 0.2);
         meta.scale.setScalar(1 + Math.sin(t * 3) * 0.05);

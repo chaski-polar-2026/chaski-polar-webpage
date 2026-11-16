@@ -341,6 +341,7 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
           lobo.posicion.addScaledVector(loboEstado.vel, dt);
           lobo.posicion.x = THREE.MathUtils.clamp(lobo.posicion.x, X_MIN, X_MAX);
           lobo.posicion.y = THREE.MathUtils.clamp(lobo.posicion.y, -11, -1.5);
+          lobo.posicion.z = THREE.MathUtils.clamp(lobo.posicion.z, Z_MIN, Z_MAX);
           if (loboEstado.pausa <= 0 && distLobo < 2) {
             L.golpe(c, "lobo"); sonar("golpe"); eventos.aviso("Sea lion!");
             loboEstado.pausa = 5; loboEstado.rumbo.subVectors(lobo.posicion, anchi.posicion).normalize();
