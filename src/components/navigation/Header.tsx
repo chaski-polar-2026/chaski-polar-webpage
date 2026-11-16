@@ -10,6 +10,16 @@ type Seccion = 'explore' | 'findings' | 'trends'
 export default function Header() {
   const { pathname } = useLocation()
   const [seccion, setSeccion] = useState<Seccion>('explore')
+  const [menuAbierto, setMenuAbierto] = useState(false)
+
+  // en pantallas angostas el menú se pliega; se cierra al cambiar de página o con Escape
+  useEffect(() => { setMenuAbierto(false) }, [pathname])
+  useEffect(() => {
+    if (!menuAbierto) return
+    const alTeclear = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenuAbierto(false) }
+    addEventListener('keydown', alTeclear)
+    return () => removeEventListener('keydown', alTeclear)
+  }, [menuAbierto])
 
   // la opción activa sigue al scroll: el globo es «Explore»; desde «What the data shows» hacia abajo, «Findings»
   useEffect(() => {
@@ -51,7 +61,11 @@ export default function Header() {
           Is the change real? Ocean trends off Peru, tested
         </div>
       </div>
-      <nav className="app-nav pointer-events-auto ml-auto flex gap-1 max-sm:[&>a]:px-2" aria-label="Sections">
+      <button type="button" className="nav-toggle pointer-events-auto" aria-expanded={menuAbierto} aria-controls="menu-principal" onClick={() => setMenuAbierto(v => !v)}>
+        <span className="nav-toggle-barras" aria-hidden="true" />
+        <span className="nav-toggle-texto">{menuAbierto ? 'Close' : 'Menu'}</span>
+      </button>
+      <nav id="menu-principal" className="app-nav pointer-events-auto ml-auto flex gap-1" data-abierto={menuAbierto ? 'true' : 'false'} aria-label="Sections" onClick={() => setMenuAbierto(false)}>
         <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/">Home</Link>
         <Link className="rounded-pill px-3 py-1.5 no-underline transition-colors" to="/explorer" onClick={irAExplorar} aria-current={pathname === '/explorer' ? 'page' : undefined}>Explore</Link>
         <a className="rounded-pill px-3 py-1.5 no-underline transition-colors" href="/research" onClick={irAHallazgos} aria-current={pathname === '/research' && seccion === 'findings' ? 'location' : undefined}>Research</a>

@@ -15,12 +15,8 @@
 }
 @media (prefers-reduced-transparency: reduce) { .app-header { background: var(--abismo); backdrop-filter: none; } }
 
-/* Eight links cannot fit beside the logo at 390px with 44px targets. */
 @media (max-width: 640px) {
-  body:has(main.research-page) .app-header.chaski-header .app-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 4px; }
-  body:has(main.research-page) .app-header.chaski-header .app-nav a { min-width: 44px; min-height: 44px; padding-inline: 4px; }
-  main.research-page { padding-top: 100px; }
-  .research-page .seccion[id], .research-page [id="trend-glossary"] { scroll-margin-top: 112px; }
+  .research-page .seccion[id], .research-page [id="trend-glossary"] { scroll-margin-top: 72px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .tendencias *, .tendencias *::before, .tendencias *::after,
