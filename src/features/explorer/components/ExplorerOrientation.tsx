@@ -48,14 +48,14 @@ export function ExplorerBreadcrumb() {
 export function ExplorerHint() {
   const panel = useExplorerStore(s => s.panel)
   const phase = useExplorerStore(s => s.zonePhase)
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(() => { try { return localStorage.getItem('chaski-explorer-place-used') !== '1' } catch { return true } })
   const [newHere] = useState(() => { try { return !localStorage.getItem('chaski-polar-guide-v1') } catch { return true } })
   useEffect(() => {
     const hide = () => setVisible(false)
     const timer = window.setTimeout(hide, 12000)
     return () => clearTimeout(timer)
   }, [])
-  useEffect(() => { if (panel.tipo !== 'general') setVisible(false) }, [panel.tipo])
+  useEffect(() => { if (panel.tipo !== 'general') { setVisible(false); try { localStorage.setItem('chaski-explorer-place-used', '1') } catch { /* Optional preference. */ } } }, [panel.tipo])
   if (phase !== 'globe') return <p className="explorer-hint" role="status">Use ← Back to globe to return.</p>
   if (!visible) return null
   return <div className="explorer-hint" role="status"><StepNumber step={4} /><span>Click a place on the globe or choose one from the list.{newHere && <> <button type="button" onClick={() => document.getElementById('explorer-guide')?.click()}>New here? Take the 1-minute tour.</button></>}</span></div>
