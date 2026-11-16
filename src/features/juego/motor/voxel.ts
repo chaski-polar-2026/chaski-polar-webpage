@@ -154,9 +154,16 @@ export function crearFondoCardumenVoxel(escena: THREE.Scene, zMin: number, zMax:
 /** Fondo rocoso y placas de hielo para Lumi, ajustado a su corredor lateral original. */
 export function crearEntornoLumiVoxel(escena: THREE.Scene): void {
   const cubos: Cubo[] = []
-  for (let x = -90; x <= 90; x++) for (let z = -18; z <= 18; z++) {
+  // El lecho se extiende mucho mas que el pasillo jugable y sus bordes se funden con el color del agua,
+  // para que no se vea un corte seco donde termina.
+  const agua = new THREE.Color(0x1b5f86), mezcla = new THREE.Color()
+  const fundir = (hex: number, x: number, z: number) => {
+    const t = THREE.MathUtils.clamp(Math.max((Math.abs(z) - 22) / 50, (Math.abs(x) - 60) / 30), 0, 1)
+    return t <= 0 ? hex : mezcla.setHex(hex).lerp(agua, t * t * (3 - 2 * t)).getHex()
+  }
+  for (let x = -90; x <= 90; x++) for (let z = -80; z <= 80; z++) {
     const relieve = Math.round(2 + Math.sin(x * 0.08) * 1.4 + Math.cos(z * 0.19) * 0.8)
-    for (let y = 0; y <= relieve; y++) cubos.push([x, y, z, elegir(y === relieve ? ARENA : PIEDRA, x + y + z)])
+    for (let y = 0; y <= relieve; y++) cubos.push([x, y, z, fundir(elegir(y === relieve ? ARENA : PIEDRA, x + y + z), x, z)])
   }
   for (let i = 0; i < 16; i++) {
     const cx = -82 + i * 11, cz = i % 2 ? -14 : 14, radio = 3 + i % 3
