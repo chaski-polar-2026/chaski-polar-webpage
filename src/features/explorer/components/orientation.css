@@ -71,3 +71,7 @@
   .lienzo-globo .globe-toolbar { padding-right: 56px; }
   .explorer-hint { font-size: .8rem; }
 }
+
+/* El boton de ayuda es casi transparente para no tapar el contenido; se vuelve nitido al pasar el cursor, enfocarlo o abrirlo. */
+.explorer-help > summary { background: rgba(12, 44, 74, .25); border-color: rgba(143, 227, 242, .35); color: rgba(234, 243, 245, .6); transition: background .2s, border-color .2s, color .2s; }
+.explorer-help > summary:hover, .explorer-help > summary:focus-visible, .explorer-help[open] > summary { background: #0c2c4a; border-color: #8fe3f2; color: #eaf3f5; }
