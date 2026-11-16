@@ -1,4 +1,5 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { StepNumber } from './ExplorerOrientation'
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import { colorDiverge, colorRampa, DEGRADADO_DIVERGE, tClorofila } from '../../../lib/color'
 import { etiquetaMes, mesLargo, nf } from '../../../lib/formato'
@@ -10,6 +11,8 @@ import { useExplorerStore } from '../store'
 
 /** Línea de tiempo: dato, mes, reproducción, saltos a cada El Niño y barra con el histórico del dato elegido */
 export function TimelinePanel() {
+  const [monthHint, setMonthHint] = useState(() => { try { return localStorage.getItem('chaski-month-used') !== '1' } catch { return true } })
+  const usedMonth = () => { setMonthHint(false); try { localStorage.setItem('chaski-month-used', '1') } catch { /* Optional preference. */ } }
   const { modelo } = useExplorer()
   const acciones = useAcciones()
   const { section, variable, month, playing, setVariable, setMonth, setPlaying } = useExplorerStore()
@@ -46,15 +49,15 @@ export function TimelinePanel() {
   return <section className="timeline-panel" aria-label="Globe timeline">
     <div className="timeline-topline">
       {opciones.length
-        ? <label className="timeline-variable"><span>Variable</span><select value={variable} onChange={(e) => setVariable(e.target.value)}>
+        ? <label className="timeline-variable"><span><StepNumber step={2} />Variable</span><select value={variable} onChange={(e) => setVariable(e.target.value)}>
           {opciones.map((x) => <option key={x.id} value={x.id}>{x.nombre} · {x.unidad}</option>)}
           {(NO_DISPONIBLE[section] ?? []).map((n) => <option key={n} disabled>{n} · not available</option>)}
         </select></label>
         : <p className="timeline-unavailable">{`Not available for this area yet: ${(NO_DISPONIBLE[section] ?? []).join(', ').toLowerCase()}.`}</p>}
-      <strong className="timeline-date">{etiquetaMes(modelo.mes(month))}</strong>
+      <strong className="timeline-date"><StepNumber step={3} /><span className="timeline-month-hint">Month{monthHint ? ' · Drag to change month' : ''}</span>{etiquetaMes(modelo.mes(month))}</strong>
     </div>
     {opciones.length > 0 && <div className="timeline-controls">
-    <button className="play-button" type="button" aria-label={playing ? 'Pause animation' : 'Play months'} onClick={() => setPlaying(!playing)}>{playing ? 'Ⅱ' : '▶'}</button>
+    <button className="play-button" type="button" title="Play the whole time series" aria-label={playing ? 'Pause animation' : 'Play the whole time series'} onClick={() => { usedMonth(); setPlaying(!playing) }}>{playing ? 'Ⅱ' : '▶'}</button>
       <div className="timeline-track">
         <div className="timeline-events" role="group" aria-label="Jump to an El Niño event">{eventos.map((e, k) =>
           <button key={e.anio} type="button" style={{ left: posicion(e.i), transform: desplazamiento(k) }} aria-current={month === e.i} title={`${e.nombre} (pico en ${mesLargo(modelo.mes(e.i))})`}
@@ -70,7 +73,7 @@ export function TimelinePanel() {
             }} />
           <Bar dataKey="value" isAnimationActive={false}>{serie.map((d) => <Cell key={d.month} fill={d.color} />)}</Bar>
         </BarChart></ResponsiveContainer></div>
-        <input className="timeline-range" type="range" min={i0} max={ultimo} step={1} value={month} aria-label="Month" onChange={(e) => { setPlaying(false); setMonth(Number(e.target.value)) }} />
+        <input className="timeline-range" type="range" min={i0} max={ultimo} step={1} value={month} aria-label="Month" title="Drag to change month. Use arrow keys when focused." onChange={(e) => { usedMonth(); setPlaying(false); setMonth(Number(e.target.value)) }} />
       </div>
     </div>}
     {opciones.length > 0 && <Leyenda />}

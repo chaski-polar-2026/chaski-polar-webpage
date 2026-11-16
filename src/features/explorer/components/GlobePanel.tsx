@@ -14,7 +14,8 @@ import { esAngosto, menosMovimiento, punteroFino } from '../lib/entorno'
 import { zonaActiva, type IdCorriente, type Pov } from '../lib/estado'
 import { APARTADOS } from '../lib/regiones'
 import { RECUADRO } from '../lib/mapa'
-import { BASE_MACHU_PICCHU } from '../lib/modelo'
+import { BASE_MACHU_PICCHU, distanciaKm } from '../lib/modelo'
+import { BASIN_LABELS, COVERAGE, NINO_LABELS, NINO_REGIONS, TESTED_RESULT, type ReferencePath } from '../lib/globeLayers'
 import { RECORRIDO } from '../lib/recorrido'
 import type { IdZona } from '../lib/tipos'
 import { variablePorId } from '../lib/variables'
@@ -26,11 +27,14 @@ import Relato from './relato/Relato'
 import { TimelinePanel } from './TimelinePanel'
 import TarjetaMapa from './TarjetaMapa'
 import Proposito from './relato/Proposito'
+import { ExplorerBreadcrumb, ExplorerHelp, ExplorerHint, StepPreference } from './ExplorerOrientation'
+import GlobeLegend, { INITIAL_LAYERS } from './GlobeLegend'
 
 type Lado = 'der' | 'izq' | 'der-arriba' | 'der-abajo'
-type Marca = { z: string; lat: number; lng: number; texto: string; lado?: Lado; forma?: 'punto' | 'base' | 'rio' | 'grupo'; soloCerca?: number; soloLejos?: number }
+type Marca = { z: string; lat: number; lng: number; texto: string; lado?: Lado; forma?: 'punto' | 'base' | 'rio' | 'grupo' | 'referencia'; soloCerca?: number; soloLejos?: number; ayuda?: string; cuenca?: boolean }
 type Corriente = { id: IdCorriente; nombre: string; pts: [number, number][]; color: [string, string] }
-type Arco = { de: IdZona; a: IdZona; r: number; startLat: number; startLng: number; endLat: number; endLng: number; color: [string, string]; grosor: number }
+type Arco = { de: IdZona; a: IdZona; r: number; startLat: number; startLng: number; endLat: number; endLng: number; color: [string, string]; grosor: number; tested?: boolean }
+type GlobePath = Corriente | ReferencePath
 type Anillo = { lat: number; lng: number; r?: number }
 
 const CORRIENTES: Corriente[] = [
@@ -45,6 +49,8 @@ const LADO: Partial<Record<IdZona, Lado>> = {
 // con el globo lejos (altitud > 1,15) las zonas de cada región se juntan en una sola pastilla
 const AGRUPAR = 1.15
 const ANILLO_BASE: Anillo = { ...BASE_MACHU_PICCHU, r: 2.6 }
+// Reuse the globe's existing HTML-label layer; 3D text was slower in profiling.
+const REFERENCE_MARKS: Marca[] = [...NINO_LABELS, ...BASIN_LABELS].map(p => ({ z: `ref-${p.text}`, lat: p.lat, lng: p.lng, texto: p.text, forma: 'referencia', ayuda: p.help, cuenca: p.basin }))
 
 /** La altitud hace que el globo llene el espacio libre (cámara de 50° vertical) */
 function encuadreInicial(w: number, h: number): Pov {
@@ -77,6 +83,15 @@ export default function GlobePanel() {
   const [veloAbierto, setVeloAbierto] = useState(giroPortada == null)
   const [pistaOculta, setPistaOculta] = useState(false)
   const [lectura, setLectura] = useState<{ x: number; y: number; titulo: string; detalle: string[] } | null>(null)
+  // Always off on load: an earlier session must never imply a confirmed connection.
+  const [layers, setLayers] = useState(INITIAL_LAYERS)
+  const paths = useMemo<GlobePath[]>(() => [...CORRIENTES, ...(layers.coverage ? [COVERAGE] : []), ...(layers.nino ? NINO_REGIONS : [])], [layers.coverage, layers.nino])
+  const testedLink = useMemo(() => {
+    const from = modelo.zona('antartida_peninsula'), to = modelo.zona('peru_norte_paita_sechura')
+    const distance = Math.round(distanciaKm(from.lat, from.lon, to.lat, to.lon) / 100) * 100
+    const arc: Arco = { de: 'antartida_peninsula', a: 'peru_norte_paita_sechura', r: 0, startLat: from.lat, startLng: from.lon, endLat: to.lat, endLng: to.lon, color: ['rgba(213,224,237,0.7)', 'rgba(213,224,237,0.7)'], grosor: 0.45, tested: true }
+    return { arc, distance }
+  }, [modelo])
 
   // Al elegir otra vista desde el globo fijo, volver al inicio de su explicación.
   useEffect(() => {
@@ -99,12 +114,14 @@ export default function GlobePanel() {
     { z: 'rio-humboldt', lat: -27, lng: -78.4, texto: 'Humboldt Current ↑', forma: 'rio' },
     { z: 'rio-circumpolar', lat: -55.2, lng: -96, texto: 'Antarctic Circumpolar Current →', forma: 'rio' },
   ], [modelo])
+  const htmlMarks = useMemo(() => [...marcas, ...REFERENCE_MARKS.filter(m => m.cuenca ? layers.basins : layers.nino)], [marcas, layers.basins, layers.nino])
   const elementos = useRef(new Map<Marca, HTMLElement>())
   // las etiquetas se crean una sola vez: sus manejadores leen siempre la versión más reciente
   const manejadores = useRef({ clic: (m: Marca) => { void m }, pasar: (m: Marca | null) => { void m } })
 
   const interaccion = useCallback(() => {
     setPistaOculta(true)
+    globo.current?.resumeAnimation()
     const c = globo.current?.controls()
     if (c) c.autoRotate = false
   }, [])
@@ -129,15 +146,25 @@ export default function GlobePanel() {
 
   const crearEtiqueta = useCallback((d: object) => {
     const m = d as Marca
-    const e = document.createElement(m.forma === 'rio' ? 'div' : 'button')
+    const e = document.createElement(m.forma === 'rio' || m.forma === 'referencia' ? 'div' : 'button')
     if (e instanceof HTMLButtonElement) e.type = 'button'
-    e.className = `etq ${m.lado ?? 'der'} ${m.forma ?? 'punto'}`
+    e.className = `etq ${m.lado ?? 'der'} ${m.forma ?? 'punto'}${m.cuenca ? ' cuenca' : ''}`
+    e.dataset.place = m.z
+    const altitude = globo.current?.pointOfView().altitude ?? VISTA_INICIAL.altitude
+    e.classList.toggle('agrupada', (m.soloCerca != null && altitude > m.soloCerca) || (m.soloLejos != null && altitude <= m.soloLejos))
     const punto = document.createElement('i'), nombre = document.createElement('span')
     punto.setAttribute('aria-hidden', 'true')
     nombre.textContent = m.texto
     e.append(punto, nombre)
     if (m.forma === 'rio') e.style.pointerEvents = 'none'
+    else if (m.forma === 'referencia') {
+      e.setAttribute('role', 'img')
+      e.title = m.ayuda ?? m.texto
+      e.setAttribute('aria-label', `${m.texto}. ${m.ayuda ?? ''}`)
+      if (!m.cuenca) e.tabIndex = 0
+    }
     else {
+      e.title = m.forma === 'grupo' ? 'Click to see places in this area' : "Click to open this place's map"
       // que el clic no llegue también al globo (que lo tomaría como un clic en el mar)
       for (const t of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend']) e.addEventListener(t, (ev) => ev.stopPropagation())
       e.addEventListener('click', (ev) => { ev.stopPropagation(); manejadores.current.clic(m) })
@@ -181,6 +208,7 @@ export default function GlobePanel() {
       }
     })
   }, [modelo, zonaArcos, v])
+  const visibleArcs = useMemo(() => layers.tested ? [...arcos, testedLink.arc] : arcos, [arcos, layers.tested, testedLink])
 
   const anillos = useMemo<Anillo[]>(() => {
     if (panel.tipo === 'zona') { const p = modelo.zona(panel.z); return [ANILLO_BASE, { lat: p.lat, lng: p.lon, r: panel.z === 'antartida_peninsula' ? 7 : 4 }] }
@@ -198,6 +226,7 @@ export default function GlobePanel() {
   const alListo = useCallback(() => {
     const g = globo.current
     if (!g) return
+    g.resumeAnimation()
     setReady(true)
     const c = g.controls()
     c.enableDamping = true
@@ -215,6 +244,7 @@ export default function GlobePanel() {
 
   useEffect(() => {
     if (!camera || !globo.current) return
+    globo.current.resumeAnimation()
     const pov = camera.pov === VISTA_INICIAL ? encuadreInicial(contenedor.current?.clientWidth ?? 0, contenedor.current?.clientHeight ?? 0) : camera.pov
     globo.current.pointOfView(pov, menosMovimiento ? 0 : camera.ms)
   }, [camera])
@@ -234,12 +264,12 @@ export default function GlobePanel() {
 
   // el globo deja de dibujar cuando no se ve (ahorra batería al leer los hallazgos)
   useEffect(() => {
-    const el = lienzo.current
-    if (!el) return
+    const el = contenedor.current
+    if (!el || !ready) return
     const io = new IntersectionObserver(([e]) => { if (e?.isIntersecting) globo.current?.resumeAnimation(); else globo.current?.pauseAnimation() }, { threshold: 0.02 })
     io.observe(el)
     return () => io.disconnect()
-  }, [])
+  }, [ready, atlasListo])
 
   /* ---------- lectura del mapa bajo el cursor ---------- */
   const pendiente = useRef(0)
@@ -277,7 +307,7 @@ export default function GlobePanel() {
     const alTeclear = (e: KeyboardEvent) => {
       const escribiendo = e.target instanceof Element && e.target.closest('input, select, textarea')
       const p = useExplorerStore.getState().panel
-      if (e.defaultPrevented || document.querySelector('.proposito')) return
+      if (e.defaultPrevented || document.querySelector('.proposito, dialog[open], .explorer-help[open]')) return
       if (useExplorerStore.getState().zonePhase !== 'globe') {
         if (e.key === 'Escape') { e.preventDefault(); useExplorerStore.getState().closeZone() }
         return
@@ -294,7 +324,8 @@ export default function GlobePanel() {
 
   return <section className="escenario" aria-label="Globe explorer">
     <div className="lienzo-globo" data-zone-phase={zonePhase} ref={lienzo}>
-      <div id="globo" ref={contenedor} role="img" aria-label={`Earth globe showing ${v.nombre.toLowerCase()}. The ${modelo.ids.length} study zones are listed in the panel.`}
+      <div className="globe-stage">
+      <div id="globo" ref={contenedor} role="group" tabIndex={-1} aria-label={`Earth globe showing ${v.nombre.toLowerCase()}. The ${modelo.ids.length} study zones are listed in the panel.`}
         onPointerDown={interaccion} onWheel={interaccion} onPointerMove={alMover} onPointerLeave={() => setLectura(null)}>
         {width > 0 && <Globe
           ref={globo}
@@ -309,33 +340,33 @@ export default function GlobePanel() {
           onGlobeReady={alListo}
           onZoom={(pov) => agrupar(pov.altitude)}
           onGlobeClick={({ lat, lng }, ev) => { if (!desdeEtiqueta(ev)) { interaccion(); acciones.clicMar(lat, lng) } }}
-          pathsData={CORRIENTES}
+          pathsData={paths}
           pathPoints="pts"
           pathPointLat={(p: [number, number]) => p[0]}
           pathPointLng={(p: [number, number]) => p[1]}
           pathPointAlt={0.008}
-          pathColor={(d: object) => (d as Corriente).color}
-          pathStroke={(d: object) => ((d as Corriente).id === corrienteResaltada ? 4 : 2)}
-          pathDashLength={0.06}
-          pathDashGap={0.02}
-          pathDashAnimateTime={menosMovimiento ? 0 : 14000}
-          pathLabel={(d: object) => `<div class="tip"><b>${(d as Corriente).nombre}</b><br><i>Tap to learn what it does</i></div>`}
-          onPathClick={(d, ev) => { if (!desdeEtiqueta(ev)) { interaccion(); acciones.corriente((d as Corriente).id) } }}
+          pathColor={(d: object) => (d as GlobePath).color}
+          pathStroke={(d: object) => 'reference' in d ? null : (d as Corriente).id === corrienteResaltada ? 4 : 2}
+          pathDashLength={(d: object) => 'reference' in d ? 1 : 0.06}
+          pathDashGap={(d: object) => 'reference' in d ? 0 : 0.02}
+          pathDashAnimateTime={(d: object) => menosMovimiento || 'reference' in d ? 0 : 14000}
+          pathLabel={(d: object) => { const p = d as GlobePath; return `<div class="tip"><b>${p.nombre}</b><br>${'reference' in p ? p.help : 'Tap to learn what it does'}</div>` }}
+          onPathClick={(d, ev) => { if (!('reference' in d) && !desdeEtiqueta(ev)) { interaccion(); acciones.corriente((d as Corriente).id) } }}
           ringsData={anillos}
           ringColor={() => (t: number) => `rgba(99,205,232,${1 - t})`}
           ringMaxRadius={(d: object) => (d as Anillo).r ?? 3.2}
           ringPropagationSpeed={1.6}
           ringRepeatPeriod={menosMovimiento ? 0 : 1500}
-          arcsData={arcos}
+          arcsData={visibleArcs}
           arcColor={(d: object) => (d as Arco).color}
           arcStroke={(d: object) => (d as Arco).grosor}
           arcAltitudeAutoScale={0.32}
-          arcDashLength={0.45}
-          arcDashGap={0.12}
-          arcDashAnimateTime={menosMovimiento ? 0 : 2600}
-          arcLabel={(d: object) => { const a = d as Arco; return `<div class="tip"><b>${modelo.zona(a.de).nombre} and ${modelo.zona(a.a).nombre}</b><br>Similarity r = ${fmtR(a.r)} in ${v.corto}</div>` }}
-          onArcClick={(d, ev) => { if (!desdeEtiqueta(ev)) { interaccion(); acciones.irAZona((d as Arco).a) } }}
-          htmlElementsData={marcas}
+          arcDashLength={(d: object) => (d as Arco).tested ? 1 : 0.45}
+          arcDashGap={(d: object) => (d as Arco).tested ? 0 : 0.12}
+          arcDashAnimateTime={(d: object) => menosMovimiento || (d as Arco).tested ? 0 : 2600}
+          arcLabel={(d: object) => { const a = d as Arco; return a.tested ? `<div class="tip">${TESTED_RESULT}<br>About ${testedLink.distance.toLocaleString('en')} km.</div>` : `<div class="tip"><b>${modelo.zona(a.de).nombre} and ${modelo.zona(a.a).nombre}</b><br>Similarity r = ${fmtR(a.r)} in ${v.corto}</div>` }}
+          onArcClick={(d, ev) => { if (!(d as Arco).tested && !desdeEtiqueta(ev)) { interaccion(); acciones.irAZona((d as Arco).a) } }}
+          htmlElementsData={htmlMarks}
           htmlLat="lat"
           htmlLng="lng"
           htmlAltitude={0.012}
@@ -356,10 +387,17 @@ export default function GlobePanel() {
       </div>
       <TarjetaMapa />
       <Proposito />
+      </div>
       <div className="globe-toolbar">
         <GlobeViewToggle value={view} onChange={(x) => { interaccion(); setView(x) }} />
         <RecorridoAyuda />
+        <div className="globe-camera-controls" role="group" aria-label="Center the globe">
+          <button type="button" onClick={() => { interaccion(); acciones.irARegion('peru') }}>Center on Peru</button>
+          <button type="button" onClick={() => { interaccion(); acciones.irARegion('antartida') }}>Center on Antarctica</button>
+          <button type="button" onClick={() => { interaccion(); acciones.general(false); useExplorerStore.getState().flyTo({ lat: -34, lng: -100, altitude: 2.4 }, 1400) }}>Whole globe</button>
+        </div>
         <RegionesPanel alElegir={interaccion} />
+        <StepPreference />
         <p className="vista-nota" aria-live="polite" title={nota}>{nota}</p>
         {mapaActivo && <div className="estilos-mapa" role="group" aria-label="Satellite map style"><span>Map:</span>
           {(['bandas', 'celdas', 'suave'] as const).map((e) => <button className="control-pill" key={e} type="button" aria-pressed={mapStyle === e} onClick={() => setMapStyle(e)}>{{ bandas: 'Bands', celdas: 'Cells', suave: 'Smooth' }[e]}</button>)}
@@ -369,11 +407,16 @@ export default function GlobePanel() {
       {textoVer && <button className="btn ver-relato" type="button" onClick={() => document.getElementById('relato')?.scrollIntoView({ behavior: menosMovimiento ? 'auto' : 'smooth' })}>{textoVer}</button>}
       {lectura && <div className="lectura" aria-hidden="true" style={{ transform: `translate(${Math.max(8, lectura.x)}px, ${lectura.y}px)` }}><b>{lectura.titulo}</b>{lectura.detalle.map((d) => <small key={d}>{d}</small>)}</div>}
       <TimelinePanel />
+      <GlobeLegend layers={layers} onChange={setLayers} distance={testedLink.distance} />
     </div>
     <aside className="relato" id="relato" aria-label="What the globe shows">
+      <ExplorerBreadcrumb />
+      <p className="explorer-keys"><b>Keyboard:</b> Tab moves between controls. Enter opens a focused place. Escape returns. Arrow keys adjust the month slider and tabs, or move through the tour.</p>
+      <ExplorerHint />
       <div className="relato-orientacion"><span>Explore the selected view below</span><a href="/research">Research <span aria-hidden="true">→</span></a><a href="/fishers">For fishers <span aria-hidden="true">→</span></a><button type="button" className="orientacion-boton" onClick={() => window.dispatchEvent(new Event("abrir-proposito"))}>What is this for?</button></div>
       <div aria-live="polite"><Relato /></div>
     </aside>
+    <ExplorerHelp />
     <div className={`velo-entrada${veloAbierto ? ' abierto' : ''}`} aria-hidden="true" />
   </section>
 }

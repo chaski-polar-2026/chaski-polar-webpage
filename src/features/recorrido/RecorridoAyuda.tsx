@@ -71,7 +71,7 @@ export default function RecorridoAyuda() {
   return () => { observer.disconnect(); removeEventListener('scroll',posicionar,true); removeEventListener('resize',posicionar) }
  }, [paso])
  return <>
-  <nav className="recorrido-controles" aria-label="Explorer help"><button ref={guia} onClick={abrir}>Guide</button><button ref={help} onClick={() => setAyuda(true)}>Help</button></nav>
+  <nav className="recorrido-controles" aria-label="Explorer help"><button id="explorer-guide" ref={guia} onClick={abrir}>Guide</button><button id="explorer-existing-help" ref={help} onClick={() => setAyuda(true)}>Help</button></nav>
   <dialog className={`recorrido-dialogo${ayuda ? ' recorrido-dialogo-ayuda' : ''}`} ref={dialogo} aria-labelledby="recorrido-titulo" onCancel={e => {e.preventDefault();cerrar()}} onKeyDown={e => {
    if (paso != null && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {e.preventDefault();mover(e.key === 'ArrowRight' ? 1 : -1)}
    if(e.key === 'Tab') {
