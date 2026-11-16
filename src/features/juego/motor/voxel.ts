@@ -118,13 +118,22 @@ export function crearPersonajeVoxel(escena: THREE.Scene, canvas: HTMLCanvasEleme
 }
 
 const GIRO_MAX = THREE.MathUtils.degToRad(28)
+const tmpDerecha = new THREE.Vector3(), tmpMov = new THREE.Vector3()
 const angulo = (d: number) => Math.atan2(Math.sin(d), Math.cos(d))
 
 /** El personaje siempre muestra su frente a la cámara; solo se desvía un poco (máx. ±28°) según hacia dónde gire la vista respecto al encuadre inicial, con suavizado. */
 export function mirarALaCamara(malla: THREE.Object3D, camara: THREE.Camera): void {
   const haciaCamara = Math.atan2(camara.position.x - malla.position.x, camara.position.z - malla.position.z)
-  const datos = malla.userData as { azimutBase?: number }
+  const datos = malla.userData as { azimutBase?: number; previa?: THREE.Vector3; espejo?: number }
   datos.azimutBase ??= haciaCamara
+  // Espejo directo (sin giro): si el personaje se mueve hacia la derecha o la izquierda de la pantalla, se voltea al instante.
+  const derecha = tmpDerecha.set(1, 0, 0).applyQuaternion(camara.quaternion)
+  if (datos.previa) {
+    const dx = tmpMov.subVectors(malla.position, datos.previa).dot(derecha)
+    if (Math.abs(dx) > 0.004) datos.espejo = dx < 0 ? -1 : 1
+  }
+  datos.previa = (datos.previa ?? new THREE.Vector3()).copy(malla.position)
+  malla.scale.x = Math.abs(malla.scale.x) * (datos.espejo ?? 1)
   const desvio = THREE.MathUtils.clamp(angulo(haciaCamara - datos.azimutBase) * 0.35, -GIRO_MAX, GIRO_MAX)
   const objetivo = haciaCamara + desvio
   malla.rotation.y += angulo(objetivo - malla.rotation.y) * 0.15
