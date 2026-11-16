@@ -33,15 +33,19 @@ function roca(cubos: Cubo[], altura: (x: number, z: number) => number, cx: numbe
 }
 
 /** Construye un fondo antártico amplio con las proporciones voxel del prototipo original. */
+const tonoClaro = (hex: number) => new THREE.Color(hex).lerp(new THREE.Color(0xffffff), 0.25).getHex()
+
 export function crearFondoKiriVoxel(escena: THREE.Scene): {
   rayos: THREE.Mesh[]; nieve: THREE.Points
+  /** material del techo de hielo: la escena lo vuelve transparente cuando la camara esta cerca */
+  hielo: THREE.MeshLambertMaterial
   /** altura (unidades de escena) de la superficie sólida en (x, z): relieve, rocas y bloques decorativos */
   suelo(x: number, z: number): number
   /** saca a un cuerpo de radio dado de las torres de roca (columnas macizas) */
   empujar(p: THREE.Vector3, radio: number): void
 } {
   const rocas: [number, number, number, number][] = [], torres: [number, number, number, number][] = [], bloques: [number, number, number, number][] = []
-  const cubos: Cubo[] = []
+  const cubos: Cubo[] = [], cubosHielo: Cubo[] = []
   const radio = 150
   const enMundo = (x: number, z: number) => Math.hypot(x, z) <= radio
   const ruido = (x: number, z: number) => Math.sin(x * 0.05) * 3 + Math.cos(z * 0.045) * 3 + Math.sin((x + z) * 0.03) * 3 + Math.sin(x * 0.17 + z * 0.13)
@@ -73,7 +77,8 @@ export function crearFondoKiriVoxel(escena: THREE.Scene): {
     if (i % 3) {
       const alto = 4 + i % 8, r = i % 4 ? 1 : 2
       bloques.push([x0, z0, r, h + alto - 1])
-      for (let y = 0; y < alto; y++) for (let x = -r; x <= r; x++) for (let z = -r; z <= r; z++) if (Math.max(Math.abs(x), Math.abs(z)) === r || y === 0) cubos.push([x0 + x, h + y, z0 + z, color])
+      for (let y = 0; y < alto; y++) for (let x = -r; x <= r; x++) for (let z = -r; z <= r; z++) if (Math.max(Math.abs(x), Math.abs(z)) === r || y === 0) cubos.push([x0 + x, h + y, z0 + z, (x + y + z) % 2 ? color : tonoClaro(color)])
+      for (let x = -r; x <= r; x += r || 1) for (let z = -r; z <= r; z += r || 1) cubos.push([x0 + x, h + alto, z0 + z, tonoClaro(color)]) // remates en las esquinas
     } else for (let k = 0; k < 5; k++) for (let l = 0; l <= 4; l++) { const g = k / 5 * Math.PI * 2; cubos.push([x0 + Math.round(Math.cos(g) * l), h, z0 + Math.round(Math.sin(g) * l), color]) }
   }
   const techo = 76
@@ -81,13 +86,51 @@ export function crearFondoKiriVoxel(escena: THREE.Scene): {
   for (let x = -radio; x <= radio; x++) for (let z = -radio; z <= radio; z++) {
     if (!enMundo(x, z) || (Math.abs(x - 30) < 14 && Math.abs(z) < radio) || (Math.abs(z + 40) < 10 && Math.abs(x) < radio)) continue
     const grosor = alturaTecho(x, z)
-    cubos.push([x, techo - grosor, z, elegir(HIELO, x + z)])
+    cubosHielo.push([x, techo - grosor, z, elegir(HIELO, x + z)])
     const borde = Math.abs(Math.abs(x - 30) - 14) < 1 || Math.abs(Math.abs(z + 40) - 10) < 1 || !enMundo(x + 1, z) || alturaTecho(x + 1, z) !== grosor || alturaTecho(x, z + 1) !== grosor
-    if (borde) for (let y = 0; y < grosor; y++) cubos.push([x, techo - y, z, elegir(HIELO, x + y + z)])
-    if ((x * 7 + z * 13) % 37 === 0) { const largo = 6 + Math.abs((x + z) % 15); for (let y = 0; y < largo; y++) cubos.push([x, techo - grosor - y, z, 0xbfe2f5]) }
+    if (borde) for (let y = 0; y < grosor; y++) cubosHielo.push([x, techo - y, z, elegir(HIELO, x + y + z)])
+    if ((x * 7 + z * 13) % 37 === 0) { const largo = 6 + Math.abs((x + z) % 15); for (let y = 0; y < largo; y++) cubosHielo.push([x, techo - grosor - y, z, 0xbfe2f5]) }
+  }
+  // Mas fauna y flora del lecho (solo visual): algas altas, corales ramificados, domos, estrellas y tubos
+  const VERDES = [0x2e8b57, 0x3cb371, 0x1f6f4a], CORAL = [0xff7f6e, 0xff9f80, 0xe4572e], ROSAS = [0xd96aa7, 0xff8fb1, 0xb5527f]
+  const ale = (n: number) => { const t = Math.sin(n * 12.9898) * 43758.5453; return t - Math.floor(t) }
+  for (let i = 0; i < 170; i++) {
+    const a = i * 2.399 + ale(i), d = 10 + ((i * 23) % 110) + ale(i + 3) * 6, x0 = Math.round(Math.cos(a) * d), z0 = Math.round(Math.sin(a) * d), h = altura(x0, z0) + 1
+    switch (i % 5) {
+      case 0: { // alga alta que zigzaguea
+        const alto = 8 + Math.floor(ale(i + 7) * 12)
+        for (let y = 0; y < alto; y++) { const ox = Math.round(Math.sin(y * 0.7 + i) * 1.2); cubos.push([x0 + ox, h + y, z0, elegir(VERDES, y + i)]); if (y > 3 && y % 3 === 0) cubos.push([x0 + ox + 1, h + y, z0, VERDES[0]!]) }
+        break
+      }
+      case 1: { // coral ramificado
+        const color = elegir(CORAL, i)
+        for (let y = 0; y < 4; y++) cubos.push([x0, h + y, z0, color])
+        for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) for (let k = 1; k <= 3; k++) { cubos.push([x0 + dx * k, h + 3 + k, z0 + dz * k, color]); if (k === 3) cubos.push([x0 + dx * k, h + 7, z0 + dz * k, tonoClaro(color)]) }
+        break
+      }
+      case 2: { // coral cerebro (domo)
+        const r = 2 + (i % 2), color = elegir(ROSAS, i)
+        for (let x = -r; x <= r; x++) for (let z = -r; z <= r; z++) for (let y = 0; y <= r; y++) if (Math.hypot(x, z, y) <= r + 0.3 && Math.hypot(x, z, y) > r - 1) cubos.push([x0 + x, h + y, z0 + z, (x + z) % 2 ? color : tonoClaro(color)])
+        break
+      }
+      case 3: { // estrella de mar
+        const color = elegir([0xf4a259, 0xe4572e, 0xffd166], i)
+        cubos.push([x0, h, z0, tonoClaro(color)])
+        for (let g = 0; g < 5; g++) for (let k = 1; k <= 3; k++) cubos.push([x0 + Math.round(Math.cos(g * 1.2566) * k), h, z0 + Math.round(Math.sin(g * 1.2566) * k), color])
+        break
+      }
+      default: { // tubos / anemonas
+        const color = elegir(ROSAS, i + 1)
+        for (let k = 0; k < 6; k++) { const ox = Math.round(Math.cos(k * 1.05) * (1 + k % 2)), oz = Math.round(Math.sin(k * 1.05) * (1 + k % 2)), alto = 2 + (k + i) % 4; for (let y = 0; y < alto; y++) cubos.push([x0 + ox, h + y, z0 + oz, y === alto - 1 ? tonoClaro(color) : color]) }
+      }
+    }
   }
   const geometria = new THREE.BoxGeometry(VOXEL, VOXEL, VOXEL)
   escena.add(instanciar(cubos, geometria))
+  const mallaHielo = instanciar(cubosHielo, geometria)
+  const hielo = mallaHielo.material as THREE.MeshLambertMaterial
+  hielo.transparent = true // la escena baja su opacidad cuando la camara esta cerca, para que los picos no tapen la pantalla
+  escena.add(mallaHielo)
 
   const rayos: THREE.Mesh[] = []
   const rayoMaterial = sinContorno(new THREE.MeshBasicMaterial({ color: 0xd8f3ff, transparent: true, opacity: 0.07, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }))
@@ -129,7 +172,7 @@ export function crearFondoKiriVoxel(escena: THREE.Scene): {
       }
     }
   }
-  return { rayos, nieve, suelo, empujar }
+  return { rayos, nieve, hielo, suelo, empujar }
 }
 
 export function crearPersonajeVoxel(escena: THREE.Scene, canvas: HTMLCanvasElement, tamaño = PIXEL_VOXEL, profundidad = 1): THREE.InstancedMesh {
@@ -179,9 +222,15 @@ export function crearFondoCardumenVoxel(escena: THREE.Scene, zMin: number, zMax:
   const cubos: Cubo[] = []
   // Contiguous 0.8 m blocks, one exposed surface per cell instead of five buried layers.
   // Highest terrain remains below Y_MIN (-12.5); decorative geometry cannot hide food.
-  for (let x = -100; x <= 56; x += 4) for (let z = Math.floor(zMin / VOXEL); z <= Math.ceil(zMax / VOXEL); z += 4) {
+  // El lecho se extiende bastante mas alla del corredor jugable y se funde con el color del agua hacia afuera,
+  // para que no se vea un borde cortado.
+  const MARGEN = 300, z0 = Math.floor(zMin / VOXEL), z1 = Math.ceil(zMax / VOXEL)
+  const agua = new THREE.Color(0x214f5c), mezcla = new THREE.Color()
+  for (let x = -100 - MARGEN; x <= 56 + MARGEN; x += 4) for (let z = z0 - MARGEN; z <= z1 + MARGEN; z += 4) {
     const h = -1 + Math.round(Math.sin(x * 0.09) + Math.cos(z * 0.04) + Math.sin((x + z) * 0.035))
-    cubos.push([x, h, z, elegir(ARENA, x + z)])
+    const fuera = Math.hypot(Math.max(-100 - x, x - 56, 0), Math.max(z0 - z, z - z1, 0)) / MARGEN
+    const color = elegir(ARENA, x + z)
+    cubos.push([x, h, z, fuera <= 0 ? color : mezcla.setHex(color).lerp(agua, THREE.MathUtils.smoothstep(fuera, 0.05, 0.85)).getHex()])
   }
   // Afloramientos laterales voxel fuera del corredor navegable principal.
   for (let i = 0; i < 32; i++) {
@@ -251,13 +300,26 @@ export function alturaSueloLumi(x: number, z: number): number {
 export function crearPlacaHieloVoxel(escena: THREE.Scene, ancho: number, profundidad: number): THREE.Group {
   const grupo = new THREE.Group()
   const cubos: Cubo[] = []
-  const semiancho = 2
+  const COLUMNAS = 30 // la placa mide 1 unidad de ancho; la escena la estira al ancho real, asi que cada celda queda casi cuadrada
   const semiprof = Math.ceil(profundidad / VOXEL / 2)
-  for (let x = -semiancho; x <= semiancho; x++) for (let z = -semiprof; z <= semiprof; z++) {
-    cubos.push([x, 0, z, elegir(HIELO, x + z)])
-    if ((x * 7 + z * 13) % 11 === 0) cubos.push([x, -1, z, 0xbfe2f5])
+  const celda = 1 / COLUMNAS
+  const ruido = (a: number, b: number) => { const n = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return n - Math.floor(n) }
+  const AZULES = [0xcfe9f7, 0xbfe2f5, 0xaedaf0]
+  for (let c = 0; c < COLUMNAS; c++) for (let z = -semiprof; z <= semiprof; z++) {
+    const u = (c - (COLUMNAS - 1) / 2) / (COLUMNAS / 2) // -1..1 a lo ancho
+    const v = z / semiprof // -1..1 a lo largo
+    const borde = 1 - 0.22 * ruido(c, z) // contorno irregular, no rectangular
+    const d = u * u + v * v * 0.9
+    if (d > borde) continue
+    const x = (c - (COLUMNAS - 1) / 2) * celda / VOXEL
+    cubos.push([x, 0, z, elegir(HIELO, c + z)])
+    if (d < 0.7 * borde) cubos.push([x, -1, z, elegir(AZULES, c * 3 + z)]) // el centro es mas grueso
+    if (ruido(c + 5, z + 9) > 0.93 && d > 0.15) { // carambanos de largo variable
+      const largo = 1 + Math.floor(ruido(z, c) * 3)
+      for (let k = 1; k <= largo; k++) cubos.push([x, -1 - k, z, AZULES[Math.min(k, 2)]!])
+    }
   }
-  const placa = instanciar(cubos, new THREE.BoxGeometry(VOXEL, VOXEL, VOXEL))
+  const placa = instanciar(cubos, new THREE.BoxGeometry(celda, VOXEL, VOXEL))
   placa.position.y = 0.5
   grupo.add(placa)
   grupo.scale.x = ancho

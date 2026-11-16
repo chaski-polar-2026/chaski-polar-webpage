@@ -124,12 +124,45 @@ function crearMundo(escena: THREE.Scene): Mundo {
   };
 }
 
+/** Bolichera (barco de cerco): casco con proa en punta, franja, puente con ventanas, chimenea, mastil, pluma, tambor de red, salvavidas y barandas. */
 function crearBolichera(): THREE.Group {
   const barco = new THREE.Group();
-  const casco = new THREE.Mesh(new THREE.BoxGeometry(5, 1.2, 1.8), toon(0x1f4e8c)); casco.position.y = 0.2;
-  const franja = new THREE.Mesh(new THREE.BoxGeometry(5.05, 0.25, 1.85), toon(0xb3261e)); franja.position.y = 0.7;
-  const cabina = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.2, 1.4), toon(0xf2f0ea)); cabina.position.set(1, 1.4, 0);
-  barco.add(casco, franja, cabina);
+  const pieza = (geo: THREE.BufferGeometry, color: number, x: number, y: number, z: number, rx = 0, ry = 0, rz = 0) => {
+    const m = new THREE.Mesh(geo, toon(color)); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); barco.add(m); return m;
+  };
+  const AZUL = 0x1f4e8c, ROJO = 0xb3261e, BLANCO = 0xf2f0ea, GRIS = 0x8b98a5, OSCURO = 0x1b2a3a;
+  // casco: bloque principal + proa triangular en punta (prisma de 3 caras)
+  pieza(new THREE.BoxGeometry(3.7, 1.2, 1.8), AZUL, 0.65, 0.2, 0);
+  pieza(new THREE.CylinderGeometry(1.04, 1.04, 1.2, 3), AZUL, -1.72, 0.2, 0, 0, Math.PI / 2, 0);
+  pieza(new THREE.BoxGeometry(3.75, 0.3, 1.85), 0x7a1f1f, 0.65, -0.3, 0); // obra viva
+  pieza(new THREE.CylinderGeometry(1.07, 1.07, 0.3, 3), 0x7a1f1f, -1.72, -0.3, 0, 0, Math.PI / 2, 0);
+  pieza(new THREE.BoxGeometry(3.75, 0.22, 1.85), ROJO, 0.65, 0.72, 0); // franja roja
+  pieza(new THREE.CylinderGeometry(1.07, 1.07, 0.22, 3), ROJO, -1.72, 0.72, 0, 0, Math.PI / 2, 0);
+  // cubierta y baranda
+  pieza(new THREE.BoxGeometry(3.6, 0.08, 1.7), 0x6b7a86, 0.65, 0.84, 0);
+  pieza(new THREE.BoxGeometry(3.7, 0.22, 0.05), BLANCO, 0.65, 0.98, 0.88);
+  pieza(new THREE.BoxGeometry(3.7, 0.22, 0.05), BLANCO, 0.65, 0.98, -0.88);
+  // escotilla de bodega y tambor de la red
+  pieza(new THREE.BoxGeometry(0.9, 0.12, 1.0), OSCURO, 0.0, 0.94, 0);
+  pieza(new THREE.CylinderGeometry(0.34, 0.34, 0.9, 16), GRIS, -0.8, 1.2, 0, Math.PI / 2, 0, 0);
+  // puente de mando, ventanas y techo
+  pieza(new THREE.BoxGeometry(1.3, 0.95, 1.45), BLANCO, 1.55, 1.35, 0);
+  pieza(new THREE.BoxGeometry(1.55, 0.1, 1.65), GRIS, 1.55, 1.88, 0);
+  pieza(new THREE.BoxGeometry(0.04, 0.3, 1.2), OSCURO, 0.9, 1.45, 0);
+  for (const z of [0.74, -0.74]) pieza(new THREE.BoxGeometry(0.9, 0.28, 0.04), OSCURO, 1.55, 1.45, z);
+  // chimenea, mastil con travesano y antena
+  pieza(new THREE.CylinderGeometry(0.18, 0.22, 0.75, 12), 0xe4572e, 2.05, 2.28, 0);
+  pieza(new THREE.CylinderGeometry(0.19, 0.19, 0.12, 12), OSCURO, 2.05, 2.7, 0);
+  pieza(new THREE.CylinderGeometry(0.045, 0.05, 1.7, 8), GRIS, 1.35, 2.8, 0);
+  pieza(new THREE.BoxGeometry(0.04, 0.04, 0.9), GRIS, 1.35, 3.25, 0);
+  pieza(new THREE.CylinderGeometry(0.015, 0.015, 0.7, 6), GRIS, 1.35, 3.85, 0);
+  // pluma (grua) inclinada hacia proa y polea
+  pieza(new THREE.CylinderGeometry(0.055, 0.07, 2.3, 8), GRIS, -0.1, 2.0, 0, 0, 0, 0.9);
+  pieza(new THREE.SphereGeometry(0.1, 8, 8), OSCURO, -1.02, 2.95, 0);
+  // salvavidas en el puente y bote auxiliar
+  for (const z of [0.76, -0.76]) pieza(new THREE.TorusGeometry(0.17, 0.05, 8, 16), ROJO, 1.55, 1.2, z);
+  pieza(new THREE.BoxGeometry(0.95, 0.2, 0.5), 0xf2a33a, 2.15, 1.05, 0.5);
+  pieza(new THREE.BoxGeometry(0.95, 0.2, 0.5), 0xf2a33a, 2.15, 1.05, -0.5);
   return barco;
 }
 
@@ -174,7 +207,7 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
         const n = L.parchesDeComida(condicionesMes.get(zona)!.alimento);
         for (let j = 0; j < n; j++, k++) {
           let pa = parches[k];
-          if (!pa) { pa = { p: crearPersonaje(escena, dibujoFito, { ancho: 1.3, alto: 1.3 }), zona, activo: true, espera: 0, fase: azar(0, 6) }; parches.push(pa); }
+          if (!pa) { pa = { p: crearPersonaje(escena, dibujoFito, { ancho: 1.1, alto: 1.1 }), zona, activo: true, espera: 0, fase: azar(0, 6) }; parches.push(pa); }
           pa.zona = zona; pa.activo = true; pa.espera = 0; pa.p.sprite.visible = true;
           colocar(pa, yOx);
         }
