@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import { SectionArt } from '../../components/ui/SectionArt'
 import { useSectionReveal } from '../../components/ui/useSectionReveal'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -92,7 +93,7 @@ export default function MapaTendencias() {
   return (
     <section ref={reveal} className="seccion tendencias" id="trend-map" aria-labelledby="t-mapa-tend">
       <header className="lab-heading" data-reveal><SectionArt kind="map" /><div><p className="puente-kicker">Where is it changing?</p>
-      <h2 id="t-mapa-tend">A map of trends, cell by cell</h2></div></header>
+      <h2 id="t-mapa-tend"><Icono nombre="mapa" className="icono-titulo" />A map of trends, cell by cell</h2></div></header>
       <p className="nota">Each cell of the satellite maps gets its own Mann-Kendall test on the yearly average. Bright cells have a significant trend after correcting for testing thousands of cells at once; faint cells have a trend that cannot be told apart from chance.</p>
 
       <div className="tend-controles">

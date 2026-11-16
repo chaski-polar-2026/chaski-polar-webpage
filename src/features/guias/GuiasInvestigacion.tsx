@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import type { ReactNode } from 'react'
 import './guias.css'
 
@@ -77,10 +78,10 @@ export default function GuiasInvestigacion() {
   return (
     <section className="seccion guias" id="how-to-read" aria-labelledby="t-guia-lectura">
       <p className="puente-kicker">Start here</p>
-      <h2 id="t-guia-lectura">How to read this page</h2>
-      <h3>From data to a result</h3>
+      <h2 id="t-guia-lectura"><Icono nombre="libro" className="icono-titulo" />How to read this page</h2>
+      <h3><Icono nombre="flecha" className="icono-sub" />From data to a result</h3>
       <PipelineDiagrama />
-      <h3>Reading a trend chart</h3>
+      <h3><Icono nombre="grafico" className="icono-sub" />Reading a trend chart</h3>
       <LecturaTendencia />
     </section>
   )

@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import type { ReactNode } from 'react'
 
 type Fuente = { dato: string; nasa?: string; fuente: ReactNode; periodo: string }
@@ -34,12 +35,12 @@ const FUENTES: Fuente[] = [
 export default function FuentesSection() {
   return <section className="seccion" id="fuentes" aria-labelledby="t-fuentes">
     <div className="encabezado-seccion">
-      <h2 id="t-fuentes">Data sources</h2>
+      <h2 id="t-fuentes"><Icono nombre="base" className="icono-titulo" />Data sources</h2>
       <p>Open satellite, reanalysis and fisheries records. Zones are latitude–longitude boxes; aggregation depends on the product. Giovanni uses area averages, while satellite zone series and globe cells follow their source-specific methods. Globe maps cover the equator to 70° S, between 92° and 52° W.</p>
     </div>
     <div className="tabla-envoltura">
       <table className="fuentes">
-        <thead><tr><th scope="col">Data</th><th scope="col">Source</th><th scope="col">Period</th></tr></thead>
+        <thead><tr><th scope="col"><Icono nombre="tabla" className="icono-th" />Data</th><th scope="col"><Icono nombre="enlace" className="icono-th" />Source</th><th scope="col"><Icono nombre="calendario" className="icono-th" />Period</th></tr></thead>
         <tbody>{FUENTES.map((f) => <tr key={f.dato}>
           <td>{f.dato}{f.nasa && <span className="tag-nasa" title={f.nasa}>NASA</span>}</td>
           <td>{f.fuente}</td>
@@ -48,7 +49,7 @@ export default function FuentesSection() {
       </table>
     </div>
     <div className="method" id="method">
-      <h3>Method</h3>
+      <h3><Icono nombre="brujula" className="icono-sub" />Method</h3>
       <p>We accept an association only when it survives partial correlation controlling for Niño 1+2, an effective sample size adjustment for autocorrelation (Pyper and Peterman, 1998), and Benjamini–Hochberg FDR correction within each family (adjusted p &lt; 0.05). Its direction must agree without 1998 and in both halves of the record.</p>
       <p>Trends use annual Mann-Kendall tests with Theil–Sen slopes, checked with another method, season and period. The interactive panel adds a 95% Sen slope interval and a two-sided regression t-test. A single significant result does not establish robustness. Monthly seasonal Hirsch tests without autocorrelation correction are not treated as evidence.</p>
       <p>References: <a href="https://doi.org/10.1139/f98-104">Pyper &amp; Peterman (1998)</a>; <a href="https://doi.org/10.1111/j.2517-6161.1995.tb02031.x">Benjamini &amp; Hochberg (1995)</a>; <a href="https://doi.org/10.2307/1907187">Mann (1945)</a>; Kendall, <cite>Rank Correlation Methods</cite> (1975); <a href="https://doi.org/10.1080/01621459.1968.10480934">Sen (1968)</a>; <a href="https://doi.org/10.1029/WR018i001p00107">Hirsch et al. (1982)</a>.</p>

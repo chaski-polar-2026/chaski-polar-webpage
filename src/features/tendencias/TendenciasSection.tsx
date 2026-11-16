@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import { SectionArt } from '../../components/ui/SectionArt'
 import { useSectionReveal } from '../../components/ui/useSectionReveal'
 import { crearEvidencia } from './evidencia'
@@ -199,12 +200,12 @@ export default function TendenciasSection() {
   return (
     <section ref={reveal} className="seccion tendencias" id="trends" aria-labelledby="t-tendencias" aria-busy={esRonda && estadoRonda === 'loading'}>
       <header className="lab-heading" data-reveal><SectionArt /><div><p className="puente-kicker">Be a trend detective</p>
-      <h2 id="t-tendencias">Is the change real? Test a trend yourself</h2></div></header>
+      <h2 id="t-tendencias"><Icono nombre="tendencia" className="icono-titulo" />Is the change real? Test a trend yourself</h2></div></header>
       <p className="nota">Pick a variable, a place and a period. The panel draws the yearly averages and runs the Mann-Kendall test<InfoTip term="Mann–Kendall">A test for whether a series tends to rise or fall.</InfoTip>, which asks whether the values tend to rise or fall consistently. A p-value below 0.05 is the usual standard for a significant trend.</p>
       <div className="tend-modos" role="group" aria-label="Exploration mode">
-        <button className="btn" aria-pressed={!guiado} onClick={() => setGuiado(false)}>Explore freely</button>
-        <button className="btn" aria-pressed={guiado} onClick={() => { setGuiado(true); setPaso(0) }}>Guide me with questions</button>
-        <a href="#trend-glossary">What do these terms mean?</a>
+        <button className="btn" aria-pressed={!guiado} onClick={() => setGuiado(false)}><Icono nombre="brujula" className="icono-th" />Explore freely</button>
+        <button className="btn" aria-pressed={guiado} onClick={() => { setGuiado(true); setPaso(0) }}><Icono nombre="chispa" className="icono-th" />Guide me with questions</button>
+        <a href="#trend-glossary"><Icono nombre="info"  />What do these terms mean?</a>
       </div>
       {guiado && <div className="tend-asistente">
         <p className="tend-nota">Step {paso + 1} of 3</p>
@@ -293,7 +294,7 @@ export default function TendenciasSection() {
             </ComposedChart>
           </ResponsiveContainer>
         </div>
-        <details className="tend-data-table"><summary>View chart values</summary><div className="tabla-envoltura"><table><caption>{fuenteTexto} · {unidad}</caption><thead><tr><th scope="col">Year</th><th scope="col">Yearly mean</th><th scope="col">Unit</th><th scope="col">Sen line</th>{comparar && puedeComparar && <th scope="col">{FUENTES[otraFuente]}</th>}</tr></thead><tbody>{datosGrafico.map((p) => <tr key={p.x}><th scope="row">{p.x}</th><td>{p.valor}</td><td>{unidad}</td><td>{p.sen == null ? 'Not available' : nf(dec).format(p.sen)}</td>{comparar && puedeComparar && <td>{p.otra == null ? 'Not available' : nf(dec).format(p.otra)}</td>}</tr>)}</tbody></table></div></details>
+        <details className="tend-data-table"><summary><Icono nombre="tabla" className="icono-sub" />View chart values</summary><div className="tabla-envoltura"><table><caption>{fuenteTexto} · {unidad}</caption><thead><tr><th scope="col">Year</th><th scope="col">Yearly mean</th><th scope="col">Unit</th><th scope="col">Sen line</th>{comparar && puedeComparar && <th scope="col">{FUENTES[otraFuente]}</th>}</tr></thead><tbody>{datosGrafico.map((p) => <tr key={p.x}><th scope="row">{p.x}</th><td>{p.valor}</td><td>{unidad}</td><td>{p.sen == null ? 'Not available' : nf(dec).format(p.sen)}</td>{comparar && puedeComparar && <td>{p.otra == null ? 'Not available' : nf(dec).format(p.otra)}</td>}</tr>)}</tbody></table></div></details>
         <FichaEvidencia e={evidencia} />
         {comparar && puedeComparar && <div className="tend-comparacion">
           <p>Solid green: {FUENTES[fuenteActiva]}. Dotted blue: {FUENTES[otraFuente]}. Dashed white: selected source’s Sen line. Tests below use only shared years; the chart retains all available yearly means.</p>
@@ -304,7 +305,7 @@ export default function TendenciasSection() {
         </div>}
 
         {sens.length > 0 && <div className="tend-sens">
-          <h3>How much does the result depend on the start year?</h3>
+          <h3><Icono nombre="calendario" className="icono-sub" />How much does the result depend on the start year?</h3>
           {frases.map((f) => <p key={f} className="tend-nota">{f}</p>)}
           <p className="tend-nota"><a href="#hallazgos">Read the findings on period and source sensitivity</a>. Significance in one period does not establish a robust long-term change.</p>
           <p className="tend-nota">A trend is only credible if it holds up when the period changes.</p>
@@ -336,13 +337,13 @@ export default function TendenciasSection() {
               </ResponsiveContainer>
             </figure>
           </div>
-          <details className="tend-data-table tend-sens-tabla"><summary>View period sensitivity as a table</summary><div className="tabla-envoltura"><table><caption>Start year sensitivity · ending in {fi}{excluirExtremos ? ' · extreme El Niño years excluded' : ''}</caption><thead><tr><th scope="col">From</th><th scope="col">Years</th><th scope="col">Sen slope / decade</th><th scope="col">p-value</th></tr></thead><tbody>{sens.map((s) => <tr key={s.inicio}><th scope="row">{s.inicio}</th><td>{s.n}</td><td>{nf(dec).format(s.pendiente * 10)} {unidad}</td><td>{textoP(s.p)}</td></tr>)}</tbody></table></div></details>
+          <details className="tend-data-table tend-sens-tabla"><summary><Icono nombre="tabla" className="icono-sub" />View period sensitivity as a table</summary><div className="tabla-envoltura"><table><caption>Start year sensitivity · ending in {fi}{excluirExtremos ? ' · extreme El Niño years excluded' : ''}</caption><thead><tr><th scope="col">From</th><th scope="col">Years</th><th scope="col">Sen slope / decade</th><th scope="col">p-value</th></tr></thead><tbody>{sens.map((s) => <tr key={s.inicio}><th scope="row">{s.inicio}</th><td>{s.n}</td><td>{nf(dec).format(s.pendiente * 10)} {unidad}</td><td>{textoP(s.p)}</td></tr>)}</tbody></table></div></details>
         </div>}
       </>)}
       {datosListos && res === null && <><Robustez e={evidencia} /><FichaEvidencia e={evidencia} /></>}
       <p className="monitor-aviso"><strong>How to read it:</strong> the test uses yearly averages (a year counts only with enough months of data) and looks for a consistent rise or fall, not a straight line. The trend is the Theil–Sen slope. Records differ in length, so a result can change with the period or a different data product. Source: {fuenteTexto}.</p>
       <p className="tend-nota">Whole-year averages require at least 6 valid months; seasonal averages require 3 of 4 months. December belongs to its calendar year. These exploratory tests assume independent yearly observations and are not corrected for multiple comparisons. The regression t-test assumes independent, normally distributed residuals. Neither test establishes causation.</p>
-      <details className="tend-fuentes"><summary>Data sources for this panel</summary><dl>
+      <details className="tend-fuentes"><summary><Icono nombre="base" className="icono-sub" />Data sources for this panel</summary><dl>
         {(Object.entries(FUENTES)).map(([id, texto]) => <div key={id}><dt>{id === 'crw' ? 'Sea surface temperature' : 'Chlorophyll-a'}</dt><dd>{texto}</dd></div>)}
         {ronda ? VARIABLES_RONDA.map((id) => <div key={id}><dt>{ronda.series[id].nombre}</dt><dd>{ronda.series[id].fuente}</dd></div>) : <div><dt>Extended records</dt><dd>{estadoRonda === 'error' ? 'Extended trend data could not be loaded.' : 'Loading data sources…'}</dd></div>}
       </dl></details>

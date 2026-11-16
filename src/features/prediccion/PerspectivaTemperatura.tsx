@@ -1,3 +1,4 @@
+import { Icono } from '../../components/ui/Icono'
 import { SectionArt } from '../../components/ui/SectionArt'
 import { useSectionReveal } from '../../components/ui/useSectionReveal'
 import datos from './perspectiva_acierto.json'
@@ -31,7 +32,7 @@ export default function PerspectivaTemperatura() {
   return (
     <section ref={reveal} className="seccion prediccion" id="temperature-outlook" aria-labelledby="t-temp-outlook">
       <header className="lab-heading" data-reveal><SectionArt kind="outlook" /><div><p className="puente-kicker">One to three months ahead</p>
-      <h2 id="t-temp-outlook">Can we anticipate sea surface temperature?</h2></div></header>
+      <h2 id="t-temp-outlook"><Icono nombre="termometro" className="icono-titulo" />Can we anticipate sea surface temperature?</h2></div></header>
       <p className="nota">We tested a simple model that predicts the monthly temperature anomaly<InfoTip term="Anomaly">Difference from what is normal for that month.</InfoTip> from El Niño 1+2<InfoTip term="El Niño 1+2">Sea temperature in the coastal area off Peru and Ecuador.</InfoTip> and from the last known month. Each month from 2010 to 2025 was predicted using only earlier data (a hindcast<InfoTip term="Hindcast">A forecast made on past data to see how well it would have worked.</InfoTip>). The table shows how much smaller the errors were than simply predicting a normal month<InfoTip term="Normal month (climatology)">The usual value for each month of the year.</InfoTip>.</p>
       <div className="tabla-scroll" data-reveal role="region" tabIndex={0} aria-label="Sea temperature outlook results; scroll horizontally for all months ahead">
         <table className="perspectiva-tabla">
@@ -48,7 +49,7 @@ export default function PerspectivaTemperatura() {
       <p><button type="button" className="boton-datos" onClick={descargar}>Download the data (CSV)</button></p>
       <p className="tend-nota">A positive value means smaller errors than a normal month; the range is a 95% interval<InfoTip term="95% interval">The range that would contain the true value in 95 of 100 similar studies.</InfoTip>. One month ahead the model is clearly better in every zone. At two and three months the gain shrinks and in some zones it is not clear.</p>
       <p className="tend-nota"><strong>Try it yourself.</strong> In <a href="/extra-game/juego.html">From Ice to Anchovy</a>, a small pixel-art game, you read ocean signals and guess whether Peruvian fishing rose or fell each year. It shows associations, not proven causes, and it is separate from the temperature outlook above.</p>
-      <p className="tend-nota"><strong>Limits.</strong> {datos.warning} This is an outlook for sea temperature only. It is not a forecast of fish or fishing.</p>
+      <p className="tend-nota"><Icono nombre="aviso" className="icono-sub" /><strong>Limits.</strong> {datos.warning} This is an outlook for sea temperature only. It is not a forecast of fish or fishing.</p>
     </section>
   )
 }

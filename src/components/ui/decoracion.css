@@ -1,0 +1,72 @@
+/* Decoracion de Research y Fishers: iconos, texturas suaves y hover. Nada de esto lleva significado. */
+:root {
+  --m-salir: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6m0-6L10 14M18 14v5H5V6h5'/%3E%3C/svg%3E");
+  --m-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 6 6 6-6 6'/%3E%3C/svg%3E");
+  --m-descarga: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11m-5-5 5 5 5-5M5 20h14'/%3E%3C/svg%3E");
+  --m-ola: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 40' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M0 12c20-14 40 14 60 0s40 14 60 0 40 14 60 0 40 14 60 0'/%3E%3Cpath d='M0 30c20-14 40 14 60 0s40 14 60 0 40 14 60 0 40 14 60 0'/%3E%3C/svg%3E");
+}
+
+/* Textura suave detras de cada seccion grande: malla de puntos que se desvanece */
+.research-page > .seccion, .research-page > div > .seccion, .fishers-v2 > section { position: relative; isolation: isolate; }
+.research-page > .seccion::before, .research-page > div > .seccion::before, .fishers-v2 > section::before {
+  content: ''; position: absolute; z-index: -1; top: 8px; right: 0; width: min(300px, 60%); height: 150px; pointer-events: none;
+  background: radial-gradient(rgba(143, 227, 242, .22) 1px, transparent 1.6px) 0 0 / 16px 16px;
+  -webkit-mask-image: linear-gradient(225deg, #000, transparent 75%); mask-image: linear-gradient(225deg, #000, transparent 75%);
+}
+.fishers-v2 > section::after {
+  content: ''; position: absolute; z-index: -1; left: 0; bottom: 0; width: min(260px, 50%); height: 36px; pointer-events: none; background: rgba(143, 227, 242, .12);
+  -webkit-mask: var(--m-ola) 0 0 / 120px 20px repeat-x; mask: var(--m-ola) 0 0 / 120px 20px repeat-x;
+}
+
+/* Titulos */
+.research-page h2, .fishers-v2 h2 { text-wrap: balance; }
+.research-page h3 > .icono-sub, .fishers-v2 h3 > .icono-sub, .fishers-v2 h4 > .icono-sub { vertical-align: -.1em; }
+.fishers-v2 h2 > .icono-titulo { width: 22px; height: 22px; padding: 6px; font-size: 1rem; }
+
+/* Tarjetas: filete de acento y elevacion al pasar el cursor o enfocar */
+.research-page .hallazgo, .research-page .seccion article, .fishers-v2 .species-card, .fishers-v2 #outlook article { border-top: 2px solid rgba(143, 227, 242, .35); }
+.fishers-v2 .fishers-steps li { position: relative; border-top: 2px solid rgba(143, 227, 242, .35); }
+.fishers-steps .icono { display: block; width: 28px; height: 28px; margin: 0 0 6px; color: #8fe3f2; }
+.fishers-v2 .fishers-jump a, .research-nav a { gap: .45em; }
+.fishers-v2 .fishers-jump a { display: inline-flex; align-items: center; }
+.research-nav a .icono, .fishers-jump a .icono { width: 1.05em; height: 1.05em; color: #8fe3f2; }
+.research-nav a:hover .icono { color: inherit; }
+.research-results article > a .icono, .research-page .llamada a .icono { margin-left: .3em; vertical-align: -.15em; }
+.research-results article > span .icono { margin-right: .4em; vertical-align: -.16em; }
+
+/* Enlaces externos: flecha de salida */
+.research-page main a[target="_blank"]:not(.button-primary)::after, .fishers-v2 a[target="_blank"]::after, .fishers-v2 .source-link::after {
+  content: ''; display: inline-block; width: .72em; height: .72em; margin-left: .25em; vertical-align: -.02em; background: currentColor; opacity: .75;
+  -webkit-mask: var(--m-salir) center / contain no-repeat; mask: var(--m-salir) center / contain no-repeat;
+}
+.research-page .bibliografia-lista a[target="_blank"]::after { display: none; }
+
+/* Botones de descarga */
+.boton-datos::before, .fishers-v2 #outlook button::before { content: ''; display: inline-block; width: 1em; height: 1em; margin-right: .5em; vertical-align: -.15em; background: currentColor; -webkit-mask: var(--m-descarga) center / contain no-repeat; mask: var(--m-descarga) center / contain no-repeat; }
+
+/* Resumen desplegable: chevron que gira al abrir */
+.research-page summary, .fishers-v2 summary { list-style: none; }
+.research-page summary::-webkit-details-marker, .fishers-v2 summary::-webkit-details-marker { display: none; }
+.research-page summary::before, .fishers-v2 summary::before { content: ''; display: inline-block; width: 1em; height: 1em; margin-right: .5em; vertical-align: -.18em; background: #8fe3f2; -webkit-mask: var(--m-chevron) center / contain no-repeat; mask: var(--m-chevron) center / contain no-repeat; }
+.research-page details[open] > summary::before, .fishers-v2 details[open] > summary::before { transform: rotate(90deg); }
+
+/* Tablas: cabecera con acento */
+.research-page thead th, .fishers-v2 thead th { border-bottom: 2px solid rgba(143, 227, 242, .45); }
+.research-page tbody tr:hover > *, .fishers-v2 tbody tr:hover > * { background: rgba(143, 227, 242, .05); }
+
+/* Foco visible coherente */
+.research-page :is(a, button, summary, select):focus-visible, .fishers-v2 :is(a, button, summary, select):focus-visible { outline: 2px solid #8fe3f2; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .research-page .hallazgo, .research-page .seccion article, .fishers-v2 .species-card, .fishers-v2 #outlook article, .fishers-v2 .fishers-steps li { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+  .research-page .hallazgo:hover, .fishers-v2 .species-card:hover, .fishers-v2 #outlook article:hover, .fishers-v2 .fishers-steps li:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(99, 205, 232, .15); border-top-color: #8fe3f2; }
+  .research-page summary::before, .fishers-v2 summary::before { transition: transform .2s ease; }
+  .icono-titulo { transition: transform .3s ease, background-color .3s ease; }
+  .research-page .seccion:hover > .encabezado-seccion .icono-titulo, .research-page .seccion:hover > h2 .icono-titulo, .fishers-v2 section:hover > h2 .icono-titulo { transform: rotate(-8deg) scale(1.08); background-color: rgba(143, 227, 242, .2); }
+  .fishers-v2 > section::after { animation: deco-ola 14s linear infinite; }
+}
+@keyframes deco-ola { to { -webkit-mask-position: 120px 0; mask-position: 120px 0; } }
+
+@media (max-width: 600px) {
+  .research-page > .seccion::before, .research-page > div > .seccion::before, .fishers-v2 > section::before { width: 40%; height: 100px; }
+}
