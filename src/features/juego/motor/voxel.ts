@@ -117,9 +117,17 @@ export function crearPersonajeVoxel(escena: THREE.Scene, canvas: HTMLCanvasEleme
   return malla
 }
 
-/** Gira el personaje (solo en horizontal) para que siempre mire hacia la cámara y nunca muestre su lado vacío al girar la vista. */
+const GIRO_MAX = THREE.MathUtils.degToRad(28)
+const angulo = (d: number) => Math.atan2(Math.sin(d), Math.cos(d))
+
+/** El personaje siempre muestra su frente a la cámara; solo se desvía un poco (máx. ±28°) según hacia dónde gire la vista respecto al encuadre inicial, con suavizado. */
 export function mirarALaCamara(malla: THREE.Object3D, camara: THREE.Camera): void {
-  malla.rotation.y = Math.atan2(camara.position.x - malla.position.x, camara.position.z - malla.position.z)
+  const haciaCamara = Math.atan2(camara.position.x - malla.position.x, camara.position.z - malla.position.z)
+  const datos = malla.userData as { azimutBase?: number }
+  datos.azimutBase ??= haciaCamara
+  const desvio = THREE.MathUtils.clamp(angulo(haciaCamara - datos.azimutBase) * 0.35, -GIRO_MAX, GIRO_MAX)
+  const objetivo = haciaCamara + desvio
+  malla.rotation.y += angulo(objetivo - malla.rotation.y) * 0.15
 }
 
 /** Lecho voxel para el corredor costero peruano; comparte escala y paleta del prototipo. */

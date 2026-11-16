@@ -82,7 +82,6 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
         seguidor.seguir(kiri.posicion);
         kiri.animar(t, vel, seguidor.derecha, VELOCIDAD);
         kiriVoxel.position.copy(kiri.posicion); mirarALaCamara(kiriVoxel, camara);
-        kiriVoxel.rotation.y = vel.x < 0 ? Math.PI : 0;
         kiri.parpadear(aturdido > 0, t);
         aturdido = Math.max(0, aturdido - dt);
 
