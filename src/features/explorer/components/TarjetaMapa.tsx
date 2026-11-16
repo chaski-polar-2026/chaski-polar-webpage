@@ -109,10 +109,19 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
     <div ref={dialogo} className={`vista-zona${phase === 'returning' ? ' saliendo' : ''}${section === 'anchoveta' ? ' vista-zona-biologia' : ''}`} role="dialog" aria-modal="false" aria-label={`Zone view: ${detalle.nombre}`}>
       <div className="vista-zona-barra">
         <button ref={boton} type="button" className="vista-zona-volver" onClick={cerrar}>← Back to globe</button>
-        <div><h3>{detalle.nombre}</h3><p className="zona-region">{detalle.region}</p></div>
+        <div className={escena ? 'vista-zona-titulo-en-escena' : undefined}><h3>{detalle.nombre}</h3><p className="zona-region">{detalle.region}</p></div>
         <span>{mes}</span>
       </div>
-      {escena && <figure className="zona-escena"><img src={`/assets/zonas/${escena.archivo}.webp`} alt={`Illustration of ${escena.texto}`} width={1200} height={600} loading="lazy" /><figcaption>Illustration of {escena.texto}. Not to scale.</figcaption></figure>}
+      {escena && <figure className="zona-escena">
+        <div className="zona-escena-imagen">
+          <img src={`/assets/zonas/${escena.archivo}.webp`} alt={`Illustration of ${escena.texto}`} width={1200} height={600} loading="lazy" />
+          <div className="zona-escena-titulo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" focusable="false"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>
+            <div><h3>{detalle.nombre}</h3><p className="zona-region">{detalle.region}</p></div>
+          </div>
+        </div>
+        <figcaption>Illustration of {escena.texto}. Not to scale.</figcaption>
+      </figure>}
       <div className="vista-zona-cuerpo">
         {peru ? <figure className="zona-mapa"><svg viewBox={`${x0} ${y0} ${ancho} ${alto}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={`Schematic close-up of the coast near ${z.nombre}: sea shaded by depth with wave lines, sand and mountain relief on land, and plankton dots whose number reflects the chlorophyll value of the selected month. Arrow: Humboldt Current flowing north.`}>
           <defs>
