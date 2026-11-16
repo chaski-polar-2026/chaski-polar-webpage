@@ -14,7 +14,7 @@ import { dibujarFito } from "../personajes/antartida";
 import { dibujarAnchi, dibujarAnchoveta, dibujarGuanay, dibujarLetrero, dibujarLobo } from "../personajes/costa";
 import { sonar } from "../motor/sonido";
 import { sprite } from "../personajes/sprites";
-import { crearFondoCardumenVoxel, crearPersonajeVoxel } from "../motor/voxel";
+import { crearFondoCardumenVoxel, crearPersonajeVoxel, mirarALaCamara } from "../motor/voxel";
 
 import { crearDiorama } from "../motor/diorama";
 
@@ -249,7 +249,7 @@ export function escenaCardumen(mar: Mar, entrada: Entrada, eventos: EventosCardu
         seguidor.seguir(anchi.posicion, vel.y);
         tmp.set(vel.x, 0, vel.z);
         anchi.animar(t, tmp, seguidor.derecha, VELOCIDAD);
-        anchiVoxel.position.copy(anchi.posicion);
+        anchiVoxel.position.copy(anchi.posicion); mirarALaCamara(anchiVoxel, camara);
         // al subir o bajar, Anchi apunta la cabeza hacia donde va (según mire a la derecha o a la izquierda)
         const haciaDer = tmp.dot(seguidor.derecha) >= 0 ? 1 : -1;
         const cabeceo = THREE.MathUtils.clamp(vel.y * 0.07, -0.45, 0.45) * haciaDer;

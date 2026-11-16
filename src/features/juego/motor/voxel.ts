@@ -117,6 +117,11 @@ export function crearPersonajeVoxel(escena: THREE.Scene, canvas: HTMLCanvasEleme
   return malla
 }
 
+/** Gira el personaje (solo en horizontal) para que siempre mire hacia la cámara y nunca muestre su lado vacío al girar la vista. */
+export function mirarALaCamara(malla: THREE.Object3D, camara: THREE.Camera): void {
+  malla.rotation.y = Math.atan2(camara.position.x - malla.position.x, camara.position.z - malla.position.z)
+}
+
 /** Lecho voxel para el corredor costero peruano; comparte escala y paleta del prototipo. */
 export function crearFondoCardumenVoxel(escena: THREE.Scene, zMin: number, zMax: number): void {
   const cubos: Cubo[] = []

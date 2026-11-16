@@ -8,7 +8,7 @@ import { crearPersonaje, type Personaje } from "../motor/personaje";
 import { dibujarFito, dibujarKiri, dibujarPinguino } from "../personajes/antartida";
 import { sonar } from "../motor/sonido";
 import { sprite } from "../personajes/sprites";
-import { crearFondoKiriVoxel, crearPersonajeVoxel } from "../motor/voxel";
+import { crearFondoKiriVoxel, crearPersonajeVoxel, mirarALaCamara } from "../motor/voxel";
 
 const ALTURA_NADO = 4;
 const LIMITE = 28;
@@ -81,7 +81,7 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
         if (horizontal > LIMITE) { kiri.posicion.x *= LIMITE / horizontal; kiri.posicion.z *= LIMITE / horizontal; }
         seguidor.seguir(kiri.posicion);
         kiri.animar(t, vel, seguidor.derecha, VELOCIDAD);
-        kiriVoxel.position.copy(kiri.posicion);
+        kiriVoxel.position.copy(kiri.posicion); mirarALaCamara(kiriVoxel, camara);
         kiriVoxel.rotation.y = vel.x < 0 ? Math.PI : 0;
         kiri.parpadear(aturdido > 0, t);
         aturdido = Math.max(0, aturdido - dt);

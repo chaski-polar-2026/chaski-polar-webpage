@@ -13,7 +13,7 @@ import { dibujarFlecha, dibujarNara } from "../personajes/antartida";
 import { dibujarLetrero } from "../personajes/costa";
 import { sonar } from "../motor/sonido";
 import { sprite } from "../personajes/sprites";
-import { crearPersonajeVoxel } from "../motor/voxel";
+import { crearPersonajeVoxel, mirarALaCamara } from "../motor/voxel";
 
 const V: Ventana = { lonO: -105, latN: 15, lonE: -30, latS: -70 };
 const RECORRIDO: Ventana = { lonO: -105, latN: 0, lonE: -55, latS: -70 };
@@ -165,7 +165,7 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
         nara.posicion.y = 1.6 + Math.sin(t * 1.2) * 0.25;
         seguidor.seguir(nara.posicion);
         nara.animar(t, vel, seguidor.derecha, VELOCIDAD);
-        naraVoxel.position.copy(nara.posicion);
+        naraVoxel.position.copy(nara.posicion); mirarALaCamara(naraVoxel, camara);
         // El sprite original se espeja según el producto velocidad·derecha de cámara.
         // El modelo voxel mira inicialmente a +X, así que refleja esa misma orientación con un giro Y.
         naraVoxel.rotation.y = vel.lengthSq() > 0.2 && vel.dot(seguidor.derecha) < 0 ? Math.PI : 0;

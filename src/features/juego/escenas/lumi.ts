@@ -11,7 +11,7 @@ import { crearPersonaje, type Personaje } from "../motor/personaje";
 import { sonar } from "../motor/sonido";
 import { dibujarFito, dibujarLumi, dibujarNutriente } from "../personajes/antartida";
 import { sprite } from "../personajes/sprites";
-import { crearEntornoLumiVoxel, crearPersonajeVoxel, crearPlacaHieloVoxel } from "../motor/voxel";
+import { crearEntornoLumiVoxel, crearPersonajeVoxel, crearPlacaHieloVoxel, mirarALaCamara } from "../motor/voxel";
 import { crearDiorama } from "../motor/diorama";
 
 export const DIVISIONES_META = 3;
@@ -150,7 +150,7 @@ export function escenaLumi(entrada: Entrada, eventos: EventosLumi, pausa: () => 
         estallido = Math.max(0, estallido - dt * 3);
         lumi.escala = 1 + estado.crecimiento * 0.4 + Math.sin(estallido * Math.PI) * 0.25;
         lumi.animar(t, vel, seguidor.derecha, VELOCIDAD);
-        lumiVoxel.position.copy(lumi.posicion);
+        lumiVoxel.position.copy(lumi.posicion); mirarALaCamara(lumiVoxel, camara);
         lumiVoxel.scale.setScalar(lumi.escala);
         lumi.sprite.material.rotation = Math.sin(t * 0.8) * 0.15;
 
