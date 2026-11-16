@@ -24,6 +24,7 @@ const PerspectivaTemperatura = lazy(() => import('../features/prediccion/Perspec
 const GuiasInvestigacion = lazy(() => import('../features/guias/GuiasInvestigacion'))
 
 import '../features/research/research.css'
+import '../features/research/research-vida.css'
 
 export default function ResearchPage() {
   useEffect(() => {
