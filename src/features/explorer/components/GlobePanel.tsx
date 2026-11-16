@@ -26,6 +26,7 @@ import Relato from './relato/Relato'
 import { TimelinePanel } from './TimelinePanel'
 import TarjetaMapa from './TarjetaMapa'
 import Proposito from './relato/Proposito'
+import { ExplorerBreadcrumb, ExplorerHelp, ExplorerHint, StepPreference } from './ExplorerOrientation'
 
 type Lado = 'der' | 'izq' | 'der-arriba' | 'der-abajo'
 type Marca = { z: string; lat: number; lng: number; texto: string; lado?: Lado; forma?: 'punto' | 'base' | 'rio' | 'grupo'; soloCerca?: number; soloLejos?: number }
@@ -138,6 +139,7 @@ export default function GlobePanel() {
     e.append(punto, nombre)
     if (m.forma === 'rio') e.style.pointerEvents = 'none'
     else {
+      e.title = m.forma === 'grupo' ? 'Click to see places in this area' : "Click to open this place's map"
       // que el clic no llegue también al globo (que lo tomaría como un clic en el mar)
       for (const t of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend']) e.addEventListener(t, (ev) => ev.stopPropagation())
       e.addEventListener('click', (ev) => { ev.stopPropagation(); manejadores.current.clic(m) })
@@ -277,7 +279,7 @@ export default function GlobePanel() {
     const alTeclear = (e: KeyboardEvent) => {
       const escribiendo = e.target instanceof Element && e.target.closest('input, select, textarea')
       const p = useExplorerStore.getState().panel
-      if (e.defaultPrevented || document.querySelector('.proposito')) return
+      if (e.defaultPrevented || document.querySelector('.proposito, dialog[open], .explorer-help[open]')) return
       if (useExplorerStore.getState().zonePhase !== 'globe') {
         if (e.key === 'Escape') { e.preventDefault(); useExplorerStore.getState().closeZone() }
         return
@@ -294,7 +296,8 @@ export default function GlobePanel() {
 
   return <section className="escenario" aria-label="Globe explorer">
     <div className="lienzo-globo" data-zone-phase={zonePhase} ref={lienzo}>
-      <div id="globo" ref={contenedor} role="img" aria-label={`Earth globe showing ${v.nombre.toLowerCase()}. The ${modelo.ids.length} study zones are listed in the panel.`}
+      <div className="globe-stage">
+      <div id="globo" ref={contenedor} role="group" tabIndex={-1} aria-label={`Earth globe showing ${v.nombre.toLowerCase()}. The ${modelo.ids.length} study zones are listed in the panel.`}
         onPointerDown={interaccion} onWheel={interaccion} onPointerMove={alMover} onPointerLeave={() => setLectura(null)}>
         {width > 0 && <Globe
           ref={globo}
@@ -356,10 +359,12 @@ export default function GlobePanel() {
       </div>
       <TarjetaMapa />
       <Proposito />
+      </div>
       <div className="globe-toolbar">
         <GlobeViewToggle value={view} onChange={(x) => { interaccion(); setView(x) }} />
         <RecorridoAyuda />
         <RegionesPanel alElegir={interaccion} />
+        <StepPreference />
         <p className="vista-nota" aria-live="polite" title={nota}>{nota}</p>
         {mapaActivo && <div className="estilos-mapa" role="group" aria-label="Satellite map style"><span>Map:</span>
           {(['bandas', 'celdas', 'suave'] as const).map((e) => <button className="control-pill" key={e} type="button" aria-pressed={mapStyle === e} onClick={() => setMapStyle(e)}>{{ bandas: 'Bands', celdas: 'Cells', suave: 'Smooth' }[e]}</button>)}
@@ -371,9 +376,12 @@ export default function GlobePanel() {
       <TimelinePanel />
     </div>
     <aside className="relato" id="relato" aria-label="What the globe shows">
+      <ExplorerBreadcrumb />
+      <ExplorerHint />
       <div className="relato-orientacion"><span>Explore the selected view below</span><a href="/research">Research <span aria-hidden="true">→</span></a><a href="/fishers">For fishers <span aria-hidden="true">→</span></a><button type="button" className="orientacion-boton" onClick={() => window.dispatchEvent(new Event("abrir-proposito"))}>What is this for?</button></div>
       <div aria-live="polite"><Relato /></div>
     </aside>
+    <ExplorerHelp />
     <div className={`velo-entrada${veloAbierto ? ' abierto' : ''}`} aria-hidden="true" />
   </section>
 }

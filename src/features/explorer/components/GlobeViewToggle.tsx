@@ -12,7 +12,8 @@ const VISTAS: { id: GlobeView; nombre: string }[] = [
 ]
 
 export function GlobeViewToggle({ value, onChange }: Props) {
+  const descriptions = { illustrated: 'Illustrated: simple map with study-zone data', detailed: 'Detailed: relief map with monthly satellite data', satellite: 'Satellite: Earth satellite image with monthly data overlaid' }
   return <div className="view-toggle" role="group" aria-label="Globe view">
-    {VISTAS.map((v) => <button key={v.id} className={value === v.id ? 'is-active' : ''} type="button" aria-pressed={value === v.id} onClick={() => onChange(v.id)}><b>{v.nombre}</b></button>)}
+    {VISTAS.map((v) => <button key={v.id} title={descriptions[v.id]} aria-label={descriptions[v.id]} className={value === v.id ? 'is-active' : ''} type="button" aria-pressed={value === v.id} onClick={() => onChange(v.id)}><b>{v.nombre}</b></button>)}
   </div>
 }

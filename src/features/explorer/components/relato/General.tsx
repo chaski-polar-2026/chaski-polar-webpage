@@ -10,6 +10,7 @@ import { useExplorerStore } from '../../store'
 import { ChipsEventos } from './comun'
 import { IconoVariable } from '../../../guias/GuiasInvestigacion'
 import './simbolos.css'
+import { StepNumber } from '../ExplorerOrientation'
 
 /** Resumen de todas las zonas en el mes elegido */
 const ICONO_VARIABLE: Record<string, 'temperature' | 'chlorophyll' | 'sealevel' | 'oxygen' | 'seaice'> = { clorofila_mg_m3: 'chlorophyll', temperatura_superficial_C: 'temperature', nivel_mar_anomalia_m: 'sealevel', oxigeno_disuelto: 'oxygen', hielo: 'seaice' }
@@ -41,13 +42,14 @@ export default function General() {
   }
 
   return <>
+    <div className="explorer-empty"><p><StepNumber step={4} />Select a place on the globe or from the list</p><a href="#globo" onClick={e => { e.preventDefault(); const globe = document.getElementById('globo'); globe?.scrollIntoView({ block: 'center' }); globe?.focus({ preventScroll: true }) }}><span aria-hidden="true">← </span>Go to the globe</a><a href="#explorer-place-list" onClick={e => { e.preventDefault(); document.querySelector<HTMLButtonElement>('#explorer-place-list button')?.focus() }}><span aria-hidden="true">↓ </span>Choose from the list</a></div>
     <h2 id="variable-actual" className="titulo-con-icono">{ICONO_VARIABLE[v.id] && <IconoVariable tipo={ICONO_VARIABLE[v.id]!} />}<span>{v.nombre}</span></h2>
     <Guia variable={v} />
     {section === 'humboldt' && <InsigniaNino variable={v.id} />}
     <h3>Select a zone · {mes}</h3>
-    <ul className="lista-zonas">{filas.map((f) => <li key={f.z}><button className="fila-zona" type="button" onClick={() => acciones.irAZona(f.z)}>
+    <ul className="lista-zonas" id="explorer-place-list">{filas.map((f) => <li key={f.z}><button className="fila-zona" type="button" title="Click to open this place's map" onClick={() => acciones.irAZona(f.z)}>
       <span className="punto" style={{ background: modelo.colorZona(f.z, v, i, 1) }} />
-      <span>{modelo.zona(f.z).nombre}<small>{modelo.zona(f.z).region}</small></span>
+      <span>{modelo.zona(f.z).nombre}<span className="place-open-icon" aria-hidden="true">↗</span><small>{modelo.zona(f.z).region}</small></span>
       <span className="valor">{f.a ? f.a.corto : 'no data'}</span>
       {f.a && ['log', 'dif', 'directo', 'indice'].includes(v.modo) && Number.isFinite(f.a.valor) && f.a.valor !== 0 && <span className={'flecha ' + (f.a.valor > 0 ? 'sube' : 'baja')} role="img" aria-label={f.a.valor > 0 ? 'above normal' : 'below normal'} title={f.a.valor > 0 ? 'Above normal for this month' : 'Below normal for this month'}>{f.a.valor > 0 ? '▲' : '▼'}</span>}
     </button></li>)}</ul>
