@@ -87,3 +87,45 @@
   .juego .cabina-vista { width: 100%; flex: none; border-right: 0; border-bottom: 1px solid #42616a; }
   .juego .cabina-visita { padding: 14px 16px; }
 }
+
+/* ===== Escritorio del analista: sellos grandes, bandejas solidas y objetos de oficina en la mesa ===== */
+.juego .cabina-mesa::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M28 44h50v40a14 14 0 0 1-14 14H42a14 14 0 0 1-14-14z'/%3E%3Cpath d='M78 54h8a10 10 0 0 1 0 22h-8'/%3E%3Cpath d='M42 36c-4-6 4-8 0-14M58 36c-4-6 4-8 0-14' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 98L30 70 84 16l20 20-54 54z'/%3E%3Cpath d='M30 70l20 20M74 26l20 20M20 98l10-28 20 20z' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 70h86a8 8 0 0 1 8 8v8H14z'/%3E%3Cpath d='M20 70c0-18 30-30 70-24l8 24'/%3E%3Cpath d='M30 94h70' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M44 24v54a14 14 0 0 0 28 0V32a9 9 0 0 0-18 0v44a4 4 0 0 0 8 0V40'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 22h76v54l-22 22H22z'/%3E%3Cpath d='M76 98V76h22' /%3E%3Cpath d='M34 42h50M34 56h40M34 70h24' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='10' y='46' width='100' height='28' rx='3'/%3E%3Cpath d='M24 46v10M38 46v14M52 46v10M66 46v14M80 46v10M94 46v14' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M44 24v54a14 14 0 0 0 28 0V32a9 9 0 0 0-18 0v44a4 4 0 0 0 8 0V40'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M28 44h50v40a14 14 0 0 1-14 14H42a14 14 0 0 1-14-14z'/%3E%3Cpath d='M78 54h8a10 10 0 0 1 0 22h-8'/%3E%3Cpath d='M42 36c-4-6 4-8 0-14M58 36c-4-6 4-8 0-14' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 120px, 130px, 140px, 70px, 120px, 150px, 60px, 90px;
+  background-position: 3% 8%, 97% 14%, 6% 55%, 52% 4%, 94% 52%, 48% 92%, 28% 96%, 78% 90%; }
+.juego .cabina-escritorio { background-image: radial-gradient(ellipse at 50% 0, rgba(143, 227, 242, .06), transparent 60%), repeating-linear-gradient(90deg, rgba(255, 255, 255, .015) 0 2px, transparent 2px 6px); }
+
+/* bandejas: solidas, con relieve y rotulo */
+.juego .escritorio-bandejas { gap: 10px; padding: 8px; border-radius: 8px; background: #0a2332; border: 2px solid #2f5f8f; box-shadow: 0 10px 24px rgba(0, 0, 0, .55); }
+.juego .bandeja { background: linear-gradient(180deg, #1b4a73, #133c61); border: 2px solid #3d7099; border-bottom-width: 6px; border-radius: 4px; opacity: 1; font-size: 13px; text-align: center; transition: transform .12s ease, border-color .12s ease; }
+.juego .bandeja:hover, .juego .bandeja:focus-visible { transform: translateY(-2px); border-color: #8fe3f2; }
+
+/* sellos: grandes, como sellos de goma con su almohadilla de tinta */
+.juego .escritorio-sellos { gap: 16px; padding: 14px 18px; background: #0a2332; border-radius: 8px; border-width: 2px; }
+.juego .escritorio-sellos .ayuda { max-width: 230px; }
+.juego .sello-boton { position: relative; min-width: 210px; min-height: 92px; padding: 10px 22px 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  font: 700 26px "Special Elite", monospace; letter-spacing: .12em; border-radius: 6px; border-width: 3px; border-style: double;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, .45); transition: transform .08s ease, box-shadow .08s ease, background .15s ease; }
+.juego .sello-boton::after { content: ''; position: absolute; left: 14px; right: 14px; bottom: 6px; height: 7px; border-radius: 4px; opacity: .85; }
+.juego .sello-boton.verde { color: #7be0a6; border-color: #3fa66b; background: #0e3a2c; }
+.juego .sello-boton.verde::after { background: #1f7a4a; }
+.juego .sello-boton.rojo { color: #ff9c8f; border-color: #c0453a; background: #3b1a22; }
+.juego .sello-boton.rojo::after { background: #a02f2f; }
+.juego .sello-boton .cabina-icono-sello { width: 44px; height: 44px; }
+.juego .sello-boton:not(:disabled):hover { transform: translateY(-3px) rotate(-1deg); filter: brightness(1.15); }
+.juego .sello-boton:not(:disabled):active { transform: translateY(6px); box-shadow: 0 2px 0 rgba(0, 0, 0, .45); }
+.juego .sello-boton:disabled { opacity: .45; cursor: not-allowed; }
+@media (max-width: 900px) {
+  .juego .sello-boton { min-width: 0; min-height: 70px; font-size: 20px; flex: 1; }
+  .juego .sello-boton .cabina-icono-sello { width: 32px; height: 32px; }
+}
+@media (prefers-reduced-motion: reduce) { .juego .sello-boton, .juego .bandeja { transition: none; } }
+.juego .cabina-mesa::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .32;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M28 44h50v40a14 14 0 0 1-14 14H42a14 14 0 0 1-14-14z'/%3E%3Cpath d='M78 54h8a10 10 0 0 1 0 22h-8'/%3E%3Cpath d='M42 36c-4-6 4-8 0-14M58 36c-4-6 4-8 0-14' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 98L30 70 84 16l20 20-54 54z'/%3E%3Cpath d='M30 70l20 20M74 26l20 20M20 98l10-28 20 20z' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 70h86a8 8 0 0 1 8 8v8H14z'/%3E%3Cpath d='M20 70c0-18 30-30 70-24l8 24'/%3E%3Cpath d='M30 94h70' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M44 24v54a14 14 0 0 0 28 0V32a9 9 0 0 0-18 0v44a4 4 0 0 0 8 0V40'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 22h76v54l-22 22H22z'/%3E%3Cpath d='M76 98V76h22' /%3E%3Cpath d='M34 42h50M34 56h40M34 70h24' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='10' y='46' width='100' height='28' rx='3'/%3E%3Cpath d='M24 46v10M38 46v14M52 46v10M66 46v14M80 46v10M94 46v14' stroke-width='2'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M44 24v54a14 14 0 0 0 28 0V32a9 9 0 0 0-18 0v44a4 4 0 0 0 8 0V40'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%238fb7c4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M28 44h50v40a14 14 0 0 1-14 14H42a14 14 0 0 1-14-14z'/%3E%3Cpath d='M78 54h8a10 10 0 0 1 0 22h-8'/%3E%3Cpath d='M42 36c-4-6 4-8 0-14M58 36c-4-6 4-8 0-14' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 100px, 150px, 120px, 90px, 100px, 170px, 70px, 120px;
+  background-position: 60% 30%, 18% 80%, 80% 70%, 12% 30%, 40% 60%, 70% 8%, 90% 90%, 30% 50%; }
+.juego .cabina-mesa::before { opacity: .5; }
+.juego .sello-boton { min-width: 230px; min-height: 104px; font-size: 30px; }
+.juego .sello-boton .cabina-icono-sello { width: 52px; height: 52px; }
