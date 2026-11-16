@@ -56,7 +56,7 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
       return { p, voxel, estado: "espera" as const, dur: i * 2, entrada: new THREE.Vector3() };
     });
     const colocar = (f: Personaje) => { const a = azar(0, Math.PI * 2), d = azar(3, 22); f.posicion.set(Math.cos(a) * d, azar(2, 9), Math.sin(a) * d); };
-    const fitos = Array.from({ length: 14 }, () => {
+    const fitos = Array.from({ length: 24 }, () => {
       const f = crearPersonaje(escena, dibujoFito, { ancho: 1.4, alto: 1.4, suelo: 0 });
       f.sprite.visible = false;
       const voxel = crearPersonajeVoxel(escena, dibujoFito, 0.025, 1);
@@ -90,7 +90,7 @@ export function escenaKiri(entrada: Entrada, avisos: AvisosKiri, pausa: () => bo
           voxel.position.copy(f.posicion);
           f.sprite.material.rotation = Math.sin(t + fase) * 0.2;
           f.animar(t, quieto, seguidor.derecha, 1);
-          if (!detenido && f.posicion.distanceTo(kiri.posicion) < 1.6) { sonar("comer"); comidos++; avisos.comio(comidos); colocar(f); }
+          if (!detenido && f.posicion.distanceTo(kiri.posicion) < 2.6) { sonar("comer"); comidos++; avisos.comio(comidos); colocar(f); }
         }
         // Los pingüinos entran escalonados por las aberturas iluminadas del hielo.
         if (!detenido) {
