@@ -14,7 +14,7 @@
   .columna-izq .globe-camera-controls { display: grid; gap: 6px; }
   .columna-izq .globe-camera-controls button { width: 100%; padding: 6px 8px; min-height: 36px; }
   .columna-izq .regiones { display: grid; gap: 6px; }
-  .columna-izq .region { width: 100%; text-align: left; padding: 6px 8px; min-height: 40px; font-size: .85rem; }
+  .columna-izq .region { width: 100%; text-align: center; padding: 6px 8px; min-height: 40px; font-size: .85rem; }
   .columna-izq .estilos-mapa { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .columna-izq .vista-nota, .columna-izq .pista-globo { font-size: .72rem; line-height: 1.4; margin: 0; flex: none; }
   .columna-izq .globe-legend { order: 0; margin: 0; width: 100%; }
@@ -46,10 +46,13 @@
   .columna-izq .estilos-mapa .control-pill { min-height: 28px; padding: 3px 10px; font-size: .78rem; }
   .columna-izq .globe-legend > summary { min-height: 32px; padding: 4px 8px; font-size: .8rem; }
   /* Estilo de vista (arriba a la izquierda del globo) y capas (arriba a la derecha) */
-  .columna-izq .globe-toolbar > div:first-child { position: absolute; z-index: 9; top: 8px; left: calc(var(--izq) + (100% - var(--izq)) / 2); transform: translateX(-50%); width: 270px; background: rgba(2, 6, 11, .75); border-radius: 8px; }
+  .columna-izq .globe-toolbar > div:first-child { position: absolute; z-index: 9; top: 8px; left: calc(var(--izq) + 10px); width: 270px; background: rgba(2, 6, 11, .75); border-radius: 8px; }
   .columna-izq .globe-toolbar > div:first-child button { min-height: 32px; font-size: .78rem; }
-  .columna-izq .globe-toolbar > .vista-nota { top: 52px; left: calc(var(--izq) + (100% - var(--izq)) / 2); transform: translateX(-50%); text-align: center; width: max-content; }
+  .columna-izq .globe-toolbar > .vista-nota { top: 52px; left: calc(var(--izq) + 12px); }
   .columna-izq .globe-legend { position: absolute; z-index: 12; top: 8px; right: 12px; width: auto; max-width: min(420px, calc(100% - var(--izq) - 24px)); border-radius: 8px; background: rgba(2, 6, 11, .8); }
   .columna-izq .globe-legend[open] { background: #0a2540; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
   .columna-izq .globe-legend-content { position: static; width: auto; border: 0; padding: 0 12px 12px; background: none; max-height: calc(100svh - 320px); overflow-y: auto; }
+  /* texto centrado dentro de cada boton */
+  .columna-izq .globe-toolbar button, .columna-izq .region, .columna-izq .control-pill, .columna-izq .globe-toolbar > div:first-child button { text-align: center; justify-content: center; align-items: center; }
+  .columna-izq .region { display: flex; }
 }
