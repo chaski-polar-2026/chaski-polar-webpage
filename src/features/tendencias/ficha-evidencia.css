@@ -1,11 +1,27 @@
-.tendencias .evidencia-robustez,.tendencias .evidencia-ficha { margin:20px 0; padding:16px; border:1px solid #24507a; border-radius:6px; background:#071e33; color:#eaf3f5; min-width:0; }
+.tendencias .evidencia-robustez,.tendencias .evidencia-ficha { margin:20px 0; padding:16px; border:1px solid var(--linea); border-radius:6px; background:var(--abismo); color:var(--hielo); min-width:0; }
 .tendencias .evidencia-tabla { overflow-x:auto; max-width:100%; }
 .tendencias .evidencia-tabla table { width:100%; border-collapse:collapse; font-size:13px; }
-.tendencias .evidencia-tabla th,.tendencias .evidencia-tabla td { padding:10px; text-align:left; border-bottom:1px solid #24507a; overflow-wrap:anywhere; min-width:90px; }
+.tendencias .evidencia-tabla th,.tendencias .evidencia-tabla td { padding:10px; text-align:left; border-bottom:1px solid var(--linea); overflow-wrap:anywhere; min-width:90px; }
 .tendencias .evidencia-tabla small {display:block;}
 .tendencias .evidencia-ficha dl>div { margin:12px 0; }
-.tendencias .evidencia-ficha dt { font-weight:600; color:#8fe3f2; }
+.tendencias .evidencia-ficha dt { font-weight:600; color:var(--cp-cyan); }
 .tendencias .evidencia-ficha dd { margin:0; overflow-wrap:anywhere; }
 .tendencias .evidencia-descargas { display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; }
 .tendencias .evidencia-ficha summary { cursor:pointer; }
-.tendencias .evidencia-tabla:focus-visible,.tendencias .evidencia-ficha :focus-visible { outline:2px solid #8fe3f2; outline-offset:3px; }
+.tendencias .evidencia-tabla:focus-visible,.tendencias .evidencia-ficha :focus-visible { outline:2px solid var(--cp-cyan); outline-offset:3px; }
+
+.tendencias .evidencia-robustez, .tendencias .evidencia-ficha { border-color: var(--linea); background: var(--abismo); color: var(--hielo); padding: clamp(16px, 3vw, 28px); }
+.tendencias .evidencia-robustez h3 { font: 400 1.65rem/1.2 var(--serif); margin-bottom: 18px; }
+.tendencias .evidencia-tabla th, .tendencias .evidencia-tabla td { border-color: var(--linea); padding: 14px 12px; }
+.tendencias .evidencia-tabla thead { background: var(--profundo); color: var(--cp-cyan); }
+.tendencias .evidencia-tabla caption { color: var(--niebla); text-align: left; padding-bottom: 12px; }
+.tendencias .evidencia-tabla tbody tr:hover { background: var(--panel-suave); }
+.tendencias .evidencia-conclusion { margin: 20px 0 0; padding: 14px 16px; border-left: 2px solid var(--frio); background: var(--panel-suave); color: var(--hielo); }
+.tendencias .evidencia-ficha summary { min-height: 44px; padding-block: 10px; font: 400 1.5rem/1.4 var(--serif); color: var(--hielo); }
+.tendencias .evidencia-ficha dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; }
+.tendencias .evidencia-ficha dl > div { margin: 0; padding: 12px 0; border-top: 1px solid var(--linea); }
+.tendencias .evidencia-ficha dt { color: var(--frio); }
+.tendencias .evidencia-ficha dd, .tendencias .evidencia-ficha > p { color: var(--niebla); font-size: .9rem; }
+.tendencias .evidencia-descargas { margin-bottom: 16px; }
+.tendencias .evidencia-descargas .btn { border-color: var(--frio); clip-path: var(--cp-cut); }
+@media (max-width: 640px) { .tendencias .evidencia-ficha dl { grid-template-columns: 1fr; } }

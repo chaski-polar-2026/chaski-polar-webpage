@@ -30,3 +30,44 @@
 @media (prefers-reduced-motion: reduce) {
   .help-page *, .help-page *::before, .help-page *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+.help-section .lab-heading { margin-bottom: 28px; }
+.help-section .lab-heading h2 { margin: 4px 0 0; font-size: clamp(1.8rem, 3vw, 2.5rem); }
+.help-section .lab-heading .puente-kicker { color: var(--frio); font: 600 .95rem var(--cp-hud); }
+.help-faq-list { border: 1px solid var(--linea); border-radius: var(--cp-radius); background: var(--panel-suave); }
+.help-faq-item { padding: 0 24px; }
+.help-faq-item:last-child { border-bottom: 0; }
+.help-faq-item summary { gap: 24px; justify-content: space-between; min-height: 68px; padding: 16px 0; font-weight: 400; font-size: 1.05rem; list-style: none; }
+.help-faq-item summary::-webkit-details-marker { display: none; }
+.help-faq-item summary::after { content: ''; flex: none; width: 16px; height: 16px; background: linear-gradient(var(--frio),var(--frio)) center / 12px 1.5px no-repeat, linear-gradient(var(--frio),var(--frio)) center / 1.5px 12px no-repeat; }
+.help-faq-item[open] summary::after { background: linear-gradient(var(--frio),var(--frio)) center / 12px 1.5px no-repeat; }
+.help-faq-item[open] { background: var(--profundo); box-shadow: inset 2px 0 var(--frio); }
+.help-faq-item summary:is(:hover,:focus-visible) { color: var(--cp-cyan); }
+.help-answer { padding: 0 32px 12px 0; }
+.help-answer p { margin: 0 0 12px; }
+.help-glossary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; border-top: 0; }
+.help-term { display: block; padding: 24px 0; border-top: 1px solid var(--linea); border-bottom: 0; }
+.help-term dt { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; color: var(--cp-cyan); font: 600 1.2rem/1.3 var(--cp-hud); }
+.help-term dt::before { content: ''; width: 8px; height: 8px; flex: none; border: 1px solid var(--frio); }
+.help-term dd { padding-left: 20px; font-size: .95rem; }
+.help-activities { gap: 20px; }
+.help-activity { padding: 26px 22px; border-top-color: var(--frio); border-radius: var(--cp-radius); background: var(--panel-suave); transition: transform 180ms ease; }
+.help-activity:focus-within { border-color: var(--frio); }
+.help-activity:hover { transform: translateY(-3px); border-color: var(--frio); }
+.help-activity h3 { min-height: 3.8em; font-size: 1.6rem; }
+.help-activity h4 { color: var(--cp-cyan); font: 600 1.1rem var(--cp-hud); margin-top: 24px; }
+.help-activity li { padding-left: 4px; margin-block: 12px; }
+.help-activity li::marker { color: var(--frio); }
+.help-expected { margin: 24px -10px 0; padding: 16px 12px; border-top: 0; border-left: 2px solid var(--fito); background: var(--profundo); font-size: .9rem; }
+.help-expected strong { display: block; margin-bottom: 8px; color: var(--fito); }
+@media (max-width: 760px) {
+  .help-glossary { grid-template-columns: 1fr; }
+  .help-faq-item { padding-inline: 16px; }
+  .help-answer { padding-right: 0; }
+  .help-faq-item summary { font-size: 1rem; }
+  .help-activity { padding: 24px 20px; }
+  .help-activity h3 { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .help-activity:hover { transform: none; }
+}

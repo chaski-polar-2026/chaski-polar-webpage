@@ -1,3 +1,5 @@
+import { SectionArt } from '../../components/ui/SectionArt'
+import { useSectionReveal } from '../../components/ui/useSectionReveal'
 import datos from './perspectiva_acierto.json'
 import InfoTip from '../../components/ui/InfoTip'
 import './prediccion.css'
@@ -8,6 +10,7 @@ const pct = (v: number) => `${v >= 0 ? '+' : '−'}${Math.abs(v * 100).toFixed(0
 
 /** Habilidad retrospectiva del pronóstico de temperatura superficial; no es un pronóstico de pesca. */
 export default function PerspectivaTemperatura() {
+  const reveal = useSectionReveal()
   const filas = datos.results.filter((f) => f.variable === 'SST' && f.model === 'nino')
   const zonas = Object.keys(NOMBRES).filter((z) => filas.some((f) => f.zone === z))
 
@@ -26,11 +29,11 @@ export default function PerspectivaTemperatura() {
   }
 
   return (
-    <section className="seccion prediccion" id="temperature-outlook" aria-labelledby="t-temp-outlook">
-      <p className="puente-kicker">One to three months ahead</p>
-      <h2 id="t-temp-outlook">Can we anticipate sea surface temperature?</h2>
+    <section ref={reveal} className="seccion prediccion" id="temperature-outlook" aria-labelledby="t-temp-outlook">
+      <header className="lab-heading" data-reveal><SectionArt kind="outlook" /><div><p className="puente-kicker">One to three months ahead</p>
+      <h2 id="t-temp-outlook">Can we anticipate sea surface temperature?</h2></div></header>
       <p className="nota">We tested a simple model that predicts the monthly temperature anomaly<InfoTip term="Anomaly">Difference from what is normal for that month.</InfoTip> from El Niño 1+2<InfoTip term="El Niño 1+2">Sea temperature in the coastal area off Peru and Ecuador.</InfoTip> and from the last known month. Each month from 2010 to 2025 was predicted using only earlier data (a hindcast<InfoTip term="Hindcast">A forecast made on past data to see how well it would have worked.</InfoTip>). The table shows how much smaller the errors were than simply predicting a normal month<InfoTip term="Normal month (climatology)">The usual value for each month of the year.</InfoTip>.</p>
-      <div className="tabla-scroll">
+      <div className="tabla-scroll" data-reveal role="region" tabIndex={0} aria-label="Sea temperature outlook results; scroll horizontally for all months ahead">
         <table className="perspectiva-tabla">
           <caption className="sr-only">Error reduction versus a normal month, by coastal zone and months ahead</caption>
           <thead><tr><th scope="col">Coastal zone</th>{HORIZONTES.map((h) => <th scope="col" key={h}>{h} month{h > 1 ? 's' : ''} ahead</th>)}</tr></thead>
