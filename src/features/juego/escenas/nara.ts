@@ -14,6 +14,7 @@ import { dibujarLetrero } from "../personajes/costa";
 import { sonar } from "../motor/sonido";
 import { sprite } from "../personajes/sprites";
 import { crearPersonajeVoxel, mirarALaCamara } from "../motor/voxel";
+import { crearDecoradoNara } from "./naraDecoracion";
 
 const V: Ventana = { lonO: -105, latN: 15, lonE: -30, latS: -70 };
 const RECORRIDO: Ventana = { lonO: -105, latN: 0, lonE: -55, latS: -70 };
@@ -94,6 +95,8 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
       return (tierra[(py * W + px) * 4 + 3] ?? 0) > 100;
     };
 
+    const decorado = crearDecoradoNara(escena, esTierra, () => tierra !== null); // decorado visual, se construye cuando la máscara está lista
+
     // corrientes: Circumpolar (al este, entre 62° y 50° S) y Humboldt (al norte, cerca de la costa de Chile y el Perú)
     const tierraAlEste = (lat: number, lon: number) => [1.5, 3, 4.5, 6].some((d) => esTierra(lat, lon + d));
     const corriente = (lat: number, lon: number): { v: THREE.Vector2; nombre: EstadoNara["corriente"] } => {
@@ -146,6 +149,7 @@ export function escenaNara(entrada: Entrada, eventos: EventosNara, pausa: () => 
           // si el punto de partida quedó sobre el hielo del mapa, Nara empieza en el agua más cercana al norte
           for (let k = 0; k < 60 && esTierra(aLat(nara.posicion.z), aLon(nara.posicion.x)); k++) nara.posicion.z -= 0.5;
         }
+        decorado.animar(dt, t);
         const detenido = pausa() || fin;
         const lat = aLat(nara.posicion.z), lon = aLon(nara.posicion.x);
         const cor = corriente(lat, lon);
