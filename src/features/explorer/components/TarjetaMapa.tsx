@@ -103,7 +103,6 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
     return `M${x.toFixed(1)} ${y.toFixed(1)} q3 -2.2 6 0 t6 0 t6 0`
   }).join(' ')
   // Bandas de profundidad: copias de la costa desplazadas hacia el mar
-  const bandas = [14, 28, 42, 58]
   const peces = (especies as unknown as Especie[]).filter((e) => PECES_DOCUMENTADOS.includes(e.id))
 
   return (
@@ -118,20 +117,17 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
         {peru ? <figure className="zona-mapa"><svg viewBox={`${x0} ${y0} ${ancho} ${alto}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={`Schematic close-up of the coast near ${z.nombre}: sea shaded by depth with wave lines, sand and mountain relief on land, and plankton dots whose number reflects the chlorophyll value of the selected month. Arrow: Humboldt Current flowing north.`}>
           <defs>
             <linearGradient id={`${id}-mar`} gradientUnits="userSpaceOnUse" x1={cx0 - ux * 4} y1={cy0 - uy * 4} x2={cx0 + ux * 100} y2={cy0 + uy * 100}>
-              <stop offset="0" stopColor="#3cc6c4" />
-              <stop offset=".22" stopColor="#1d86a0" />
-              <stop offset=".6" stopColor="#0f4f73" />
-              <stop offset="1" stopColor="#072a48" />
+              <stop offset="0" stopColor="#3cc6c4" /><stop offset=".2" stopColor="#3cc6c4" />
+              <stop offset=".2" stopColor="#1d86a0" /><stop offset=".55" stopColor="#1d86a0" />
+              <stop offset=".55" stopColor="#0f4f73" /><stop offset=".85" stopColor="#0f4f73" />
+              <stop offset=".85" stopColor="#072a48" /><stop offset="1" stopColor="#072a48" />
             </linearGradient>
             <linearGradient id={`${id}-suelo`} gradientUnits="userSpaceOnUse" x1={cx0 - ux * 2} y1={cy0 - uy * 2} x2={cx0 - ux * 110} y2={cy0 - uy * 110}>
-              <stop offset="0" stopColor="#ecdcb2" />
-              <stop offset=".35" stopColor="#cdae78" />
-              <stop offset=".7" stopColor="#a17d4d" />
-              <stop offset="1" stopColor="#6d5030" />
+              <stop offset="0" stopColor="#ecdcb2" /><stop offset=".18" stopColor="#ecdcb2" />
+              <stop offset=".18" stopColor="#d6b983" /><stop offset=".4" stopColor="#d6b983" />
+              <stop offset=".4" stopColor="#b8935c" /><stop offset=".7" stopColor="#b8935c" />
+              <stop offset=".7" stopColor="#8a6a40" /><stop offset="1" stopColor="#8a6a40" />
             </linearGradient>
-            <pattern id={`${id}-textura`} width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
-              <circle cx="1" cy="1" r=".45" fill="#4a3418" fillOpacity=".3" /><circle cx="3.2" cy="3.4" r=".35" fill="#4a3418" fillOpacity=".24" />
-            </pattern>
             <radialGradient id={`${id}-plancton`}>
               <stop offset="0" stopColor="#9bf5b8" stopOpacity=".95" />
               <stop offset=".45" stopColor="#3fc28c" stopOpacity=".6" />
@@ -141,31 +137,28 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
           </defs>
           {/* Mar: degradado perpendicular a la costa, bandas de profundidad y olas */}
           <rect x={x0 - 300} y={y0 - 300} width={ancho + 600} height={alto + 600} fill={`url(#${id}-mar)`} />
-          {bandas.map((dx, i) => <polyline key={dx} points={costa} transform={`translate(${-dx} 0)`} fill="none" stroke="#bfe9f2" strokeOpacity={[.22, .17, .13, .09][i]} strokeWidth=".9" />)}
-          {campo && <image href={campo.url} x={px(campo.lonO)} y={py(campo.latN)} width={(campo.lonE - campo.lonO) * K} height={(campo.latN - campo.latS) * K} preserveAspectRatio="none" opacity=".92" />}
+          {campo && <image href={campo.url} x={px(campo.lonO)} y={py(campo.latN)} width={(campo.lonE - campo.lonO) * K} height={(campo.latN - campo.latS) * K} preserveAspectRatio="none" style={{ imageRendering: 'pixelated' }} />}
           <path d={olas} fill="none" stroke="#8fe3f2" strokeOpacity=".18" strokeWidth=".6" strokeLinecap="round" />
           {/* Tierra: arena cerca de la costa, ocre y pardo hacia el interior, sierras y sombra */}
           <polygon points={tierra} fill={`url(#${id}-suelo)`} />
-          <polygon points={tierra} fill={`url(#${id}-textura)`} />
-          {[9, 20, 33, 49, 68, 90].map((dx, i) => <g key={dx}><polygon points={tierra} transform={`translate(${dx} 0)`} fill="#5b3f1f" fillOpacity=".15" /><polyline points={costa} transform={`translate(${dx} 0)`} fill="none" stroke="#4a3418" strokeOpacity={0.45 - i * 0.04} strokeWidth=".7" strokeLinejoin="round" /></g>)}
+          {[9, 20, 33, 49, 68, 90].map((dx) => <g key={dx}><polygon points={tierra} transform={`translate(${dx} 0)`} fill="#5b3f1f" fillOpacity=".12" /></g>)}
           {Array.from({ length: 9 }, (_, i) => { const y = y0 + 16 + (i + pseudo(i + 700) * 0.6) * ((alto - 30) / 9), x = xCosta(y) + 34 + pseudo(i + 800) * 60, t = 3.2 + pseudo(i + 900) * 2.6; return <path key={i} d={`M${(x - t).toFixed(1)} ${(y + t * 0.7).toFixed(1)} L${x.toFixed(1)} ${(y - t).toFixed(1)} L${(x + t).toFixed(1)} ${(y + t * 0.7).toFixed(1)} M${x.toFixed(1)} ${(y - t).toFixed(1)} L${(x + t * 0.2).toFixed(1)} ${(y + t * 0.7).toFixed(1)}`} fill="none" stroke="#3b2812" strokeOpacity=".55" strokeWidth=".8" strokeLinejoin="round" strokeLinecap="round" /> })}
           <g clipPath={`url(#${id}-recorte)`}>
             <polyline points={costa} transform="translate(6 3)" fill="none" stroke="#3b2812" strokeOpacity=".3" strokeWidth="9" strokeLinejoin="round" />
           </g>
           {/* Línea de costa: espuma tenue y contorno */}
-          <polyline points={costa} fill="none" stroke="#ffffff" strokeOpacity=".3" strokeWidth="3.6" strokeLinejoin="round" strokeLinecap="round" />
-          <polyline points={costa} fill="none" stroke="#eaf3f5" strokeOpacity=".7" strokeWidth="1.6" />
+                    <polyline points={costa} fill="none" stroke="#eaf3f5" strokeOpacity=".55" strokeWidth="1" />
           {/* Fitoplancton: manchas degradadas y destellos sobre las grandes */}
           {!campo && puntos.map((p, i) => <g key={i}>
             {[0, 1, 2].map((k) => { const a = pseudo(i * 7 + k + 900) * 6.28, d = k === 0 ? 0 : 1.6 + pseudo(i * 3 + k) * 2.6, rr = k === 0 ? 1.5 + p.r * 0.22 : 0.8 + pseudo(i + k * 11) * 0.9, cx = p.x + Math.cos(a) * d, cy = p.y + Math.sin(a) * d; return <g key={k}><circle cx={cx} cy={cy} r={rr} fill="#46c98f" stroke="#0b5a43" strokeWidth=".35" /><circle cx={cx - rr * 0.3} cy={cy - rr * 0.3} r={rr * 0.35} fill="#c9ffe0" /></g> })}
           </g>)}
           {/* Corriente de Humboldt: trazo discontinuo con punta suave (animado salvo reduced-motion) */}
-          <path className="zm-flecha" d={`M ${cx0 - 74} ${cy0 + 60} L ${cx0 - 74} ${cy0 - 48}`} stroke="#8fe3f2" strokeWidth="2" strokeLinecap="round" strokeDasharray="5 4" fill="none" />
-          <path d={`M ${cx0 - 79} ${cy0 - 37} L ${cx0 - 74} ${cy0 - 49} L ${cx0 - 69} ${cy0 - 37}`} stroke="#8fe3f2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          <path className="zm-flecha" d={`M ${cx0 - 74} ${cy0 + 42} L ${cx0 - 74} ${cy0 - 4}`} stroke="#8fe3f2" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="5 4" fill="none" />
+          <path d={`M ${cx0 - 77} ${cy0 + 1} L ${cx0 - 74} ${cy0 - 5} L ${cx0 - 71} ${cy0 + 1}`} stroke="#8fe3f2" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           {/* Marcador de la zona: punto, anillo que pulsa y etiqueta sobre el mar */}
-          <circle cx={cx0} cy={cy0} r="3.6" fill="#63cde8" stroke="#071e33" strokeWidth="1.6" />
-          <circle className="zm-anillo" cx={cx0} cy={cy0} r="7" fill="none" stroke="#8fe3f2" strokeOpacity=".75" strokeWidth="1.1" />
-          <text x={cx0 - 11} y={cy0 + 3} textAnchor="end" fontSize="8" fontWeight="600" fill="#eaf3f5" stroke="#071e33" strokeWidth="2.5" paintOrder="stroke">{z.nombre}</text>
+          <circle cx={cx0} cy={cy0} r="2.2" fill="#63cde8" stroke="#eaf3f5" strokeWidth=".8" />
+          <circle className="zm-anillo" cx={cx0} cy={cy0} r="4.6" fill="none" stroke="#8fe3f2" strokeOpacity=".75" strokeWidth=".8" />
+          <text className="zm-etiqueta" x={cx0 - 7} y={cy0 + 2} textAnchor="end" fontSize="6.4" fill="#fff">{z.nombre}</text>
         </svg><figcaption>Schematic map, not to scale. Arrow: Humboldt Current, flowing north.
           {campo && <span className="zona-escala"><span>Less chlorophyll</span><i style={{ background: campo.escala }} aria-hidden="true" /><span>More</span></span>}</figcaption></figure> : <MapaAntartico zona={zona} />}
         <div className="vista-zona-datos">
