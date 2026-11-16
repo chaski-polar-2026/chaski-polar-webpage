@@ -13,6 +13,17 @@ import './tarjeta-mapa.css'
 
 const ZONAS_MAPA = ['paita', 'chimbote', 'callao', 'pisco', 'ilo']
 const PECES_DOCUMENTADOS = ['anchoveta', 'jurel', 'caballa', 'perico', 'bonito', 'merluza']
+const ESCENAS: { clave: string; archivo: string; texto: string }[] = [
+  { clave: 'paita', archivo: 'paita', texto: 'a fishing bay near Paita' },
+  { clave: 'chimbote', archivo: 'chimbote', texto: 'boats and a wooden pier in the bay of Chimbote' },
+  { clave: 'callao', archivo: 'callao', texto: 'the port of Callao with fishing boats, cranes and cargo ships' },
+  { clave: 'pisco', archivo: 'pisco', texto: 'a sandy bay near Pisco and Paracas' },
+  { clave: 'ilo', archivo: 'ilo', texto: 'a rocky bay with a pier near Ilo' },
+  { clave: 'rey_jorge', archivo: 'rey-jorge', texto: 'a glacier and floating ice near King George Island' },
+  { clave: 'peninsula', archivo: 'peninsula', texto: 'snowy mountains and icebergs on the Antarctic Peninsula' },
+]
+const escenaDe = (id: string) => ESCENAS.find((e) => id.includes(e.clave))
+
 type Especie = { id: string; common_name_en: string; group: string }
 
 /** Puntos pseudoaleatorios estables (mismo resultado en cada dibujo). */
@@ -45,6 +56,7 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
 
   const detalle = modelo.zona(zona)
   const peru = esPeru(zona)
+  const escena = escenaDe(String(zona))
   const z = ZONAS.find((x) => x.id === idMapa) ?? { lon: detalle.lon, lat: detalle.lat, nombre: detalle.nombre }
   const chl = modelo.valorSerie(zona, 'clorofila_mg_m3', month)
   const fecha = modelo.mes(month)
@@ -101,6 +113,7 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
         <div><h3>{detalle.nombre}</h3><p className="zona-region">{detalle.region}</p></div>
         <span>{mes}</span>
       </div>
+      {escena && <figure className="zona-escena"><img src={`/assets/zonas/${escena.archivo}.webp`} alt={`Illustration of ${escena.texto}`} width={1200} height={600} loading="lazy" /><figcaption>Illustration of {escena.texto}. Not to scale.</figcaption></figure>}
       <div className="vista-zona-cuerpo">
         {peru ? <figure className="zona-mapa"><svg viewBox={`${x0} ${y0} ${ancho} ${alto}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={`Schematic close-up of the coast near ${z.nombre}: sea shaded by depth with wave lines, sand and mountain relief on land, and plankton dots whose number reflects the chlorophyll value of the selected month. Arrow: Humboldt Current flowing north.`}>
           <defs>
@@ -165,6 +178,14 @@ function VistaZona({ zona, idMapa, cerrar }: { zona: IdZona; idMapa?: string; ce
           </ul>
           <p className="vista-zona-nota">The species list is for the whole Peruvian coast and does not say what lives in this zone today.</p>
           {section === 'anchoveta' && <a className="zona-pescadores" href="/fishers">For fishers →</a>}
+          </section>}
+          {!peru && <section className="zona-fauna" aria-label="Typical Southern Ocean wildlife">
+            <p className="vista-zona-sub">Typical wildlife of the Southern Ocean</p>
+            <div className="zona-fauna-fila">
+              <figure><img src="/assets/zonas/kril.webp" alt="Illustration of an Antarctic krill, a small shrimp-like animal with an orange and white body" width={900} height={371} loading="lazy" /><figcaption>Antarctic krill</figcaption></figure>
+              <figure><img src="/assets/zonas/pinguino.webp" alt="Illustration of a chinstrap penguin standing, with a black back, white front and a thin black band under the face" width={700} height={1203} loading="lazy" /><figcaption>Chinstrap penguin</figcaption></figure>
+            </div>
+            <p className="vista-zona-nota">Illustrations for context. They are not data for this zone and do not say what is there today.</p>
           </section>}
           {section === 'anchoveta' && <DatosZona zona={zona} />}
           <p className="vista-zona-nota">Zone characteristics: no data for this zone.</p>
