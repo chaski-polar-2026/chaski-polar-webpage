@@ -2,7 +2,7 @@ import { useMemo, useRef, useState, type PointerEvent as EventoPuntero, type Rea
 import { ESTRATEGIAS, type Estrategia, type Informe as DatosInforme } from '../logica/cardumen'
 import { BANDEJAS, EFECTO_ACIERTO, EFECTO_ERROR, type Bandeja, type Decision, type Turno } from '../logica/escritorio'
 import { sonar } from '../motor/sonido'
-import Cabina, { IconoSello } from './Cabina'
+import Cabina, { IconoSello, SelloGrande } from './Cabina'
 import GuiaEscritorio, { faltaGuiaEscritorio, recordarGuiaEscritorio, type ReferenciaGuia } from './GuiaEscritorio'
 import './cabina.css'
 
@@ -224,8 +224,8 @@ export default function Escritorio({ turno, datos, siguiente, final, alSeguir, a
 
     <div className="escritorio-sellos" aria-label="Stamps">
       <span className="ayuda" role="status">{expElegido ? `Stamp: ${expElegido.titulo}` : 'Select a request, letter or report to enable the stamps'}</span>
-      <button type="button" className="sello-boton verde" disabled={!expElegido} onClick={() => sellar('si')}><IconoSello /><span>{expElegido?.sellos.si ?? 'YES'}</span></button>
-      <button type="button" className="sello-boton rojo" disabled={!expElegido} onClick={() => sellar('no')}><IconoSello /><span>{expElegido?.sellos.no ?? 'NO'}</span></button>
+      <button type="button" className="sello-boton verde" disabled={!expElegido} onClick={() => sellar('si')}><SelloGrande color="verde" /><span>{expElegido?.sellos.si ?? 'YES'}</span></button>
+      <button type="button" className="sello-boton rojo" disabled={!expElegido} onClick={() => sellar('no')}><SelloGrande color="rojo" /><span>{expElegido?.sellos.no ?? 'NO'}</span></button>
     </div>
   </div>
 }

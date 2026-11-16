@@ -8,6 +8,24 @@ export function IconoSello({ pequeno = false }: { pequeno?: boolean }) {
   </svg>
 }
 
+/** Sello de goma dibujado (mango de madera, cuerpo metalico, base de goma) sobre su almohadilla de tinta. */
+export function SelloGrande({ color }: { color: 'verde' | 'rojo' }) {
+  const tinta = color === 'verde' ? '#3fa66b' : '#c0453a', tintaOsc = color === 'verde' ? '#1f6f47' : '#8f2f29'
+  return <svg className="sello-dibujo" viewBox="0 0 120 120" width={120} height={120} aria-hidden="true" focusable="false">
+    <rect x="8" y="88" width="104" height="26" rx="5" fill="#16202a" stroke="#3a4a58" strokeWidth="2" />
+    <rect x="14" y="92" width="92" height="14" rx="3" fill={tintaOsc} />
+    <rect x="20" y="94" width="80" height="6" rx="3" fill={tinta} opacity=".8" />
+    <g className="sello-cuerpo">
+      <ellipse cx="60" cy="14" rx="15" ry="9" fill="#b07a44" stroke="#6b4423" strokeWidth="2" />
+      <path d="M52 20h16l5 30H47z" fill="#c68b4e" stroke="#6b4423" strokeWidth="2" strokeLinejoin="round" />
+      <rect x="30" y="50" width="60" height="14" rx="3" fill="#8e9ba8" stroke="#4d5a66" strokeWidth="2" />
+      <rect x="34" y="53" width="52" height="3" rx="1.5" fill="#c6d0d9" />
+      <rect x="32" y="64" width="56" height="12" rx="3" fill={tinta} stroke={tintaOsc} strokeWidth="2" />
+      <path d="M44 70h32" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" opacity=".55" />
+    </g>
+  </svg>
+}
+
 function Representante({ tipo }: { tipo: Expediente['tipo'] | undefined }) {
   const chaqueta = tipo === 'solicitud' ? '#697d70' : tipo === 'prensa' ? '#49647d' : '#3e7780'
   return <svg viewBox="0 0 248 122" width={248} height={122} className="cabina-personaje" role="img" aria-label="Port representative waiting at the counter">

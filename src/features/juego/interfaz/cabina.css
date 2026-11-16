@@ -129,3 +129,19 @@
 .juego .cabina-mesa::before { opacity: .5; }
 .juego .sello-boton { min-width: 230px; min-height: 104px; font-size: 30px; }
 .juego .sello-boton .cabina-icono-sello { width: 52px; height: 52px; }
+
+/* Sellos dibujados sobre la escena: sin caja, se ve la mesa detras */
+.juego .escritorio-sellos { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; align-items: flex-end; pointer-events: none; }
+.juego .escritorio-sellos > * { pointer-events: auto; }
+.juego .escritorio-sellos .ayuda { align-self: center; padding: 8px 12px; border-radius: 6px; background: rgba(10, 35, 50, .82); border: 1px solid #2f5f8f; }
+.juego .sello-boton { min-width: 150px; min-height: 0; padding: 0; background: transparent !important; border: 0 !important; box-shadow: none; flex-direction: column; gap: 0; font-size: 20px; text-shadow: 0 2px 0 rgba(0, 0, 0, .6); }
+.juego .sello-boton::after { display: none; }
+.juego .sello-boton .sello-dibujo { width: 128px; height: 128px; display: block; filter: drop-shadow(0 8px 6px rgba(0, 0, 0, .5)); }
+.juego .sello-boton .sello-cuerpo { transition: transform .1s ease; }
+.juego .sello-boton:not(:disabled):hover .sello-cuerpo { transform: translateY(-8px) rotate(-3deg); transform-origin: 60px 60px; }
+.juego .sello-boton:not(:disabled):active .sello-cuerpo { transform: translateY(10px); }
+.juego .sello-boton:not(:disabled):hover, .juego .sello-boton:not(:disabled):active { transform: none; filter: none; }
+.juego .sello-boton > span { margin-top: -6px; padding: 2px 10px; border-radius: 4px; background: rgba(10, 35, 50, .8); }
+.juego .sello-boton:disabled .sello-dibujo { filter: grayscale(.7) drop-shadow(0 8px 6px rgba(0, 0, 0, .5)); }
+@media (max-width: 900px) { .juego .sello-boton { min-width: 0; } .juego .sello-boton .sello-dibujo { width: 84px; height: 84px; } }
+@media (prefers-reduced-motion: reduce) { .juego .sello-boton .sello-cuerpo { transition: none; } }
