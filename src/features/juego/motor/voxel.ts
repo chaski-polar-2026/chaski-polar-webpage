@@ -55,7 +55,8 @@ export function crearFondoKiriVoxel(escena: THREE.Scene): {
   for (let x = -radio; x <= radio; x++) for (let z = -radio; z <= radio; z++) {
     if (!enMundo(x, z)) continue
     const h = altura(x, z), piso = Math.min(h, altura(x + 1, z), altura(x - 1, z), altura(x, z + 1), altura(x, z - 1)) - 1
-    for (let y = Math.max(0, piso); y <= h; y++) cubos.push([x, y, z, elegir(y === h ? ARENA : PIEDRA, x * 3 + y + z)])
+    const tb = THREE.MathUtils.smoothstep(Math.hypot(x, z), radio - 40, radio) * 0.5
+    for (let y = Math.max(0, piso); y <= h; y++) { const col = elegir(y === h ? ARENA : PIEDRA, x * 3 + y + z); cubos.push([x, y, z, tb > 0 ? new THREE.Color(col).lerp(new THREE.Color(0x0d4468), tb).getHex() : col]) }
   }
   for (let i = 0; i < 30; i++) {
     const a = i * 2.399, d = 110 + (i * 37) % 40
@@ -127,8 +128,25 @@ export function crearFondoKiriVoxel(escena: THREE.Scene): {
   }
   const geometria = new THREE.BoxGeometry(VOXEL, VOXEL, VOXEL)
   escena.add(instanciar(cubos, geometria))
+  // Anillo exterior de bloques grandes (4x4x4) que continua el lecho y el techo mas alla del mundo detallado.
+  // Los colores se funden con el agua hacia afuera, asi el borde del mundo no se ve cortado.
+  const aguaKiri = new THREE.Color(0x0d4468), mezclaKiri = new THREE.Color()
+  const lejos: Cubo[] = [], techoLejos: Cubo[] = []
+  for (let x = -330; x <= 330; x += 4) for (let z = -330; z <= 330; z += 4) {
+    const d = Math.hypot(x, z)
+    if (d < radio - 2 || d > 330) continue
+    const t = THREE.MathUtils.smoothstep(d, radio, 320)
+    const h = Math.max(0, Math.round(ruido(x, z) + 10))
+    lejos.push([x, h - 2, z, mezclaKiri.setHex(elegir(ARENA, x + z)).lerp(aguaKiri, t * 0.9).getHex()])
+    if (t < 0.97) techoLejos.push([x, techo - 3, z, mezclaKiri.setHex(elegir(HIELO, x + z)).lerp(aguaKiri, t).getHex()])
+  }
+  const geometriaGrande = new THREE.BoxGeometry(VOXEL * 4, VOXEL * 4, VOXEL * 4)
+  escena.add(instanciar(lejos, geometriaGrande))
   const mallaHielo = instanciar(cubosHielo, geometria)
   const hielo = mallaHielo.material as THREE.MeshLambertMaterial
+  const mallaTechoLejos = instanciar(techoLejos, geometriaGrande)
+  mallaTechoLejos.material = hielo // comparte el material para que tambien se vuelva transparente
+  escena.add(mallaTechoLejos)
   hielo.transparent = true // la escena baja su opacidad cuando la camara esta cerca, para que los picos no tapen la pantalla
   escena.add(mallaHielo)
 
