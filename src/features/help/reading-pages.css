@@ -1,0 +1,45 @@
+/* Editorial layout for About and Help only. */
+.reading-page .research-intro { position: relative; isolation: isolate; padding-top: clamp(40px, 7vw, 88px); padding-bottom: 40px; border-bottom: 1px solid var(--linea); }
+.reading-page .research-intro::before { content: ''; position: absolute; z-index: -1; inset: 24px 0 0; background: radial-gradient(circle, var(--linea) .7px, transparent 1px) 0 0 / 22px 22px; mask-image: linear-gradient(90deg, transparent 35%, var(--abismo)); pointer-events: none; }
+.reading-hero { display: grid; grid-template-columns: minmax(0, 1fr) 220px; align-items: center; gap: 32px; }
+.reading-hero h1 { max-width: 16ch; margin-top: 16px; }
+.reading-hero p { max-width: 60ch; color: var(--niebla); line-height: 1.7; }
+.reading-hero .research-eyebrow { color: var(--frio); font-family: var(--cp-hud); font-weight: 600; }
+.reading-hero > .section-art { width: 220px; height: 180px; border: 1px solid var(--linea); background: var(--abismo); clip-path: var(--cp-cut); }
+.reading-page .research-nav { margin-bottom: 0; gap: 10px; }
+.reading-page .research-nav a { border: 1px solid var(--linea); border-radius: 0; background: var(--abismo); clip-path: var(--cp-cut); padding-inline: 18px; }
+.reading-page .research-nav a:is(:hover, :focus-visible) { border-color: var(--frio); background: var(--profundo); color: var(--cp-cyan); }
+.reading-page .seccion { border-bottom: 1px solid var(--linea); }
+.reading-page a { color: var(--frio); text-underline-offset: 4px; }
+.reading-page :is(a, summary, button):focus-visible { outline: 3px solid var(--frio); outline-offset: 4px; }
+.reading-page .research-nav a:focus-visible { outline-offset: -4px; }
+.about-page > .seccion:not(#how) { display: grid; grid-template-columns: minmax(180px, .65fr) minmax(0, 2fr); column-gap: clamp(24px, 5vw, 72px); row-gap: 16px; }
+.about-page > .seccion:not(#how) > h2 { grid-column: 1; grid-row: 1 / span 6; font-size: clamp(1.65rem, 2.6vw, 2.1rem); color: var(--cp-cyan); }
+.about-page > .seccion:not(#how) > :not(h2) { grid-column: 2; margin: 0; max-width: 74ch; color: var(--niebla); line-height: 1.7; }
+.about-page .about-lista { list-style: none; padding: 0; display: grid; gap: 0; }
+.about-page .about-lista li { padding: 18px 0; border-top: 1px solid var(--linea); }
+.about-page .about-lista li:first-child { padding-top: 0; border-top: 0; }
+.about-page .about-lista strong { color: var(--hielo); }
+.about-page :is(#who, #data, #methods) .about-lista strong { display: block; margin-bottom: 6px; font-family: var(--cp-hud); font-size: 1.15rem; }
+.about-page #question strong { font: 400 1.45rem/1.5 var(--serif); color: var(--hielo); }
+.about-page #limits { border-left: 3px solid var(--nino); background: var(--panel-suave); }
+.about-page #limits > h2 { color: var(--nino); }
+.about-page #how .guia-pipeline { margin-top: 24px; }
+.about-page #how .guia-pipeline li { padding: 20px 16px; border-radius: var(--cp-radius); background: var(--profundo); font-weight: 400; }
+.about-page #how .guia-pipeline-ico { margin-bottom: 10px; }
+.about-page #how .guia-pipeline li > span:last-child { opacity: 1; color: var(--niebla); }
+@media (max-width: 760px) {
+  .reading-hero { grid-template-columns: minmax(0, 1fr) 72px; gap: 12px; align-items: start; }
+  .reading-hero > .section-art { width: 72px; height: 82px; margin-top: 12px; }
+  .reading-hero h1 { max-width: 100%; font-size: clamp(2.1rem, 9vw, 3rem); }
+  .reading-hero p:not(.research-eyebrow) { margin-right: -84px; padding-top: 8px; }
+  .reading-page .research-intro { padding-top: 36px; }
+  .reading-page .research-nav { gap: 8px; }
+  .reading-page .research-nav a { padding-inline: 14px; }
+  .about-page > .seccion:not(#how) { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .about-page > .seccion:not(#how) > h2 { grid-column: 1; grid-row: auto; }
+  .about-page > .seccion:not(#how) > :not(h2) { grid-column: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reading-page, .reading-page *, .reading-page *::before, .reading-page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

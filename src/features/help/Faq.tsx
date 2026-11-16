@@ -1,3 +1,5 @@
+import { SectionArt } from '../../components/ui/SectionArt'
+
 const QUESTIONS = [
   { q: 'What is Chaski Polar?', a: <>It is an open web tool and analysis project. It lets you explore ocean records and test trends and relationships in the available data. The results show associations, not proof of causes.</> },
   { q: 'Can I use it to decide when or where to fish?', a: <>No. Chaski Polar does not predict catches or fish locations, and it does not give safety guidance. The temperature outlook is about sea temperature only.</> },
@@ -11,9 +13,9 @@ const QUESTIONS = [
 
 export function Faq() {
   return <section className="seccion help-section" id="faq" aria-labelledby="help-faq-title">
-    <p className="puente-kicker">Quick answers</p>
-    <h2 id="help-faq-title">Frequently asked questions</h2>
-    <div className="help-faq-list">
+    <header className="lab-heading" data-reveal><SectionArt kind="book" /><div><p className="puente-kicker">Quick answers</p>
+    <h2 id="help-faq-title">Frequently asked questions</h2></div></header>
+    <div className="help-faq-list" data-stagger>
       {QUESTIONS.map(({ q, a }) => <details className="help-faq-item" key={q}>
         <summary>{q}</summary>
         <div className="help-answer"><p>{a}</p></div>

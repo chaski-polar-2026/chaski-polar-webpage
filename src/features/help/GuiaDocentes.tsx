@@ -1,3 +1,5 @@
+import { SectionArt } from '../../components/ui/SectionArt'
+
 const ACTIVITIES = [
   {
     title: 'Does the trend survive?',
@@ -24,10 +26,10 @@ const ACTIVITIES = [
 
 export function GuiaDocentes() {
   return <section className="seccion help-section" id="teachers" aria-labelledby="help-teachers-title">
-    <p className="puente-kicker">45 minutes each</p>
-    <h2 id="help-teachers-title">Short guide for teachers</h2>
+    <header className="lab-heading" data-reveal><SectionArt kind="trend" /><div><p className="puente-kicker">45 minutes each</p>
+    <h2 id="help-teachers-title">Short guide for teachers</h2></div></header>
     <p className="help-teacher-intro">Each activity uses the site to practice reading evidence. The site shows associations, not causes.</p>
-    <div className="help-activities">
+    <div className="help-activities" data-stagger>
       {ACTIVITIES.map((activity) => <article className="help-activity" key={activity.title}>
         <h3>{activity.title}</h3>
         <p><strong>Objective:</strong> {activity.objective}</p>

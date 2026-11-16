@@ -1,3 +1,5 @@
+import { SectionArt } from '../../components/ui/SectionArt'
+
 const TERMS = [
   { term: 'Anomaly', definition: 'The difference between a measured value and what is normal for that month.' },
   { term: 'Chlorophyll', definition: 'A pigment in phytoplankton. Satellites estimate chlorophyll from water color; it is an indicator, not a direct count of fish or food.' },
@@ -18,9 +20,9 @@ const TERMS = [
 
 export function Glosario() {
   return <section className="seccion help-section" id="glossary" aria-labelledby="help-glossary-title">
-    <p className="puente-kicker">Words used on this site</p>
-    <h2 id="help-glossary-title">Glossary</h2>
-    <dl className="help-glossary">
+    <header className="lab-heading" data-reveal><SectionArt kind="book" /><div><p className="puente-kicker">Words used on this site</p>
+    <h2 id="help-glossary-title">Glossary</h2></div></header>
+    <dl className="help-glossary" data-stagger>
       {TERMS.map(({ term, definition }) => <div className="help-term" key={term}><dt>{term}</dt><dd>{definition}</dd></div>)}
     </dl>
   </section>
