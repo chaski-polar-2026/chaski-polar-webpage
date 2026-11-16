@@ -305,6 +305,9 @@ export function crearPlacaHieloVoxel(escena: THREE.Scene, ancho: number, profund
   const celda = 1 / COLUMNAS
   const ruido = (a: number, b: number) => { const n = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return n - Math.floor(n) }
   const AZULES = [0xcfe9f7, 0xbfe2f5, 0xaedaf0]
+  const agua = new THREE.Color(0x1b5f86), mezcla = new THREE.Color()
+  // hacia el borde de la placa el color se funde con el agua para que no se vea cortada
+  const suave = (hex: number, d: number) => { const t = THREE.MathUtils.smoothstep(d, 0.45, 1.05) * 0.75; return t <= 0 ? hex : mezcla.setHex(hex).lerp(agua, t).getHex() }
   for (let c = 0; c < COLUMNAS; c++) for (let z = -semiprof; z <= semiprof; z++) {
     const u = (c - (COLUMNAS - 1) / 2) / (COLUMNAS / 2) // -1..1 a lo ancho
     const v = z / semiprof // -1..1 a lo largo
@@ -312,14 +315,17 @@ export function crearPlacaHieloVoxel(escena: THREE.Scene, ancho: number, profund
     const d = u * u + v * v * 0.9
     if (d > borde) continue
     const x = (c - (COLUMNAS - 1) / 2) * celda / VOXEL
-    cubos.push([x, 0, z, elegir(HIELO, c + z)])
-    if (d < 0.7 * borde) cubos.push([x, -1, z, elegir(AZULES, c * 3 + z)]) // el centro es mas grueso
+    cubos.push([x, 0, z, suave(elegir(HIELO, c + z), d)])
+    if (d < 0.7 * borde) cubos.push([x, -1, z, suave(elegir(AZULES, c * 3 + z), d)]) // el centro es mas grueso
     if (ruido(c + 5, z + 9) > 0.93 && d > 0.15) { // carambanos de largo variable
       const largo = 1 + Math.floor(ruido(z, c) * 3)
-      for (let k = 1; k <= largo; k++) cubos.push([x, -1 - k, z, AZULES[Math.min(k, 2)]!])
+      for (let k = 1; k <= largo; k++) cubos.push([x, -1 - k, z, suave(AZULES[Math.min(k, 2)]!, d + k * 0.12)])
     }
   }
   const placa = instanciar(cubos, new THREE.BoxGeometry(celda, VOXEL, VOXEL))
+  const mat = placa.material as THREE.MeshLambertMaterial
+  mat.transparent = true // un poco translucido, como hielo, y menos duro contra el agua
+  mat.opacity = 0.82
   placa.position.y = 0.5
   grupo.add(placa)
   grupo.scale.x = ancho
